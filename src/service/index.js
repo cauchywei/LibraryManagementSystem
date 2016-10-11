@@ -41,7 +41,7 @@ export function register (data) {
 export function searchBook (name) {
   const params = {
     'ISBN': name,
-    'name': name,
+    'name': name
   }
   const form = new FormData()
   form.append('ISBN', name)

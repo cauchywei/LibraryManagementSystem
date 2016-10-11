@@ -24,7 +24,6 @@
 </template>
 
 <script>
-
   import * as service from '../service'
 
   var bookStorage = {
