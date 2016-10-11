@@ -29,17 +29,17 @@ public class BookController extends BaseController {
         return renderForEntities(bookService.search(form));
     }
 
-    @GetMapping("books/{ISBN}/")
+    @GetMapping("{ISBN:[0-9\\-]+}/")
     public ResponseEntity getBook(@PathVariable String ISBN) {
         return renderForEntity(bookService.get(ISBN));
     }
 
-    @PostMapping("books/{ISBN}/borrow")
+    @PostMapping("{ISBN:[0-9\\-]+}/borrow")
     public ResponseEntity borrowBook(@PathVariable String ISBN) {
         return renderForAction(borrowService.borrow(getAccount(), ISBN));
     }
 
-    @PostMapping("books/{ISBN}/return")
+    @PostMapping("{ISBN:[0-9\\-]+}/return")
     public ResponseEntity revertBook(@PathVariable String ISBN) {
         return renderForAction(borrowService.revert(getAccount(), ISBN));
     }

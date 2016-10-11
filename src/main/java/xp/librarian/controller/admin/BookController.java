@@ -29,12 +29,12 @@ public class BookController extends BaseController {
         return renderForEntity(bookService.add(form));
     }
 
-    @PostMapping("{ISBN}/update")
+    @PostMapping("{ISBN:[0-9\\-]+}/update")
     public ResponseEntity updateBook(BookUpdateForm form) {
         return renderForEntity(bookService.update(form));
     }
 
-    @PostMapping("{ISBN}/delete")
+    @PostMapping("{ISBN:[0-9\\-]+}/delete")
     public ResponseEntity deleteBook(@PathVariable String ISBN) {
         return renderForAction(bookService.delete(ISBN));
     }
@@ -44,7 +44,7 @@ public class BookController extends BaseController {
         return renderForEntities(bookService.getList(paging));
     }
 
-    @GetMapping("{ISBN}/")
+    @GetMapping("{ISBN:[0-9\\-]+}/")
     public ResponseEntity getBook(@PathVariable String ISBN) {
         return renderForEntity(bookService.get(ISBN));
     }

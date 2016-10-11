@@ -102,6 +102,7 @@ public class ErrorHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity handleRuntimeException(RuntimeException e) {
+        LOG.info(null, e);
         return renderForError(HttpStatus.INTERNAL_SERVER_ERROR, e.getCause().getMessage());
     }
 

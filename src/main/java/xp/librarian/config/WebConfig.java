@@ -1,18 +1,14 @@
 package xp.librarian.config;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import xp.librarian.interceptor.SimpleCorsInterceptor;
 
 /**
  * @author xp
@@ -22,14 +18,22 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @ComponentScan(
         basePackages = {
                 "xp.librarian.controller",
-                "xp.librarian.handler"
-        },
-        useDefaultFilters = false,
-        includeFilters = {
-            @ComponentScan.Filter(Controller.class),
-            @ComponentScan.Filter(ControllerAdvice.class),
+                "xp.librarian.handler",
+                "xp.librarian.interceptor"
         }
 )
-public class WebConfig {
+public class WebConfig extends WebMvcConfigurerAdapter {
 
+//    @Autowired
+//    private SimpleCorsInterceptor simpleCorsInterceptor;
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("*").allowedHeaders("*").allowedMethods("*");
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //registry.addInterceptor(simpleCorsInterceptor);
+    }
 }

@@ -37,16 +37,19 @@ public class UserProfileVM implements Serializable {
     private Date createTime;
 
     public UserProfileVM withUser(UserDto user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.role = user.getRole();
-        this.name = user.getName();
-        this.avatarUrl = user.getAvatarUrl();
-        this.major = user.getMajor();
-        this.phone = user.getPhone();
-        this.email = user.getEmail();
-        this.remarks = user.getRemarks();
-        this.createTime = user.getCreateTime();
+        if (user != null) {
+            this.id = user.getId();
+            this.username = user.getUsername();
+            this.role = user.getRole();
+            this.name = user.getName();
+            this.avatarUrl = user.getAvatarUrl();
+            this.age = user.getAge();
+            this.major = user.getMajor();
+            this.phone = user.getPhone();
+            this.email = user.getEmail();
+            this.remarks = user.getRemarks();
+            this.createTime = user.getCreateTime();
+        }
         return this;
     }
 

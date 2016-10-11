@@ -25,11 +25,13 @@ public class BookVM implements Serializable {
     private Date createTime;
 
     public BookVM withBook(BookDto book) {
-        this.ISBN = book.getISBN();
-        this.name = book.getName();
-        this.total = book.getTotal();
-        this.margin = book.getMargin();
-        this.createTime = book.getCreateTime();
+        if (book != null) {
+            this.ISBN = book.getISBN();
+            this.name = book.getName();
+            this.total = book.getTotal();
+            this.margin = book.getMargin();
+            this.createTime = book.getCreateTime();
+        }
         return this;
     }
 

@@ -30,12 +30,14 @@ public class BorrowRecordVM implements Serializable {
     private BookVM book;
 
     public BorrowRecordVM withBorrowRecord(BorrowRecordDto borrowRecord) {
-        this.id = borrowRecord.getId();
-        this.userId = borrowRecord.getUserId();
-        this.ISBN = borrowRecord.getISBN();
-        this.status = borrowRecord.getStatus();
-        this.borrowTime = borrowRecord.getBorrowTime();
-        this.returnTime = borrowRecord.getReturnTime();
+        if (borrowRecord != null) {
+            this.id = borrowRecord.getId();
+            this.userId = borrowRecord.getUserId();
+            this.ISBN = borrowRecord.getISBN();
+            this.status = borrowRecord.getStatus();
+            this.borrowTime = borrowRecord.getBorrowTime();
+            this.returnTime = borrowRecord.getReturnTime();
+        }
         return this;
     }
 
