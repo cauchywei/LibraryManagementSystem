@@ -35,7 +35,7 @@ public class BorrowService {
         }
         BorrowRecordDto record = new BorrowRecordDto();
         record.setUserId(account.getId());
-        record.setISBN(ISBN);
+        record.setIsbn(ISBN);
         record.setStatus(BorrowRecordDto.Status.BORROWING);
         record.setBorrowTime(new Date(System.currentTimeMillis()));
         return 1 == borrowRecordDao.add(record);
@@ -56,11 +56,11 @@ public class BorrowService {
 
     public List<BorrowRecordVM> getRecords(AccountContext account, PagingForm paging) {
         List<BorrowRecordDto> records = borrowRecordDao.gets(account.getId(), paging.getPage(), paging.getLimits());
-        Set<String> ISBNs = records.stream().map(BorrowRecordDto::getISBN).collect(Collectors.toSet());
+        Set<String> ISBNs = records.stream().map(BorrowRecordDto::getIsbn).collect(Collectors.toSet());
         Map<String, BookDto> books = bookDao.gets(ISBNs);
         return records.stream()
-                .filter((e) -> e != null)
-                .map((e) -> new BorrowRecordVM().withBorrowRecord(e).withBook(books.get(e.getISBN())))
+                .filter((e) -> e != null && books.containsKey(e.getIsbn()))
+                .map((e) -> new BorrowRecordVM().withBorrowRecord(e).withBook(books.get(e.getIsbn())))
                 .collect(Collectors.toList());
     }
 

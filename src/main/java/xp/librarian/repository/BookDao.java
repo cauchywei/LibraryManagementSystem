@@ -26,12 +26,12 @@ public class BookDao {
         return bookMapper.update(dto);
     }
 
-    public int delete(String ISBN) {
-        return bookMapper.delete(ISBN);
+    public int delete(String isbn) {
+        return bookMapper.delete(isbn);
     }
 
-    public BookDto get(String ISBN) {
-        return bookMapper.select(ISBN);
+    public BookDto get(String isbn) {
+        return bookMapper.select(isbn);
     }
 
     public List<BookDto> gets(int page, int limits) {
@@ -39,17 +39,20 @@ public class BookDao {
         return bookMapper.selectList(offset, limits);
     }
 
-    public Map<String, BookDto> gets(Collection<String> ISBNs) {
-        List<BookDto> books = bookMapper.selectIN(ISBNs);
-        return books.stream().collect(Collectors.toMap(BookDto::getISBN, e -> e));
+    public Map<String, BookDto> gets(Collection<String> isbns) {
+        if (isbns.size() == 0) {
+            return Collections.emptyMap();
+        }
+        List<BookDto> books = bookMapper.selectIN(isbns);
+        return books.stream().collect(Collectors.toMap(BookDto::getIsbn, e -> e));
     }
 
-    public List<BookDto> search(String name) {
-        return bookMapper.search(String.format("%%%s%%", name));
+    public List<BookDto> search(String isbn, String name) {
+        return bookMapper.search(isbn, name);
     }
 
-    public int updateMargin(String ISBN, Integer delta) {
-        return bookMapper.updateMargin(ISBN, delta);
+    public int updateMargin(String isbn, Integer delta) {
+        return bookMapper.updateMargin(isbn, delta);
     }
 
 }

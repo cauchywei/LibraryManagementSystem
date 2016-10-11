@@ -16,7 +16,7 @@ public interface BorrowRecordMapper {
     int insert(BorrowRecordDto dto);
 
     BorrowRecordDto select(@Param("userId") Integer userId,
-                           @Param("ISBN") String ISBN,
+                           @Param("isbn") String ISBN,
                            @Param("status") BorrowRecordDto.Status status);
 
     List<BorrowRecordDto> selectList(@Param("userId") Integer userId, @Param("offset") int offset, @Param("limits") int limits);

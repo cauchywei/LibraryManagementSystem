@@ -17,16 +17,16 @@ public interface BookMapper {
 
     int update(BookDto dto);
 
-    int delete(@Param("ISBN") String ISBN);
+    int delete(@Param("isbn") String isbn);
 
-    BookDto select(@Param("ISBN") String ISBN);
+    BookDto select(@Param("isbn") String isbn);
 
     List<BookDto> selectList(@Param("offset") int offset, @Param("limits") int limits);
 
-    List<BookDto> selectIN(@Param("ISBNs") Collection<String> ISBNs);
+    List<BookDto> selectIN(@Param("isbns") Collection<String> isbns);
 
-    List<BookDto> search(@Param("name") String name);
+    List<BookDto> search(@Param("isbn") String isbn, @Param("name") String name);
 
-    int updateMargin(@Param("ISBN") String ISBN, @Param("delta") Integer delta);
+    int updateMargin(@Param("isbn") String isbn, @Param("delta") Integer delta);
 
 }

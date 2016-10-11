@@ -33,7 +33,7 @@ public class BorrowRecordDto implements Serializable {
 
     private Integer userId;
 
-    private String ISBN;
+    private String isbn;
 
     private Status status;
 

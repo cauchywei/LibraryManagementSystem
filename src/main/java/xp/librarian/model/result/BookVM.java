@@ -14,7 +14,7 @@ public class BookVM implements Serializable {
 
     private static final long serialVersionUID = 5131299075378859816L;
 
-    private String ISBN;
+    private String isbn;
 
     private String name;
 
@@ -26,7 +26,7 @@ public class BookVM implements Serializable {
 
     public BookVM withBook(BookDto book) {
         if (book != null) {
-            this.ISBN = book.getISBN();
+            this.isbn = book.getIsbn();
             this.name = book.getName();
             this.total = book.getTotal();
             this.margin = book.getMargin();

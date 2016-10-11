@@ -29,7 +29,7 @@ public class BookDto implements Serializable {
         }
     }
 
-    private String ISBN;
+    private String isbn;
 
     private Status status;
 

@@ -51,12 +51,12 @@ public class BookService {
         if (1 != bookDao.update(book)) {
             throw new PersistenceException();
         }
-        book = bookDao.get(book.getISBN());
+        book = bookDao.get(book.getIsbn());
         return new BookVM().withBook(book);
     }
 
-    public boolean delete(String ISBN) {
-        return 1 == bookDao.delete(ISBN);
+    public boolean delete(String isbn) {
+        return 1 == bookDao.delete(isbn);
     }
 
 }

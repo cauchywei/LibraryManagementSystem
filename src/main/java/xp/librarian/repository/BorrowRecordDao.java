@@ -25,8 +25,8 @@ public class BorrowRecordDao {
         return borrowRecordMapper.update(dto);
     }
 
-    public BorrowRecordDto get(Integer userId, String ISBN, BorrowRecordDto.Status status) {
-        return borrowRecordMapper.select(userId, ISBN, status);
+    public BorrowRecordDto get(Integer userId, String isbn, BorrowRecordDto.Status status) {
+        return borrowRecordMapper.select(userId, isbn, status);
     }
 
     public List<BorrowRecordDto> gets(Integer userId, int page, int limits) {

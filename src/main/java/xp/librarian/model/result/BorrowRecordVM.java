@@ -19,7 +19,7 @@ public class BorrowRecordVM implements Serializable {
 
     private Integer userId;
 
-    private String ISBN;
+    private String isbn;
 
     private BorrowRecordDto.Status status;
 
@@ -33,7 +33,7 @@ public class BorrowRecordVM implements Serializable {
         if (borrowRecord != null) {
             this.id = borrowRecord.getId();
             this.userId = borrowRecord.getUserId();
-            this.ISBN = borrowRecord.getISBN();
+            this.isbn = borrowRecord.getIsbn();
             this.status = borrowRecord.getStatus();
             this.borrowTime = borrowRecord.getBorrowTime();
             this.returnTime = borrowRecord.getReturnTime();

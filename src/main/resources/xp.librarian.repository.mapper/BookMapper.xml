@@ -4,21 +4,23 @@
 
     <insert id="insert">
         INSERT INTO `Book`(
-            `ISBN`,
+            `isbn`,
             `name`,
             `total`,
-            #{createTime}
+            `margin`,
+            `createTime`
         ) VALUES (
-            #{ISBN},
+            #{isbn},
             #{name},
             #{total},
+            #{margin},
             #{createTime}
         );
     </insert>
 
     <select id="select" resultType="xp.librarian.model.dto.BookDto">
         SELECT * FROM `Book`
-        WHERE `ISBN`=#{ISBN} AND `status`='NORMAL'
+        WHERE `isbn`=#{isbn} AND `status`='NORMAL'
         LIMIT 1;
     </select>
 
@@ -26,17 +28,21 @@
         SELECT * FROM `Book`
         WHERE `status`='NORMAL'
         ORDER BY `createTime` ASC
-        LIMIT #{offset}, #{limits};
+        <if test="limits != null &amp;&amp; limits != 0">
+            LIMIT #{offset}, #{limits}
+        </if>
+        ;
     </select>
 
     <select id="selectIN" resultType="xp.librarian.model.dto.BookDto">
         SELECT * FROM `Book`
         WHERE
-            `ISBN` IN
-            <foreach collection="ISBNs" item="item" index="index" open="(" separator="," close=")">
+            `isbn` IN
+            <foreach collection="isbns" item="item" index="index" open="(" separator="," close=")">
                 #{item}
             </foreach>
-            AND `status`='NORMAL';
+            AND `status`='NORMAL'
+        ;
     </select>
 
     <update id="update">
@@ -52,26 +58,26 @@
                 `margin`=#{margin},
             </if>
         </set>
-        WHERE `ISBN`=#{ISBN} AND `status`='NORMAL'
+        WHERE `isbn`=#{isbn} AND `status`='NORMAL'
         LIMIT 1;
     </update>
 
     <update id="delete">
         UPDATE `Book` SET `status`='DELETE'
-        WHERE `ISBN`=#{ISBN} AND `status`='NORMAL'
+        WHERE `isbn`=#{isbn} AND `status`='NORMAL'
         LIMIT 1;
     </update>
 
     <select id="search" resultType="xp.librarian.model.dto.BookDto">
         SELECT * FROM `Book`
-        WHERE `name` LIKE #{name} AND `status`='NORMAL'
+        WHERE (locate(#{name}, `name`) > 0 OR locate(#{isbn}, `isbn`) > 0) AND `status`='NORMAL'
         ORDER BY `createTime` ASC;
     </select>
 
     <update id="updateMargin">
         UPDATE `Book`
         SET `margin`=`margin`+#{delta}
-        WHERE `ISBN`=#{ISBN} AND `margin`+#{delta}>=0 AND `status`='NORMAL'
+        WHERE `isbn`=#{isbn} AND `margin`+#{delta}>=0 AND `status`='NORMAL'
         LIMIT 1;
     </update>
 

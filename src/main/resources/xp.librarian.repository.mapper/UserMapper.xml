@@ -34,7 +34,7 @@
 
     <select id="selectByUsernameAndPassword" resultType="xp.librarian.model.dto.UserDto">
         SELECT * FROM `User`
-        WHERE `username`=#{username} AND `password`=MD5(#{password})
+        WHERE LOWER(`username`)=LOWER(#{username}) AND `password`=MD5(#{password})
         LIMIT 1;
     </select>
 
@@ -47,7 +47,10 @@
     <select id="selectList" resultType="xp.librarian.model.dto.UserDto">
         SELECT * FROM `User`
         ORDER BY `createTime` ASC
-        LIMIT #{offset}, #{limits};
+        <if test="limits != null &amp;&amp; limits != 0">
+            LIMIT #{offset}, #{limits};
+        </if>
+        ;
     </select>
 
     <update id="update">

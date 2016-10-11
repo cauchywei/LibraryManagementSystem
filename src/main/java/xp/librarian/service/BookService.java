@@ -28,16 +28,16 @@ public class BookService {
 
     public List<BookVM> search(BookSearchForm form) {
         List<BookDto> books = new LinkedList<>();
-        books.add(bookDao.get(form.getISBN()));
-        books.addAll(bookDao.search(form.getName()));
+        books.add(bookDao.get(form.getIsbn()));
+        books.addAll(bookDao.search(form.getIsbn(), form.getName()));
         return books.stream()
                 .filter((e) -> e != null)
                 .map((e) -> new BookVM().withBook(e))
                 .collect(Collectors.toList());
     }
 
-    public BookVM get(String ISBN) {
-        BookDto book = bookDao.get(ISBN);
+    public BookVM get(String isbn) {
+        BookDto book = bookDao.get(isbn);
         return new BookVM().withBook(book);
     }
 

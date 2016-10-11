@@ -12,7 +12,7 @@ public class BookSearchForm implements Serializable {
 
     private static final long serialVersionUID = -9155511439197299065L;
 
-    private String ISBN;
+    private String isbn;
 
     private String name;
 

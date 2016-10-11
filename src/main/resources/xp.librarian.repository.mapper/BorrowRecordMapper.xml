@@ -5,12 +5,12 @@
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO `BorrowRecord`(
             `userId`,
-            `ISBN`,
+            `isbn`,
             `status`,
             `borrowTime`
         ) VALUES (
             #{userId},
-            #{ISBN},
+            #{isbn},
             #{status},
             #{borrowTime}
         );
@@ -18,14 +18,18 @@
 
     <select id="select" resultType="xp.librarian.model.dto.BorrowRecordDto">
         SELECT * FROM `BorrowRecord`
-        WHERE `userId`=#{userId} AND `ISBN`=#{ISBN} AND `status`=#{status}
+        WHERE `userId`=#{userId} AND `isbn`=#{isbn} AND `status`=#{status}
         LIMIT 1;
     </select>
 
     <select id="selectList" resultType="xp.librarian.model.dto.BorrowRecordDto">
         SELECT * FROM `BorrowRecord`
         WHERE `userId`=#{userId}
-        ORDER BY `status` ASC, `borrowTime` DESC LIMIT #{offset}, #{limits};
+        ORDER BY `status` ASC, `borrowTime` DESC
+        <if test="limits != null &amp;&amp; limits != 0">
+            LIMIT #{offset}, #{limits};
+        </if>
+        ;
     </select>
 
     <update id="update">
