@@ -6,10 +6,12 @@
         INSERT INTO `BorrowRecord`(
             `userId`,
             `ISBN`,
+            `status`,
             `borrowTime`
         ) VALUES (
             #{userId},
             #{ISBN},
+            #{status},
             #{borrowTime}
         );
     </insert>

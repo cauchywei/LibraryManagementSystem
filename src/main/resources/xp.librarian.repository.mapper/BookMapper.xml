@@ -70,8 +70,8 @@
 
     <update id="updateMargin">
         UPDATE `Book`
-        SET `margin`=`margin`-1
-        WHERE `ISBN`=#{ISBN} AND `margin`>0 AND `status`='NORMAL'
+        SET `margin`=`margin`+#{delta}
+        WHERE `ISBN`=#{ISBN} AND `margin`+#{delta}>0 AND `status`='NORMAL'
         LIMIT 1;
     </update>
 

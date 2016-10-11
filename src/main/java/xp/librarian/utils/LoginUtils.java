@@ -20,7 +20,7 @@ public class LoginUtils {
 
     private static final String COOKIE_NAME = "librarian.token";
 
-    private static final int COOKIE_LIFE_TIME = 365 * 24 * 3600;
+    private static final int COOKIE_LIFE_TIME = 7 * 24 * 3600;
     private static final long COOKIE_LIFE_TIME_MS = COOKIE_LIFE_TIME * 1000L;
 
     @Data
