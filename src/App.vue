@@ -52,7 +52,7 @@
     methods: {
       logout() {
         this.$store.dispatch('LOGOUT')
-        self.$router.push('/index')
+        this.$router.push('/index')
       }
     },
     computed: {
