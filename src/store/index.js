@@ -8,20 +8,20 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    activeType: null,
-    itemsPerPage: 20,
-    items: {/* [id: number]: Item */},
-    users: {/* [id: string]: User */},
-    lists: {
-      top: [/* number */],
-      new: [],
-      show: [],
-      ask: [],
-      job: []
-    }
+    user: null
   },
-
   actions: {
+    ON_LOGIN: ({commit, dispatch, state}, user) => {
+      // commit('SET_ACTIVE_TYPE', {username,password})
+      commit('SET_LOGIN', user)
+      return Promise.resolve()
+    },
+
+    LOGOUT: ({commit, dispatch, state}) => {
+      // commit('SET_ACTIVE_TYPE', {username,password})
+      commit('SET_LOGOUT')
+      return Promise.resolve()
+    }
     // // ensure data for rendering given list type
     // FETCH_LIST_DATA: ({ commit, dispatch, state }, { type }) => {
     //   commit('SET_ACTIVE_TYPE', { type })
@@ -55,6 +55,15 @@ const store = new Vuex.Store({
   },
 
   mutations: {
+
+    SET_LOGOUT: (state) => {
+      state.user = null
+    },
+
+    SET_LOGIN: (state, user) => {
+      state.user = user
+    }
+
     // SET_ACTIVE_TYPE: (state, { type }) => {
     //   state.activeType = type
     // },

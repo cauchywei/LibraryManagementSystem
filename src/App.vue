@@ -4,13 +4,13 @@
 
       <router-link id="header-title" to="/">Library Management System</router-link>
 
-      <div class="user-operation-panel" v-show="login">
+      <div class="user-operation-panel" v-show="!login">
         <router-link to="/login" class="header-button">Login</router-link>
         <div class="button-divider">|</div>
         <router-link to="/register" class="header-button">Register</router-link>
       </div>
 
-      <div class="user-operation-panel" v-show="!login">
+      <div class="user-operation-panel" v-show="login">
         <a class="header-button" @click="logout">Logout</a>
       </div>
     </div>
@@ -22,7 +22,6 @@
 
 <script>
   import Hello from './components/Hello'
-  import * as auth from './auth'
   import router from './router'
 
   export default {
@@ -36,13 +35,13 @@
     },
     methods: {
       logout () {
-        auth.logout()
+        this.$store.dispatch('LOGOUT')
         router.go('/')
       }
     },
     computed: {
       login: function () {
-        return auth.isLogin()
+        return !!this.$store.state.user
       }
     }
   }

@@ -19,6 +19,7 @@ Object.keys(filters).forEach(key => {
 /* eslint-disable no-new */
 new Vue({
   router,
+  store,
   el: '#app',
   render: h => h(App)
 })

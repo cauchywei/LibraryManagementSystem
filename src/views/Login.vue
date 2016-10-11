@@ -13,8 +13,6 @@
 
 <script>
   import * as service from '../service'
-  import * as auth from '../auth'
-  import router from '../router'
   export default {
     el: '#login-panel',
     data () {
@@ -35,10 +33,8 @@
         }
         let self = this
         service.login(this.username, this.password).then(function (response) {
-          localStorage.setItem('user', response.data)
-          self.data = response.data
-          auth.onLogin(response.data)
-          router.go('/index')
+          self.$store.dispatch('ON_LOGIN', response.data)
+          self.$router.go(-1)
         }).catch(function (error) {
           alert(error)
         })
