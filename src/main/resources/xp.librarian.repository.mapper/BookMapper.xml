@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xp.librarian.repository.mapper.BookMapper">
+
+    <insert id="insert">
+        INSERT INTO `Book`(
+            `ISBN`,
+            `name`,
+            `total`,
+            #{createTime}
+        ) VALUES (
+            #{ISBN},
+            #{name},
+            #{total},
+            #{createTime}
+        );
+    </insert>
+
+    <select id="select" resultType="xp.librarian.model.dto.BookDto">
+        SELECT * FROM `Book`
+        WHERE `ISBN`=#{ISBN} AND `status`='NORMAL'
+        LIMIT 1;
+    </select>
+
+    <select id="selectList" resultType="xp.librarian.model.dto.BookDto">
+        SELECT * FROM `Book`
+        WHERE `status`='NORMAL'
+        ORDER BY `createTime` ASC
+        LIMIT #{offset}, #{limits};
+    </select>
+
+    <select id="selectIN" resultType="xp.librarian.model.dto.BookDto">
+        SELECT * FROM `Book`
+        WHERE
+            `ISBN` IN
+            <foreach collection="ISBNs" item="item" index="index" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            AND `status`='NORMAL';
+    </select>
+
+    <update id="update">
+        UPDATE `Book`
+        <set>
+            <if test="name != null">
+                `name`=#{name},
+            </if>
+            <if test="total != null">
+                `total`=#{total},
+            </if>
+            <if test="margin != null">
+                `margin`=#{margin},
+            </if>
+        </set>
+        WHERE `ISBN`=#{ISBN} AND `status`='NORMAL'
+        LIMIT 1;
+    </update>
+
+    <update id="delete">
+        UPDATE `Book` SET `status`='DELETE'
+        WHERE `ISBN`=#{ISBN} AND `status`='NORMAL'
+        LIMIT 1;
+    </update>
+
+    <select id="search" resultType="xp.librarian.model.dto.BookDto">
+        SELECT * FROM `Book`
+        WHERE `name` LIKE #{name} AND `status`='NORMAL'
+        ORDER BY `createTime` ASC;
+    </select>
+
+    <update id="updateMargin">
+        UPDATE `Book`
+        SET `margin`=`margin`-1
+        WHERE `ISBN`=#{ISBN} AND `margin`>0 AND `status`='NORMAL'
+        LIMIT 1;
+    </update>
+
+</mapper>

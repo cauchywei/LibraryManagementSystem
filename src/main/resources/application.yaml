@@ -1,0 +1,36 @@
+spring:
+  main:
+    banner-mode: 'OFF'
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # schema: migration/init.sql
+    tomcat:
+      initial-size: 4
+      min-idle: 2
+      max-idle: 8
+      max-active: 16
+      max-wait: 4096
+      validation-query: "SELECT 1"
+      validation-query-timeout: 10
+      test-while-idle: true
+      test-on-borrow: false
+      time-between-eviction-runs-millis: 60
+      default-transaction-isolation: 2
+  jackson:
+    default-property-inclusion: non_null
+    generator:
+      .IGNORE_UNKNOWN: true
+    parser:
+      .IGNORE_UNDEFINED: true
+    serialization:
+      .FAIL_ON_EMPTY_BEANS: false
+    deserialization:
+      .ACCEPT_EMPTY_STRING_AS_NULL_OBJECT: true
+      .FAIL_ON_IGNORED_PROPERTIES: false
+      .FAIL_ON_UNKNOWN_PROPERTIES: false
+
+mybatis:
+  mapper-locations: classpath:xp.librarian.repository.mapper/*.xml
+  type-aliases-package: xp.librarian.model.dto
+  type-handlers-package: xp.librarian.config.mybatis.type
+  executor-type: SIMPLE

@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3307/librarian?useSSL=false&useUnicode=true&autoReconnect=true&jdbcCompliantTruncation=false
+    username: xp
+    password: 19531
+
+logging:
+  level:
+    .: INFO
+    org.springframework: WARN
+    xp:
+      librarian:
+        repository:
+          mapper: TRACE
