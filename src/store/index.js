@@ -3,7 +3,13 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-var userData = JSON.parse(localStorage.getItem('account'));
+var userData;
+try {
+  userData = JSON.parse(localStorage.getItem('account'));
+} catch (e) {
+  userData = null;
+}
+
 const store = new Vuex.Store({
 
   state: {
@@ -17,13 +23,11 @@ const store = new Vuex.Store({
   actions: {
 
     ON_LOGIN: ({commit, dispatch, state}, account) => {
-      // commit('SET_ACTIVE_TYPE', {username,password})
       commit('SET_LOGIN', account);
       return Promise.resolve();
     },
 
     LOGOUT: ({commit, dispatch, state}) => {
-      // commit('SET_ACTIVE_TYPE', {username,password})
       commit('SET_LOGOUT');
       return Promise.resolve();
     },

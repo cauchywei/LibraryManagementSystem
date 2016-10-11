@@ -37,15 +37,15 @@
     },
     methods: {
       search: function() {
-        var value = this.searchInput && this.searchInput.trim();
+        let self = this;
+        var value = self.searchInput && self.searchInput.trim();
         if (!value) {
           return;
         }
-        var params = {
+        const params = {
           'ISBN': value,
           'name': value
         };
-        let self = this;
         service.searchBook(params).then(function (response) {
           self.searchBooks = response.data.entities;
           console.log(self.searchBooks);
@@ -99,21 +99,21 @@
     font-weight: 300;
   }
 
-  /*:focus {*/
-    /*outline: 0;*/
-  /*}*/
+  :focus {
+    outline: 0;
+  }
 
-  /*.hidden {*/
-    /*display: none;*/
-  /*}*/
+  .hidden {
+    display: none;
+  }
 
-  /*.todoapp {*/
-    /*background: #fff;*/
-    /*margin: 130px 0 40px 0;*/
-    /*position: relative;*/
-    /*box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),*/
-    /*0 25px 50px 0 rgba(0, 0, 0, 0.1);*/
-  /*}*/
+  .todoapp {
+    background: #fff;
+    margin: 130px 0 40px 0;
+    position: relative;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),
+    0 25px 50px 0 rgba(0, 0, 0, 0.1);
+  }
 
   /*.todoapp input::-webkit-input-placeholder {*/
     /*font-style: italic;*/
