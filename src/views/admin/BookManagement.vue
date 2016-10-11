@@ -14,12 +14,12 @@
       <div v-for="book in allBooks"
            class="book"
            :key="book.isbn">
-        <h4 id="title">《{{book.name}}》x{{book.total}}</h4>
+        <h4 id="title">《{{book.name}}》<small>{{book.margin}} / {{book.total}}</small></h4>
 
         <div id="bottom">
           <h6 id="isbn">ISBN: {{book.isbn}}</h6>
 
-          <a @click="deleteBook(book)" id="delete">X</a>
+          <button @click="deleteBook(book)" class="btn btn-danger btn-delete">delete</button>
         </div>
       </div>
     </div>

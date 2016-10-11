@@ -7,15 +7,15 @@
       <div class="user-operation-panel" v-if="login">
         <span>Welcome <router-link id="username" to="/my">{{account.name}} </router-link></span>
 
-        <div v-if="isAdmin" class="action-bar">
+        <span v-if="isAdmin" class="action-bar">
           <h5 class="admin"> ( admin ) </h5>
-          <div class="button-divider">|</div>
+          <span class="button-divider">|</span>
           <router-link to="/book_management" class="header-button">Manage Books</router-link>
-        </div>
-        <div class="action-bar" v-else>
-          <div class="button-divider">|</div>
-          <router-link to="/my/borrow_records" class="header-button">My Borrow Record</router-link>
-        </div>
+        </span>
+        <span class="action-bar" v-else>
+          <span class="button-divider">|</span>
+          <router-link to="/my/borrow_records" class="header-button">My Borrow Records</router-link>
+        </span>
 
 
         <div class="button-divider">|</div>
