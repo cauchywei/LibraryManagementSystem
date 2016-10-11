@@ -3,34 +3,34 @@
     <!--<img class="avatar" :src="account.avatar">-->
     <!--<a id="upload" class="avatar">upload avatar</a>-->
     <div v-if="!!user">
-      <h1> My Info </h1>
+      <h1 id="title"> My Info </h1>
       <div>
         <div class="info-row">
-          <h3>Username:</h3>
+          <h4>Username:</h4>
           {{user.username}}
         </div>
         <div class="info-row">
-          <h3>Name:</h3>
+          <h4>Name:</h4>
           {{user.name}}
         </div>
         <div class="info-row">
-          <h3>Age:</h3>
+          <h4>Age:</h4>
           {{user.age}}
         </div>
         <div class="info-row">
-          <h3>Major:</h3>
+          <h4>Major:</h4>
           {{user.major}}
         </div>
         <div class="info-row">
-          <h3>Email:</h3>
+          <h4>Email:</h4>
           {{user.email}}
         </div>
         <div class="info-row">
-          <h3>Phone:</h3>
+          <h4>Phone:</h4>
           {{user.phone}}
         </div>
         <div class="info-row">
-          <h3>Description:</h3>
+          <h4>Description:</h4>
           {{user.remarks}}
         </div>
       </div>
@@ -70,8 +70,13 @@
     align-items: baseline;
   }
 
-  .info-row h3 {
+  .info-row h4 {
     width: 120px;
     text-align: start;
+    color: #888888;
+  }
+
+  #title {
+    margin-bottom: 30px;
   }
 </style>
