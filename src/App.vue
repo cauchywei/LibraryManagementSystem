@@ -42,9 +42,6 @@
       logout() {
         this.$store.dispatch('LOGOUT')
         self.$router.push('/index')
-      },
-      isAdmin() {
-        return this.$store.state.account.role === 'ADMIN'
       }
     },
     computed: {
@@ -53,6 +50,9 @@
       },
       account() {
         return this.$store.state.account;
+      },
+      isAdmin() {
+        return this.$store.state.account.role === 'ADMIN'
       }
     }
   }
