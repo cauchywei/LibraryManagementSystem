@@ -3,14 +3,14 @@
     <input class="input-search"
            autofocus autocomplete="off"
            placeholder="Search books here"
-           v-model="search-input"
-           @keyup.enter="addTodo" />
-    <section class="main" v-show="books.length" v-cloak>
+           v-model="searchInput"
+           @keyup.enter="search"/>
+    <section class="main" v-show="searchBooks.length" v-cloak>
       <ul class="book-list">
-        <li v-for="book in books"
+        <li v-for="book in searchBooks"
             class="book"
             :key="book.ISBN"
-            :class="{ completed: book.completed, editing: todo == editedTodo }">
+            :class="{ }">
           <div class="view">
             <label>{{ book.ISBN }}</label>
             <label>{{ book.name }}</label>
@@ -24,25 +24,33 @@
 </template>
 
 <script>
-
   import * as service from '../service'
 
-  var bookStorage = {
-    fetch: function () {
-      var books = [] // JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
-      books.forEach(function (book, index) {
-        book.ISBN = index
-        book.name = index
-      })
-      bookStorage.count = books.length
-      return books
-    },
-    save: function (todos) {
-      // localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
-    }
-  }
-
   export default {
+    data() {
+      return {
+        searchBooks: [],
+        searchInput: ''
+      }
+    },
+    watch: {
+    },
+    methods: {
+      search: function() {
+        var value = this.searchInput && this.searchInput.trim()
+        if (!value) {
+          return
+        }
+        var params = {
+          'ISBN': name,
+          'name': name
+        };
+        service.searchBook(params).then(function (response) {
+          var data = response.data;
+          console.log(data);
+        })
+      }
+    }
   }
 </script>
 

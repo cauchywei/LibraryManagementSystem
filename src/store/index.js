@@ -7,19 +7,30 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
+
   state: {
-    user: null
+    account: null,
+    searchBooks: null,
+    records: null,
+    books: null,
+    users: null
   },
+
   actions: {
-    ON_LOGIN: ({commit, dispatch, state}, user) => {
+    ON_LOGIN: ({commit, dispatch, state}, account) => {
       // commit('SET_ACTIVE_TYPE', {username,password})
-      commit('SET_LOGIN', user)
+      commit('SET_LOGIN', account)
       return Promise.resolve()
     },
 
     LOGOUT: ({commit, dispatch, state}) => {
       // commit('SET_ACTIVE_TYPE', {username,password})
       commit('SET_LOGOUT')
+      return Promise.resolve()
+    },
+
+    ON_SEARCH: ({ commit, dispatch, state }, { books }) => {
+      commit('SET_SEARCH_BOOKS', books);
       return Promise.resolve()
     }
     // // ensure data for rendering given list type
@@ -57,11 +68,15 @@ const store = new Vuex.Store({
   mutations: {
 
     SET_LOGOUT: (state) => {
-      state.user = null
+      state.account = null
     },
 
-    SET_LOGIN: (state, user) => {
-      state.user = user
+    SET_LOGIN: (state, account) => {
+      state.account = account
+    },
+
+    SET_SEARCH_BOOKS: (state, { books }) => {
+      state.searchBooks = books
     }
 
     // SET_ACTIVE_TYPE: (state, { type }) => {

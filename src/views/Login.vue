@@ -1,12 +1,9 @@
-/**
-* Created by cauchywei on 16/10/11.
-*/
 <template>
   <div id="login-panel">
     <form v-on:submit.prevent="login" id="login-form">
-      <input v-model="user.username" placeholder="username"/>
-      <input v-model="user.password" placeholder="password" type="password"/>
-      <button type="submit" class="action-button"> login</button>
+      <input v-model="account.username" placeholder="username" type="text"/>
+      <input v-model="account.password" placeholder="password" type="password"/>
+      <button type="submit" class="action-button">login</button>
     </form>
   </div>
 </template>
@@ -17,22 +14,22 @@
     el: '#login-panel',
     data () {
       return {
-        user: {
+        account: {
           username: '',
           password: ''
         },
-        data: {name: 'test'}
+        data: { name: 'test' }
       }
     },
     methods: {
       login () {
-        const length = this.user.username.length
+        const length = this.account.username.length
         if (length < 2 || length > 18) {
           alert("username's length must between 2~18")
           return
         }
         let self = this
-        service.login(this.username, this.password).then(function (response) {
+        service.login(this.account.username, this.account.password).then(function (response) {
           self.$store.dispatch('ON_LOGIN', response.data)
           self.$router.go(-1)
         }).catch(function (error) {
