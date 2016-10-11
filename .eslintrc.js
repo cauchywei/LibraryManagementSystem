@@ -26,6 +26,8 @@ module.exports = {
     'padded-blocks': 0,
     // allow semicolon
     'semi': 0,
+    // allow unused defined var
+    'no-unused-vars': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
