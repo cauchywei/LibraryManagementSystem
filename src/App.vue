@@ -41,7 +41,7 @@
     methods: {
       logout() {
         this.$store.dispatch('LOGOUT')
-        router.go('/')
+        self.$router.push('/index')
       },
       isAdmin() {
         return this.$store.state.account.role === 'ADMIN'

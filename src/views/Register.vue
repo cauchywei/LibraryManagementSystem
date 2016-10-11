@@ -45,7 +45,7 @@
         service.register(this.account).then(function (response) {
           if (response.data.success) {
             alert('register success!')
-            self.$router.go(-1)
+            self.$router.push('/login')
           } else {
             alert('register fail!')
           }
