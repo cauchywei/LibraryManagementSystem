@@ -5,7 +5,8 @@
       <router-link id="header-title" to="/">Library Management System</router-link>
 
       <div class="user-operation-panel" v-if="login">
-        <span>Welcome <router-link id="username" to="/my">{{account.name}}</router-link></span>
+        <span>Welcome <router-link id="username" to="/my">{{account.name}} </router-link></span>
+        <h5 v-if="isAdmin" class="admin">   ( admin )  </h5>
         <div class="button-divider">|</div>
         <a class="header-button" @click="logout">Logout</a>
       </div>
@@ -41,6 +42,9 @@
       logout() {
         this.$store.dispatch('LOGOUT')
         router.go('/')
+      },
+      isAdmin() {
+        return this.$store.state.account.role === 'ADMIN'
       }
     },
     computed: {
@@ -137,5 +141,9 @@
     text-decoration: underline;
   }
 
+  #user-operation-panel #admin {
+    margin-left: 10px;
+    padding-right:4px;
+  }
 
 </style>
