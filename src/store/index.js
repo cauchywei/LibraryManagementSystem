@@ -99,7 +99,7 @@ const store = new Vuex.Store({
   getters: {
 
     isLogin (state) {
-      return !!state.user
+      return !!state.account
     }
 
     // // ids of the items that should be currently displayed based on

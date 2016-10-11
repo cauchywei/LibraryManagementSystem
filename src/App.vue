@@ -5,7 +5,7 @@
       <router-link id="header-title" to="/">Library Management System</router-link>
 
       <div class="user-operation-panel" v-if="login">
-        <span>Welcome <router-link id="username" to="/info">{{user.name}}</router-link></span>
+        <span>Welcome <router-link id="username" to="/info">{{account.name}}</router-link></span>
         <div class="button-divider">|</div>
         <a class="header-button" @click="logout">Logout</a>
       </div>
@@ -113,7 +113,7 @@
   }
 
   .action-button {
-    padding: 4px 10px 4px 10px;
+    padding: 8px 16px 8px 16px;
     background: #42b983;
     color: #ffffff;
     border-width: 0;
@@ -123,7 +123,7 @@
   input {
     border: 1px solid #eeeeee;
     padding: 8px;
-    margin: 16px;
+    margin: 8px 16px 8px 16px;
   }
 
   #username {
