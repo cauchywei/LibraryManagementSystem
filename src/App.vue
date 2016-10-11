@@ -5,7 +5,7 @@
       <router-link id="header-title" to="/">Library Management System</router-link>
 
       <div class="user-operation-panel" v-if="login">
-        <span>Welcome <router-link id="username" to="/info">{{user.name}}</router-link></span>
+        <span>Welcome <router-link id="username" to="/info">{{account.name}}</router-link></span>
         <div class="button-divider">|</div>
         <a class="header-button" @click="logout">Logout</a>
       </div>
