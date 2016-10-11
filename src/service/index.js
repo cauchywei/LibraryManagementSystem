@@ -1,12 +1,12 @@
 import mockAxios from './mock'
 import prodAxios from './prod'
 
-const env = 'prod';
+const env = 'mock';
 const axios = env === 'mock' ? mockAxios : prodAxios;
 
 export function register(form) {
   return axios.post('/users/register', {
-    data: data
+    data: form
   })
 }
 
@@ -49,7 +49,7 @@ export function borrowBook(ISBN) {
 }
 
 export function returnBook(ISBN) {
-  return axios.post('/books/' + ISBN + '/return');
+  return axios.post(`/books/${ISBN}/return`);
 }
 
 export function getBorrowRecords() {

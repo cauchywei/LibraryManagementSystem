@@ -19,7 +19,7 @@
           username: '',
           password: ''
         },
-        data: { name: 'test' }
+        data: {name: 'test'}
       }
     },
     methods: {
@@ -31,17 +31,19 @@
         }
         let self = this
         service.login(this.account.username, this.account.password).then(function (response) {
-          self.$store.dispatch('ON_LOGIN', response.data)
-          self.$router.go(-1)
+          if (response.data.success) {
+            self.$store.dispatch('ON_LOGIN', response.data.entity)
+            self.$router.push('/index')
+          } else {
+            alert('username or password error!')
+          }
         }).catch(function (error) {
           alert(error)
         })
         return false
       }
     },
-    watch: {
-
-    }
+    watch: {}
   }
 </script>
 
