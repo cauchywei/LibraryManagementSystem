@@ -32,7 +32,6 @@ const store = new Vuex.Store({
     },
 
     ON_SEARCH_BOOKS: ({commit, dispatch, state}, books) => {
-      console.log(books);
       commit('SET_SEARCH_BOOKS', books);
       return Promise.resolve();
     },
@@ -48,6 +47,11 @@ const store = new Vuex.Store({
           commit('SET_NEW_BOOKS', response.data.entities)
         }
       })
+    },
+
+    ON_LIST_BORROW_RECORDS: ({commit, dispatch, state}, borrowRecords) => {
+      commit('SET_BORROW_RECORDS', borrowRecords);
+      return Promise.resolve();
     }
 
     // // ensure data for rendering given list type
@@ -94,7 +98,7 @@ const store = new Vuex.Store({
       localStorage.setItem('account', JSON.stringify(account));
     },
 
-    SET_SEARCH_BOOKS: (state, {books}) => {
+    SET_SEARCH_BOOKS: (state, books) => {
       state.searchBooks = books;
     },
     ADD_BOOK: (state, book) => {
@@ -102,6 +106,9 @@ const store = new Vuex.Store({
     },
     SET_NEW_BOOKS: (state, books) => {
       state.books = books;
+    },
+    SET_BORROW_RECORDS: (state, borrowRecords) => {
+      state.borrowRecords = borrowRecords;
     }
     //
     // SET_ITEMS: (state, { items }) => {
@@ -145,4 +152,4 @@ const store = new Vuex.Store({
   }
 })
 
-export default store
+export default store;

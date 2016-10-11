@@ -2,10 +2,11 @@
   <div id="manage-book-panel">
     <div id="add-book-panel">
       <div>Add a book</div>
-      <form v-on:submit="addNewBook">
+      <form v-on:submit.prevent="addNewBook">
         <input placeholder="book name" v-model="newBook.name" type="text">
         <input placeholder="ISBN" v-model="newBook.isbn" type="text">
         <input placeholder="total" v-model="newBook.total" type="number">
+        <input placeholder="margin" v-model="newBook.margin" type="number">
         <button type="submit" class="action-button">Add</button>
       </form>
     </div>
@@ -18,7 +19,7 @@
         <div id="bottom">
           <h6 id="isbn">ISBN: {{book.isbn}}</h6>
 
-          <a href="#" @click="delete(book)" id="delete">X</a>
+          <a @click="deleteBook(book)" id="delete">X</a>
         </div>
       </div>
     </div>
@@ -34,7 +35,8 @@
         newBook: {
           name: '',
           isbn: '',
-          total: 0
+          total: null,
+          margin: null
         }
       }
     },
@@ -53,14 +55,16 @@
         })
         return false
       },
-      delete (book) {
+      deleteBook (book) {
+        let self = this
         service.deleteBookByAdmin(book.isbn).then(function (response) {
-          if (response.date.success) {
-            this.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN')
+          if (response.data.success) {
+            self.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN')
           } else {
             alert('delete book fail!')
           }
         }).catch(function (e) {
+          alert(e)
           alert('delete book fail!')
         })
       }
@@ -104,7 +108,6 @@
 
   .book {
     box-shadow: #2c3e50;
-    border: 0.5px solid lightslategrey;
     display: flex;
     flex-direction: column;
     margin: 20px;

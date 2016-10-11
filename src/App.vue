@@ -14,7 +14,7 @@
         </div>
         <div class="action-bar" v-else>
           <div class="button-divider">|</div>
-          <router-link to="/borrow_record" class="header-button">My Borrow Record</router-link>
+          <router-link to="/my/borrow_records" class="header-button">My Borrow Record</router-link>
         </div>
 
 

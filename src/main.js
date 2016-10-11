@@ -17,7 +17,7 @@ Object.keys(filters).forEach(key => {
 });
 
 /* eslint-disable no-new */
-new Vue({
+global.vue = new Vue({
   router,
   store,
   el: '#app',
