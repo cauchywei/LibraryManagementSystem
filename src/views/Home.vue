@@ -37,18 +37,22 @@
     },
     methods: {
       search: function() {
-        var value = this.searchInput && this.searchInput.trim()
+        var value = this.searchInput && this.searchInput.trim();
         if (!value) {
-          return
+          return;
         }
         var params = {
-          'ISBN': name,
-          'name': name
+          'ISBN': value,
+          'name': value
         };
+        let self = this;
         service.searchBook(params).then(function (response) {
-          var data = response.data;
-          self.$store.dispatch('');
-        })
+          self.searchBooks = response.data.entities;
+          console.log(self.searchBooks);
+          self.$store.dispatch('ON_SEARCH_BOOKS', self.searchBooks);
+        }).catch(function (error) {
+          alert(error);
+        });
       }
     }
   }

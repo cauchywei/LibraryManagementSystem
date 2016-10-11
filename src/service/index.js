@@ -1,7 +1,7 @@
 import mockAxios from './mock'
 import prodAxios from './prod'
 
-const env = 'mock';
+const env = 'prod';
 const axios = env === 'mock' ? mockAxios : prodAxios;
 
 export function register(form) {
