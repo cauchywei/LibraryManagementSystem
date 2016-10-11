@@ -1,17 +1,18 @@
 <template>
   <div class="book-page">
-    <input class="input-search" autofocus autocomplete="off" placeholder="Search books here"
-           v-model="searchInput" @keyup.enter="search"/>
-    <section class="main" v-show="searchBooks.length" v-cloak>
+    <button class="btn btn-default" @click="refresh()"> Refresh </button>
+    <section class="main" v-show="borrowRecords.length" v-cloak>
       <ul class="book-list">
-        <li v-for="book in searchBooks" class="book" :key="book.isbn">
+        <li v-for="borrowRecord in borrowRecords" class="book" :key="borrowRecord.id">
           <div class="view">
-            <span>《{{ book.name }}》</span>
+            <span>《{{ borrowRecord.book.name }}》</span>
             <span class="small">
-              [ISBN: {{ book.isbn }}]
-              Total: {{book.total}}, Left: {{ book.margin }} .
+              [ISBN: {{ borrowRecord.isbn }}]
+              <br/>
+              borrow at {{ new Date(borrowRecord.borrowTime) }}
             </span>
-            <button class="btn btn-default" @click="borrow(book)"> Borrow </button>
+            <span class="small" v-if="borrowRecord.status == 'RETURNED'">returned at {{ new Date(borrowRecord.returnTime) }}</span>
+            <button class="btn btn-default" v-if="borrowRecord.status == 'BORROWING'" @click="revert(borrowRecord)"> Return </button>
           </div>
         </li>
       </ul>
@@ -25,42 +26,34 @@
   export default {
     data() {
       return {
-        searchBooks: [],
-        searchInput: ''
+        borrowRecords: []
       }
     },
     watch: {
     },
     methods: {
-      search: function() {
+      refresh: function() {
         let self = this;
-        const value = self.searchInput && self.searchInput.trim();
-        if (!value) {
-          return;
-        }
-        const params = {
-          'ISBN': value,
-          'name': value
-        };
-        service.searchBook(params).then(function (response) {
+        service.getBorrowRecords().then(function (response) {
           console.log(response.data.entities);
-          self.searchBooks = response.data.entities;
-          self.$store.dispatch('ON_SEARCH_BOOKS', self.searchBooks);
+          self.borrowRecords = response.data.entities;
+          self.$store.dispatch('ON_LIST_BORROW_RECORDS', self.borrowRecords);
         }).catch(function (error) {
           console.error(error);
         });
       },
-      borrow: function(book) {
+      revert: function(record) {
         let self = this;
-        service.borrowBook(book.isbn).then(function (response) {
+        service.returnBook(record.book.isbn).then(function (response) {
           const success = response.data.success;
           if (success) {
-            book.margin -= 1;
+            record.status = 'RETURNED';
+            record.returnTime = new Date();
           } else {
-            alert('借书失败！');
+            alert('还书失败！');
           }
         }).catch(function (error) {
-          alert('借书失败！');
+          alert('还书失败！');
           console.error(error);
         });
       }

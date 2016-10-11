@@ -31,8 +31,12 @@ const store = new Vuex.Store({
     },
 
     ON_SEARCH_BOOKS: ({commit, dispatch, state}, books) => {
-      console.log(books);
       commit('SET_SEARCH_BOOKS', books);
+      return Promise.resolve();
+    },
+
+    ON_LIST_BORROW_RECORDS: ({commit, dispatch, state}, borrowRecords) => {
+      commit('SET_BORROW_RECORDS', borrowRecords);
       return Promise.resolve();
     }
 
@@ -80,8 +84,12 @@ const store = new Vuex.Store({
       localStorage.setItem('account', JSON.stringify(account));
     },
 
-    SET_SEARCH_BOOKS: (state, {books}) => {
+    SET_SEARCH_BOOKS: (state, books) => {
       state.searchBooks = books;
+    },
+
+    SET_BORROW_RECORDS: (state, borrowRecords) => {
+      state.borrowRecords = borrowRecords;
     }
 
     //
@@ -126,4 +134,4 @@ const store = new Vuex.Store({
   }
 })
 
-export default store
+export default store;
