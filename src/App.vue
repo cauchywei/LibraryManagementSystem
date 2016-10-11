@@ -37,7 +37,6 @@
 
 <script>
   import Hello from './components/Hello'
-  import router from './router'
 
   export default {
     components: {

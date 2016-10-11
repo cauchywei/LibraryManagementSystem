@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import * as service from '../service'
 
 Vue.use(Vuex);
 
@@ -14,7 +15,7 @@ const store = new Vuex.Store({
     account: userData,
     searchBooks: null,
     records: null,
-    books: null,
+    books: [],
     users: null
   },
 
@@ -33,6 +34,19 @@ const store = new Vuex.Store({
     ON_SEARCH_BOOKS: ({commit, dispatch, state}, books) => {
       commit('SET_SEARCH_BOOKS', books);
       return Promise.resolve();
+    },
+
+    ADD_NEW_BOOK: ({commit, dispatch, state}, book) => {
+      commit('ADD_BOOK', book);
+      return Promise.resolve();
+    },
+
+    FETCH_ALL_BOOKS_BY_ADMIN: ({commit, dispatch, state}) => {
+      return service.getBooksByAdmin().then(function (response) {
+        if (response.data.success) {
+          commit('SET_NEW_BOOKS', response.data.entities)
+        }
+      })
     },
 
     ON_LIST_BORROW_RECORDS: ({commit, dispatch, state}, borrowRecords) => {
@@ -87,11 +101,15 @@ const store = new Vuex.Store({
     SET_SEARCH_BOOKS: (state, books) => {
       state.searchBooks = books;
     },
-
+    ADD_BOOK: (state, book) => {
+      state.books.unshift(book);
+    },
+    SET_NEW_BOOKS: (state, books) => {
+      state.books = books;
+    },
     SET_BORROW_RECORDS: (state, borrowRecords) => {
       state.borrowRecords = borrowRecords;
     }
-
     //
     // SET_ITEMS: (state, { items }) => {
     //   items.forEach(item => {

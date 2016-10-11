@@ -86,7 +86,7 @@ export function updateBookByAdmin(ISBN, map) {
 }
 
 export function deleteBookByAdmin(ISBN) {
-  return axios.post('/users/' + ISBN + '/');
+  return axios.post('admin/books/' + ISBN + '/delete');
 }
 
 export function getUsersByAdmin() {
