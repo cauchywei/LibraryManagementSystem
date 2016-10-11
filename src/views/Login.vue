@@ -27,8 +27,8 @@
     methods: {
       login () {
         const length = this.user.username.length
-        if (length < 4 || length > 18) {
-          alert("username's length must between 4~18")
+        if (length < 2 || length > 18) {
+          alert("username's length must between 2~18")
           return
         }
         let self = this

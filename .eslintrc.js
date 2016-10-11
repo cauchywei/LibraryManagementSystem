@@ -20,6 +20,14 @@ module.exports = {
     'arrow-parens': 0,
     // allow async-await
     'generator-star-spacing': 0,
+    // allow func()
+    'space-before-function-paren': 0,
+    // allow blank line before }
+    'padded-blocks': 0,
+    // allow semicolon
+    'semi': 0,
+    // allow unused defined var
+    'no-unused-vars': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
