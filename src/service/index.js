@@ -4,20 +4,25 @@ import prodAxios from './prod'
 const env = 'prod';
 const axios = env === 'mock' ? mockAxios : prodAxios;
 
-export function register(form) {
-  return axios.post('/users/register', {
-    data: form
-  })
+function extractMapToForm(map) {
+  const form = new FormData();
+  for (var key in map) {
+    if (!map.hasOwnProperty(key)) continue;
+    form.append(key, map[key]);
+  }
+  return form;
+}
+
+export function register(map) {
+  return axios.post('/users/register', extractMapToForm(map))
 }
 
 export function login(username, password) {
-  const form = {
+  const map = {
     'username': username,
     'password': password
   };
-  return axios.post('/users/login', {
-    data: form
-  });
+  return axios.post('/users/login', extractMapToForm(map));
 }
 
 export function logout() {
@@ -28,10 +33,8 @@ export function getProfile() {
   return axios.get('/users/self/');
 }
 
-export function setProfile(form) {
-  return axios.post('/books/self/', {
-    data: form
-  });
+export function setProfile(map) {
+  return axios.post('/books/self/', extractMapToForm(map));
 }
 
 export function searchBook(params) {
@@ -74,16 +77,12 @@ export function getBookByAdmin(ISBN) {
   return axios.get('/admin/books/' + ISBN + '/');
 }
 
-export function addBookByAdmin(form) {
-  return axios.post('/admin/books/add', {
-    data: form
-  });
+export function addBookByAdmin(map) {
+  return axios.post('/admin/books/add', extractMapToForm(map));
 }
 
-export function updateBookByAdmin(ISBN, form) {
-  return axios.post('/admin/books/' + ISBN + '/update', {
-    data: form
-  });
+export function updateBookByAdmin(ISBN, map) {
+  return axios.post('/admin/books/' + ISBN + '/update', extractMapToForm(map));
 }
 
 export function deleteBookByAdmin(ISBN) {

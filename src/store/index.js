@@ -9,7 +9,6 @@ try {
 } catch (e) {
   userData = null;
 }
-
 const store = new Vuex.Store({
   state: {
     account: userData,
@@ -22,13 +21,11 @@ const store = new Vuex.Store({
   actions: {
 
     ON_LOGIN: ({commit, dispatch, state}, account) => {
-      // commit('SET_ACTIVE_TYPE', {username,password})
       commit('SET_LOGIN', account);
       return Promise.resolve();
     },
 
     LOGOUT: ({commit, dispatch, state}) => {
-      // commit('SET_ACTIVE_TYPE', {username,password})
       commit('SET_LOGOUT');
       return Promise.resolve();
     },
