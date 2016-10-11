@@ -47,7 +47,7 @@
         };
         service.searchBook(params).then(function (response) {
           var data = response.data;
-          console.log(data);
+          self.$store.dispatch('');
         })
       }
     }
