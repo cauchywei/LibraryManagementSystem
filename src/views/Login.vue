@@ -8,10 +8,13 @@
       <input v-model="user.password" placeholder="password" type="password"/>
       <button type="submit" class="action-button"> login</button>
     </form>
+    <div>{{userResponse}}</div>
   </div>
 </template>
 
 <script>
+  import service from '../service'
+
   export default {
     el: '#login-panel',
     data () {
@@ -19,7 +22,8 @@
         user: {
           username: '',
           password: ''
-        }
+        },
+        data: {name: 'test'}
       }
     },
     methods: {
@@ -28,13 +32,22 @@
         if (length < 4 || length > 18) {
           return
         }
+        service.login(this.username, this.password).then(function (response) {
+          this.data = response
+        }).catch(function (error) {
+          this.data = error
+        })
+      }
+    },
+    watch: {
+      userResponse () {
+        return this.data
       }
     }
   }
 </script>
 
 <style scoped>
-
   #login-panel {
     height: 100%;
     display: flex;
