@@ -51,7 +51,6 @@
         });
       },
       borrow: function(book) {
-        let self = this;
         service.borrowBook(book.isbn).then(function (response) {
           const success = response.data.success;
           if (success) {

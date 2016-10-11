@@ -6,8 +6,9 @@ import HomeView from '../views/Home.vue'
 import RegisterView from '../views/Register.vue'
 import UserView from '../views/User.vue'
 import BorrowRecordsView from '../views/BorrowRecords.vue'
+import BookManagementView from '../views/admin/BookManagement.vue'
 
-Vue.use(Router)
+Vue.use(Router);
 
 var router = new Router({
   mode: 'history',
@@ -17,8 +18,10 @@ var router = new Router({
     { path: '/login', component: LoginView },
     { path: '/register', component: RegisterView },
     { path: '/my', component: UserView },
-    { path: '/my/records', component: BorrowRecordsView },
+    { path: '/my/borrow_records', component: BorrowRecordsView },
+    { path: '/book_management', component: BookManagementView },
     { path: '*', redirect: '/index' }
   ]
-})
-export default router
+});
+
+export default router;

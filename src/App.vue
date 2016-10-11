@@ -6,7 +6,18 @@
 
       <div class="user-operation-panel" v-if="login">
         <span>Welcome <router-link id="username" to="/my">{{account.name}} </router-link></span>
-        <h5 v-if="isAdmin" class="admin">   ( admin )  </h5>
+
+        <div v-if="isAdmin" class="action-bar">
+          <h5 class="admin"> ( admin ) </h5>
+          <div class="button-divider">|</div>
+          <router-link to="/book_management" class="header-button">Manage Books</router-link>
+        </div>
+        <div class="action-bar" v-else>
+          <div class="button-divider">|</div>
+          <router-link to="/my/borrow_records" class="header-button">My Borrow Record</router-link>
+        </div>
+
+
         <div class="button-divider">|</div>
         <a class="header-button" @click="logout">Logout</a>
       </div>
@@ -41,10 +52,7 @@
     methods: {
       logout() {
         this.$store.dispatch('LOGOUT')
-        self.$router.push('/index')
-      },
-      isAdmin() {
-        return this.$store.state.account.role === 'ADMIN'
+        this.$router.push('/index')
       }
     },
     computed: {
@@ -53,6 +61,9 @@
       },
       account() {
         return this.$store.state.account;
+      },
+      isAdmin() {
+        return this.$store.state.account.role === 'ADMIN'
       }
     }
   }
@@ -108,6 +119,16 @@
     display: flex;
     flex-direction: row;
     align-self: flex-end;
+    align-items: center;
+    align-content: flex-end
+  }
+
+  .action-bar {
+    display: flex;
+    margin-left: 10px;
+    padding-right: 4px;
+    flex-direction: row;
+    align-self: flex-end;
     align-items: baseline;
   }
 
@@ -143,7 +164,8 @@
 
   #user-operation-panel #admin {
     margin-left: 10px;
-    padding-right:4px;
+    padding-right: 4px;
   }
+
 
 </style>

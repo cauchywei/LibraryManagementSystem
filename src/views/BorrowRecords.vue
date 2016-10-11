@@ -1,8 +1,8 @@
 <template>
-  <div class="book-page">
-    <button class="btn btn-default" @click="refresh()"> Refresh </button>
+  <div class="record-page">
+    <!--<button id="btn-refresh" class="btn btn-default btn-block" @click="refresh()"> Refresh </button>-->
     <section class="main" v-show="borrowRecords.length" v-cloak>
-      <ul class="book-list">
+      <ul class="record-list">
         <li v-for="borrowRecord in borrowRecords" class="book" :key="borrowRecord.id">
           <div class="view">
             <span>《{{ borrowRecord.book.name }}》</span>
@@ -43,7 +43,6 @@
         });
       },
       revert: function(record) {
-        let self = this;
         service.returnBook(record.book.isbn).then(function (response) {
           const success = response.data.success;
           if (success) {
@@ -57,6 +56,16 @@
           console.error(error);
         });
       }
+    },
+    created: function() {
+      let self = this;
+      service.getBorrowRecords().then(function (response) {
+        console.log(response.data.entities);
+        self.borrowRecords = response.data.entities;
+        self.$store.dispatch('ON_LIST_BORROW_RECORDS', self.borrowRecords);
+      }).catch(function (error) {
+        console.error(error);
+      });
     }
   }
 </script>
@@ -94,7 +103,7 @@
     display: none;
   }
 
-  .book-page {
+  .record-page {
     background: #fff;
     margin: 0;
     position: relative;
@@ -102,25 +111,25 @@
     0 25px 50px 0 rgba(0, 0, 0, 0.1);
   }
 
-  .book-page input::-webkit-input-placeholder {
+  .record-page input::-webkit-input-placeholder {
     font-style: italic;
     font-weight: 300;
     color: #e6e6e6;
   }
 
-  .book-page input::-moz-placeholder {
+  .record-page input::-moz-placeholder {
     font-style: italic;
     font-weight: 300;
     color: #e6e6e6;
   }
 
-  .book-page input::input-placeholder {
+  .record-page input::input-placeholder {
     font-style: italic;
     font-weight: 300;
     color: #e6e6e6;
   }
 
-  .book-page h1 {
+  .record-page h1 {
     position: absolute;
     top: -155px;
     width: 100%;
@@ -164,31 +173,31 @@
     border-top: 1px solid #e6e6e6;
   }
 
-  .book-list {
+  .record-list {
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .book-list li {
+  .record-list li {
     position: relative;
     font-size: 18px;
     border-bottom: 1px solid #ededed;
     padding: 20px 0px 20px 0px;
   }
 
-  .book-list li:last-child {
+  .record-list li:last-child {
     border-bottom: none;
   }
 
-  .book-list li label {
+  .record-list li label {
     word-break: break-all;
     display: block;
     line-height: 1.2;
     transition: color 0.4s;
   }
 
-  .book-list li span.small {
+  .record-list li span.small {
     font-size: small;
   }
 
