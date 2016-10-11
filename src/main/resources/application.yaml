@@ -28,9 +28,11 @@ spring:
       .ACCEPT_EMPTY_STRING_AS_NULL_OBJECT: true
       .FAIL_ON_IGNORED_PROPERTIES: false
       .FAIL_ON_UNKNOWN_PROPERTIES: false
-
 mybatis:
   mapper-locations: classpath:xp.librarian.repository.mapper/*.xml
   type-aliases-package: xp.librarian.model.dto
   type-handlers-package: xp.librarian.config.mybatis.type
   executor-type: SIMPLE
+server:
+  address: 0.0.0.0
+  port: 6001
