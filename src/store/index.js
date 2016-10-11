@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import * as service from '../service'
 
 Vue.use(Vuex);
 
@@ -14,7 +15,7 @@ const store = new Vuex.Store({
     account: userData,
     searchBooks: null,
     records: null,
-    books: null,
+    books: [],
     users: null
   },
 
@@ -34,6 +35,19 @@ const store = new Vuex.Store({
       console.log(books);
       commit('SET_SEARCH_BOOKS', books);
       return Promise.resolve();
+    },
+
+    ADD_NEW_BOOK: ({commit, dispatch, state}, book) => {
+      commit('ADD_BOOK', book);
+      return Promise.resolve();
+    },
+
+    FETCH_ALL_BOOKS_BY_ADMIN: ({commit, dispatch, state}) => {
+      return service.getBooksByAdmin().then(function (response) {
+        if (response.data.success) {
+          commit('SET_NEW_BOOKS', response.data.entities)
+        }
+      })
     }
 
     // // ensure data for rendering given list type
@@ -82,8 +96,13 @@ const store = new Vuex.Store({
 
     SET_SEARCH_BOOKS: (state, {books}) => {
       state.searchBooks = books;
+    },
+    ADD_BOOK: (state, book) => {
+      state.books.unshift(book);
+    },
+    SET_NEW_BOOKS: (state, books) => {
+      state.books = books;
     }
-
     //
     // SET_ITEMS: (state, { items }) => {
     //   items.forEach(item => {
