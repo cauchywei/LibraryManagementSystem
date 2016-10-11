@@ -6,7 +6,7 @@ const axios = env === 'mock' ? mockAxios : prodAxios;
 
 export function register(form) {
   return axios.post('/users/register', {
-    data: data
+    data: form
   })
 }
 

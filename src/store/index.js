@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
-var userData = JSON.parse(localStorage.getItem('user'))
+var userData = JSON.parse(localStorage.getItem('account'));
 const store = new Vuex.Store({
 
   state: {
@@ -15,22 +15,25 @@ const store = new Vuex.Store({
   },
 
   actions: {
+
     ON_LOGIN: ({commit, dispatch, state}, account) => {
       // commit('SET_ACTIVE_TYPE', {username,password})
-      commit('SET_LOGIN', account)
-      return Promise.resolve()
+      commit('SET_LOGIN', account);
+      return Promise.resolve();
     },
 
     LOGOUT: ({commit, dispatch, state}) => {
       // commit('SET_ACTIVE_TYPE', {username,password})
-      commit('SET_LOGOUT')
-      return Promise.resolve()
+      commit('SET_LOGOUT');
+      return Promise.resolve();
     },
 
-    ON_SEARCH: ({ commit, dispatch, state }, { books }) => {
+    ON_SEARCH_BOOKS: ({ commit, dispatch, state }, books) => {
+      console.log(books);
       commit('SET_SEARCH_BOOKS', books);
-      return Promise.resolve()
+      return Promise.resolve();
     }
+
     // // ensure data for rendering given list type
     // FETCH_LIST_DATA: ({ commit, dispatch, state }, { type }) => {
     //   commit('SET_ACTIVE_TYPE', { type })
