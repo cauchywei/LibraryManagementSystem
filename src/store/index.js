@@ -1,15 +1,13 @@
-/**
- * Created by cauchywei on 16/10/11.
- */
 import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+var userData = JSON.parse(localStorage.getItem('user'))
 const store = new Vuex.Store({
 
   state: {
-    account: null,
+    account: userData,
     searchBooks: null,
     records: null,
     books: null,
@@ -68,24 +66,19 @@ const store = new Vuex.Store({
   mutations: {
 
     SET_LOGOUT: (state) => {
-      state.account = null
+      state.account = null;
+      localStorage.setItem('account', null);
     },
 
-    SET_LOGIN: (state, account) => {
-      state.account = account
+    SET_LOGIN: (state, { account }) => {
+      state.account = account;
+      localStorage.setItem('account', JSON.stringify(account));
     },
 
     SET_SEARCH_BOOKS: (state, { books }) => {
-      state.searchBooks = books
+      state.searchBooks = books;
     }
 
-    // SET_ACTIVE_TYPE: (state, { type }) => {
-    //   state.activeType = type
-    // },
-    //
-    // SET_LIST: (state, { type, ids }) => {
-    //   state.lists[type] = ids
-    // },
     //
     // SET_ITEMS: (state, { items }) => {
     //   items.forEach(item => {
@@ -101,6 +94,11 @@ const store = new Vuex.Store({
   },
 
   getters: {
+
+    isLogin (state) {
+      return !!state.user
+    }
+
     // // ids of the items that should be currently displayed based on
     // // current list type and current pagination
     // activeIds (state) {
