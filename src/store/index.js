@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-var userData = JSON.parse(localStorage.getItem('user'))
+var userData = JSON.parse(localStorage.getItem('account'))
 const store = new Vuex.Store({
 
   state: {
