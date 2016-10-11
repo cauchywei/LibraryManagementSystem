@@ -4,16 +4,19 @@
 
       <router-link id="header-title" to="/">Library Management System</router-link>
 
-      <div class="user-operation-panel" v-show="!login">
+      <div class="user-operation-panel" v-if="login">
+        <span>Welcome <router-link id="username" to="/info">{{user.name}}</router-link></span>
+        <div class="button-divider">|</div>
+        <a class="header-button" @click="logout">Logout</a>
+      </div>
+      <div class="user-operation-panel" v-if="!login">
         <router-link to="/login" class="header-button">Login</router-link>
         <div class="button-divider">|</div>
         <router-link to="/register" class="header-button">Register</router-link>
       </div>
 
-      <div class="user-operation-panel" v-show="login">
-        <a class="header-button" @click="logout">Logout</a>
-      </div>
     </div>
+
     <transition name="fade" mode="out-in">
       <router-view class="view"></router-view>
     </transition>
@@ -30,7 +33,8 @@
     },
     data () {
       return {
-        login: false
+//        login: this.$store.state.isLogin,
+//        user: this.$store.state.user
       }
     },
     methods: {
@@ -40,8 +44,12 @@
       }
     },
     computed: {
-      login: function () {
-        return !!this.$store.state.user
+      login () {
+        return this.$store.getters.isLogin
+      },
+
+      user () {
+        return this.$store.state.user
       }
     }
   }
@@ -117,6 +125,10 @@
     border: 1px solid #eeeeee;
     padding: 8px;
     margin: 16px;
+  }
+
+  #username {
+    text-decoration: underline;
   }
 
 </style>

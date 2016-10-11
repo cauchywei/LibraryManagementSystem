@@ -32,7 +32,7 @@
           return
         }
         let self = this
-        service.login(this.username, this.password).then(function (response) {
+        service.login(this.user.username, this.user.username).then(function (response) {
           self.$store.dispatch('ON_LOGIN', response.data)
           self.$router.go(-1)
         }).catch(function (error) {

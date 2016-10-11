@@ -6,9 +6,10 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+var userData = JSON.parse(localStorage.getItem('user'))
 const store = new Vuex.Store({
   state: {
-    user: null
+    user: userData
   },
   actions: {
     ON_LOGIN: ({commit, dispatch, state}, user) => {
@@ -58,10 +59,12 @@ const store = new Vuex.Store({
 
     SET_LOGOUT: (state) => {
       state.user = null
+      localStorage.setItem('user', null)
     },
 
     SET_LOGIN: (state, user) => {
       state.user = user
+      localStorage.setItem('user', JSON.stringify(user))
     }
 
     // SET_ACTIVE_TYPE: (state, { type }) => {
@@ -86,6 +89,11 @@ const store = new Vuex.Store({
   },
 
   getters: {
+
+    isLogin (state) {
+      return !!state.user
+    }
+
     // // ids of the items that should be currently displayed based on
     // // current list type and current pagination
     // activeIds (state) {
