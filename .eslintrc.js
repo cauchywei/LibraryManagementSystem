@@ -30,6 +30,8 @@ module.exports = {
     'no-unused-vars': 1,
     // allow indent
     'indent': 1,
+    // allow quotes
+    'quotes': 1,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
