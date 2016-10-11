@@ -31,25 +31,24 @@
     components: {
       Hello
     },
-    data () {
+    data() {
       return {
 //        login: this.$store.state.isLogin,
 //        user: this.$store.state.user
       }
     },
     methods: {
-      logout () {
+      logout() {
         this.$store.dispatch('LOGOUT')
         router.go('/')
       }
     },
     computed: {
-      login () {
-        return this.$store.getters.isLogin
+      login() {
+        return this.$store.getters.isLogin;
       },
-
-      user () {
-        return this.$store.state.user
+      account() {
+        return this.$store.state.account;
       }
     }
   }

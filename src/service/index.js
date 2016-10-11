@@ -5,7 +5,7 @@
 import mockAxios from './mock'
 import prodAxios from './prod'
 
-const env = 'mock'
+const env = 'prod'
 const axios = env === 'mock' ? mockAxios : prodAxios
 
 export function login (username, password) {
@@ -38,18 +38,18 @@ export function register (data) {
   })
 }
 
-export function searchBook (name) {
-  const params = {
-    'ISBN': name,
-    'name': name
-  }
-  const form = new FormData()
-  form.append('ISBN', name)
-  form.append('name', 'name')
+export function searchBook(params) {
+  return axios.get('/books/search', {
+    params: params
+  });
+}
 
-  return axios({
-    method: 'get',
-    url: '/books/search',
+export function getProfile() {
+  return axios.get('/users/self/');
+}
+
+export function setProfile(form) {
+  return axios.post('/books/self/', {
     data: form
-  })
+  });
 }

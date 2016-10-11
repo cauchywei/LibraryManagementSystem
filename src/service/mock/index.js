@@ -1,6 +1,3 @@
-/**
- * Created by cauchywei on 16/10/11.
- */
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 
@@ -8,7 +5,7 @@ var instance = axios.create()
 const mock = new MockAdapter(instance)
 
 mock.onPost('/users/login').reply(200, {
-  role: 'reader',
+  role: 'READER',
   id: 1,
   username: 'cauchywei',
   name: 'Wei Qin',
@@ -17,11 +14,11 @@ mock.onPost('/users/login').reply(200, {
   major: 'CS',
   phone: '23333',
   email: 'cauchywei@gmail.com',
-  remarks: []
+  remarks: 'hi'
 })
 
-mock.onGet('/test').reply(200, {
-  role: 'reader',
+mock.onGet('/users/self/').reply(200, {
+  role: 'READER',
   id: 1,
   username: 'cauchywei',
   name: 'Wei Qin',
@@ -30,7 +27,7 @@ mock.onGet('/test').reply(200, {
   major: 'CS',
   phone: '23333',
   email: 'cauchywei@gmail.com',
-  remarks: []
+  remarks: 'hi'
 })
 
 export default instance
