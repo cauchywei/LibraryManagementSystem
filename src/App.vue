@@ -1,19 +1,15 @@
 <template>
   <div id="app">
-    <div class="header">
-      <div class="inner">
-        <router-link to="/" exact>
-          <img class="logo" src="./assets/logo.png" alt="logo">
-        </router-link>
-        <router-link to="/top">Top</router-link>
-        <router-link to="/new">New</router-link>
-        <router-link to="/show">Show</router-link>
-        <router-link to="/ask">Ask</router-link>
-        <router-link to="/job">Jobs</router-link>
-        <a class="github" href="https://github.com/vuejs/vue-hackernews-2.0" target="_blank">
-          Built with Vue.js
-        </a>
+    <div id="header">
+
+      <router-link id="header-title" to="/">Library Management System</router-link>
+
+      <div id="user-operation-panel">
+        <router-link to="/login" class="header-button">Login</router-link>
+        <div class="button-divider">|</div>
+        <router-link to="/register" class="header-button">Register</router-link>
       </div>
+
     </div>
     <transition name="fade" mode="out-in">
       <router-view class="view"></router-view>
@@ -22,42 +18,84 @@
 </template>
 
 <script>
-import Hello from './components/Hello'
+  import Hello from './components/Hello'
 
-export default {
-  components: {
-    Hello
+  export default {
+    components: {
+      Hello
+    }
   }
-}
 </script>
 
 <style>
-html {
-  height: 100%;
-}
 
-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
 
-#app {
-  color: #2c3e50;
-  margin-top: -100px;
-  max-width: 600px;
-  font-family: Source Sans Pro, Helvetica, sans-serif;
-  text-align: center;
-}
+  html {
+    height: 100%;
+  }
 
-#app a {
-  color: #42b983;
-  text-decoration: none;
-}
+  body {
+    display: flex;
+    /*align-items: center;*/
+    /*justify-content: center;*/
+    height: 100%;
+  }
 
-.logo {
-  width: 100px;
-  height: 100px
-}
+  #app {
+    color: #2c3e50;
+    font-family: Source Sans Pro, Helvetica, sans-serif;
+    text-align: center;
+    width: 100%;
+  }
+
+  #app a {
+    color: #42b983;
+    text-decoration: none;
+  }
+
+  #header-title {
+    color: #2c3e50;
+    font-family: Source Sans Pro, Helvetica, sans-serif;
+    font-size: 1.4em;
+    font-style: normal;
+  }
+
+  .header-button {
+    font-size: 0.9em;
+  }
+
+  #header {
+    padding: 10px 20px 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  #user-operation-panel {
+    display: flex;
+    flex-direction: row;
+    align-self: flex-end;
+  }
+
+  .button-divider {
+    margin-left: 10px;
+    margin-right: 10px;
+    color: #cccccc;
+  }
+
+  .action-button {
+    padding: 4px 10px 4px 10px;
+    background: #42b983;
+    color: #ffffff;
+    border-width: 0;
+    border-radius: 4px;
+  }
+
+  input {
+    border: 1px  solid #eeeeee;
+    padding: 8px;
+    margin: 16px;
+  }
+
 </style>
