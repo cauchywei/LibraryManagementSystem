@@ -3,18 +3,18 @@
 */
 <template>
   <div id="login-panel">
-    <form v-on="login" id="login-form">
+    <form v-on:submit.prevent="login" id="login-form">
       <input v-model="user.username" placeholder="username"/>
       <input v-model="user.password" placeholder="password" type="password"/>
       <button type="submit" class="action-button"> login</button>
     </form>
-    <div>{{userResponse}}</div>
   </div>
 </template>
 
 <script>
-  import service from '../service'
-
+  import * as service from '../service'
+  import * as auth from '../auth'
+  import router from '../router'
   export default {
     el: '#login-panel',
     data () {
@@ -30,19 +30,23 @@
       login () {
         const length = this.user.username.length
         if (length < 4 || length > 18) {
+          alert("username's length must between 4~18")
           return
         }
+        let self = this
         service.login(this.username, this.password).then(function (response) {
-          this.data = response
+          localStorage.setItem('user', response.data)
+          self.data = response.data
+          auth.onLogin(response.data)
+          router.go('/index')
         }).catch(function (error) {
-          this.data = error
+          alert(error)
         })
+        return false
       }
     },
     watch: {
-      userResponse () {
-        return this.data
-      }
+
     }
   }
 </script>

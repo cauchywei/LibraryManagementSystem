@@ -4,9 +4,10 @@
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 
-const mock = new MockAdapter(axios)
+var instance = axios.create()
+const mock = new MockAdapter(instance)
 
-mock.onPost('users/login').reply(200, {
+mock.onPost('/users/login').reply(200, {
   role: 'reader',
   id: 1,
   username: 'cauchywei',
@@ -19,4 +20,17 @@ mock.onPost('users/login').reply(200, {
   remarks: []
 })
 
-export default mock
+mock.onGet('/test').reply(200, {
+  role: 'reader',
+  id: 1,
+  username: 'cauchywei',
+  name: 'Wei Qin',
+  avatarUrl: '233',
+  age: '20',
+  major: 'CS',
+  phone: '23333',
+  email: 'cauchywei@gmail.com',
+  remarks: []
+})
+
+export default instance

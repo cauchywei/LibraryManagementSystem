@@ -9,7 +9,7 @@ export function serviceUrl () {
 
 const instance = axios.create({
   baseURL: serviceUrl(),
-  timeout: 10000,
+  timeout: 1000,
   headers: {'X-Custom-Header': 'foobar'}
 })
 

@@ -9,12 +9,13 @@ Vue.use(Router)
 // import ItemView from '../views/ItemView.vue'
 // import UserView from '../views/UserView.vue'
 
-export default new Router({
+var router = new Router({
   mode: 'history',
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({y: 0}),
   routes: [
-    { path: '/index', component: Todo },
-    { path: '/login', component: LoginView },
-    { path: '*', redirect: '/index' }
+    {path: '/index', component: Todo},
+    {path: '/login', component: LoginView},
+    {path: '*', redirect: '/index'}
   ]
 })
+export default router

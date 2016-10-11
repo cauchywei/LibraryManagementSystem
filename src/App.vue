@@ -4,12 +4,15 @@
 
       <router-link id="header-title" to="/">Library Management System</router-link>
 
-      <div id="user-operation-panel">
+      <div class="user-operation-panel" v-show="login">
         <router-link to="/login" class="header-button">Login</router-link>
         <div class="button-divider">|</div>
         <router-link to="/register" class="header-button">Register</router-link>
       </div>
 
+      <div class="user-operation-panel" v-show="!login">
+        <a class="header-button" @click="logout">Logout</a>
+      </div>
     </div>
     <transition name="fade" mode="out-in">
       <router-view class="view"></router-view>
@@ -19,10 +22,28 @@
 
 <script>
   import Hello from './components/Hello'
+  import * as auth from './auth'
+  import router from './router'
 
   export default {
     components: {
       Hello
+    },
+    data () {
+      return {
+        login: false
+      }
+    },
+    methods: {
+      logout () {
+        auth.logout()
+        router.go('/')
+      }
+    },
+    computed: {
+      login: function () {
+        return auth.isLogin()
+      }
     }
   }
 </script>
@@ -62,6 +83,7 @@
 
   .header-button {
     font-size: 0.9em;
+    color: #42b983;
   }
 
   #header {
@@ -72,7 +94,7 @@
     flex-direction: row;
   }
 
-  #user-operation-panel {
+  .user-operation-panel {
     display: flex;
     flex-direction: row;
     align-self: flex-end;
@@ -93,7 +115,7 @@
   }
 
   input {
-    border: 1px  solid #eeeeee;
+    border: 1px solid #eeeeee;
     padding: 8px;
     margin: 16px;
   }
