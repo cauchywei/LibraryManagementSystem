@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script>
+<script scoped>
   import * as service from '../service'
   export default {
     el: '#login-panel',
@@ -30,7 +30,7 @@
           return
         }
         let self = this
-        service.login(this.account.username, this.account.password).then(function (response) {
+        service.login(this.account).then(function (response) {
           if (response.data.success) {
             self.$store.dispatch('ON_LOGIN', response.data.entity)
             self.$router.push('/index')
@@ -60,5 +60,9 @@
     flex-direction: column;
     align-items: center;
     margin-top: 30px;
+  }
+
+  #login-form .action-button {
+    margin-top: 20px;
   }
 </style>

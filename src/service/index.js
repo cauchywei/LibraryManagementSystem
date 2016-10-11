@@ -17,7 +17,7 @@ export function register(map) {
   return axios.post('/users/register', extractMapToForm(map))
 }
 
-export function login(username, password) {
+export function login({username, password}) {
   const map = {
     'username': username,
     'password': password

@@ -104,6 +104,7 @@
     display: flex;
     flex-direction: row;
     align-self: flex-end;
+    align-items: baseline;
   }
 
   .button-divider {
@@ -126,8 +127,15 @@
     margin: 8px 16px 8px 16px;
   }
 
+  textarea {
+    border: 1px solid #eeeeee;
+    padding: 8px;
+    margin: 8px 16px 8px 16px;
+  }
+
   #username {
     text-decoration: underline;
   }
+
 
 </style>

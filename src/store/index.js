@@ -75,7 +75,7 @@ const store = new Vuex.Store({
       localStorage.setItem('account', null);
     },
 
-    SET_LOGIN: (state, {account}) => {
+    SET_LOGIN: (state, account) => {
       state.account = account;
       localStorage.setItem('account', JSON.stringify(account));
     },

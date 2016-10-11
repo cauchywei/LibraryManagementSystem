@@ -2,9 +2,21 @@
   <div id="register-panel">
     <h1>Register</h1>
     <form v-on:submit.prevent="register" id="register-form">
-      <input v-model="account.username" placeholder="username" type="text"/>
-      <input v-model="account.password" placeholder="password" type="password"/>
-      <button type="submit" class="action-button">register</button>
+      <div style="{ display: flex; flex-direction: row}">
+        <input v-model="account.username" placeholder="username" type="text"/>
+        <input v-model="account.password" placeholder="password" type="password"/>
+      </div>
+
+      <div style="{ display: flex; flex-direction: row}">
+        <input v-model="account.name" placeholder="name" type="text"/>
+        <input v-model="account.age" placeholder="age" v-model.number="age" type="number"/>
+      </div>
+
+      <input v-model="account.major" class="full-input" placeholder="major" type="text"/>
+      <input v-model="account.phone" class="full-input" placeholder="phone" type="tel"/>
+      <input v-model="account.email" class="full-input" placeholder="email" type="email"/>
+      <textarea v-model="account.remarks" class="full-input" placeholder="self description"></textarea>
+      <button type="submit"  class="action-button">register</button>
     </form>
   </div>
 </template>
@@ -19,29 +31,31 @@
           username: '',
           password: ''
         },
-        data: { name: 'test' }
+        data: {name: 'test'}
       }
     },
     methods: {
       register () {
-        const length = this.account.username.length
-        if (length < 2 || length > 18) {
-          alert("username's length must between 2~18")
-          return
+        if (!this.account.username || !this.account.password || !this.account.age || !this.account.name || !this.account.major || !this.account.phone || !this.account.email) {
+          alert('please fill all info!')
+          return false
         }
+
         let self = this
-        service.login(this.account.username, this.account.password).then(function (response) {
-          self.$store.dispatch('ON_LOGIN', response.data)
-          self.$router.go(-1)
+        service.register(this.account).then(function (response) {
+          if (response.data.success) {
+            alert('register success!')
+            self.$router.go(-1)
+          } else {
+            alert('register fail!')
+          }
         }).catch(function (error) {
           alert(error)
         })
         return false
       }
     },
-    watch: {
-
-    }
+    watch: {}
   }
 </script>
 
@@ -59,4 +73,13 @@
     align-items: center;
     margin-top: 30px;
   }
+
+  .full-input {
+    align-self: stretch;
+  }
+
+  #register-form .action-button {
+    margin-top: 20px;
+  }
+
 </style>
