@@ -14,7 +14,7 @@ spring:
       validation-query-timeout: 10
       test-while-idle: true
       test-on-borrow: false
-      time-between-eviction-runs-millis: 60
+      time-between-eviction-runs-millis: 188000
       default-transaction-isolation: 2
   jackson:
     default-property-inclusion: non_null
