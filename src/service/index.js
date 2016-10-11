@@ -37,3 +37,19 @@ export function register (data) {
     data: form
   })
 }
+
+export function searchBook (name) {
+  const params = {
+    'ISBN': name,
+    'name': name,
+  }
+  const form = new FormData()
+  form.append('ISBN', name)
+  form.append('name', 'name')
+
+  return axios({
+    method: 'get',
+    url: '/books/search',
+    data: form
+  })
+}
