@@ -1,9 +1,11 @@
 package xp.librarian.model.context;
 
 import java.io.*;
+import java.util.*;
 
 import lombok.Data;
-import xp.librarian.model.dto.UserDto;
+import xp.librarian.model.dto.Role;
+import xp.librarian.model.dto.User;
 
 /**
  * @author xp
@@ -15,14 +17,20 @@ public class AccountContext implements Serializable {
 
     private Integer id;
 
-    private UserDto.Role role;
+    private Set<Role> roles;
 
-    private UserDto.Status status;
+    private User.Status status;
 
-    public static AccountContext fromDTO(UserDto user) {
+    public User toDTO() {
+        User user = new User();
+        user.setId(id);
+        return user;
+    }
+
+    public static AccountContext fromDTO(User user) {
         AccountContext account = new AccountContext();
         account.id = user.getId();
-        account.role = user.getRole();
+        account.roles = user.getRoles();
         account.status = user.getStatus();
         return account;
     }

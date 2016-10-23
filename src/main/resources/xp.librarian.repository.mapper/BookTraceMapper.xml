@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xp.librarian.repository.mapper.BookTraceMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `BookTrace`(
+            `isbn`,
+            `status`,
+            `location`,
+            `createTime`
+        ) VALUES (
+            #{isbn},
+            #{status},
+            #{location},
+            #{createTime}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE `BookTrace`
+        <set>
+            <if test="set.status != null">
+                `status`=#{set.status},
+            </if>
+            <if test="set.location != null">
+                `location`=#{set.location},
+            </if>
+            <if test="set.lendId != null">
+                `lendId`=#{set.lendId},
+            </if>
+        </set>
+        <trim prefix=" WHERE " prefixOverrides="AND">
+            <if test="where.id != null">
+                `id`=#{where.id},
+            </if>
+            <if test="where.status != null">
+                `status`=#{where.status},
+            </if>
+        </trim>
+        LIMIT 1
+        ;
+    </update>
+
+    <select id="select" resultType="BookTrace">
+        SELECT * FROM `BookTrace`
+        <trim prefix=" WHERE " prefixOverrides="AND">
+            <if test="where.id != null">
+                AND `id`=#{where.id}
+            </if>
+            <if test="where.isbn != null">
+                AND `isbn`=#{where.isbn}
+            </if>
+            <if test="where.status != null">
+                AND `status`=#{where.status}
+            </if>
+        </trim>
+        ORDER BY `createTime` ASC
+        <if test="limits != null &amp;&amp; limits != 0">
+            LIMIT #{offset}, #{limits}
+        </if>
+        ;
+    </select>
+
+</mapper>

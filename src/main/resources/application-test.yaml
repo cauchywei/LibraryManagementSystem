@@ -11,4 +11,4 @@ logging:
     xp:
       librarian:
         repository:
-          mapper: TRACE
+          mapper: INFO

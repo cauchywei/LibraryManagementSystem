@@ -1,4 +1,4 @@
-package xp.librarian.utils;
+package xp.librarian.model.context;
 
 /**
  * @author xp
@@ -7,20 +7,21 @@ public class BusinessException extends RuntimeException {
 
     private static final long serialVersionUID = 7872506909592221398L;
 
-    private String key;
+    private ErrorCode key;
 
-    public BusinessException(String key) {
+    public BusinessException(ErrorCode key) {
         this(key, null);
     }
 
-    public BusinessException(String key, Throwable cause) {
+    public BusinessException(ErrorCode key, Throwable cause) {
         super(cause);
         this.key = key;
     }
 
     @Override
     public String getMessage() {
-        return key;
+        //TODO I18N
+        return key.getKey();
     }
 
     @Override

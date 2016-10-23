@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
-import xp.librarian.model.dto.UserDto;
+import xp.librarian.model.dto.User;
 
 /**
  * @author xp
@@ -36,8 +36,8 @@ public class UserRegisterForm implements Serializable {
 
     private String remarks;
 
-    public UserDto toDTO() {
-        UserDto user = new UserDto();
+    public User toDTO() {
+        User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         user.setName(name);

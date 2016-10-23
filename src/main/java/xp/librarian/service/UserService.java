@@ -1,23 +1,27 @@
 package xp.librarian.service;
 
+import java.time.*;
 import java.util.*;
 
 import javax.validation.Valid;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.NonNull;
 import xp.librarian.model.context.AccountContext;
-import xp.librarian.model.dto.UserDto;
+import xp.librarian.model.context.ErrorCode;
+import xp.librarian.model.dto.User;
 import xp.librarian.model.form.UserLoginForm;
 import xp.librarian.model.form.UserRegisterForm;
 import xp.librarian.model.form.UserUpdateForm;
+import xp.librarian.model.param.LoginParam;
 import xp.librarian.model.result.UserProfileVM;
 import xp.librarian.repository.UserDao;
-import xp.librarian.utils.BusinessException;
-import xp.librarian.utils.LoginUtils;
+import xp.librarian.model.context.BusinessException;
 import xp.librarian.utils.UploadUtils;
 
 /**
@@ -30,43 +34,50 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    public UserProfileVM register(@Valid UserRegisterForm form) {
-        UserDto user = form.toDTO();
-        user.setAvatarUrl(UploadUtils.upload(form.getAvatar()));
-        user.setRole(UserDto.Role.READER);
-        user.setStatus(UserDto.Status.NORMAL);
-        user.setCreateTime(new Date(System.currentTimeMillis()));
-        if (1 != userDao.add(user)) {
-            throw new PersistenceException();
-        }
-        LoginUtils.login(user.getId());
+    private UserProfileVM buildUserProfileVM(@NonNull User user) {
         return new UserProfileVM().withUser(user);
+    }
+
+    public UserProfileVM register(@Valid UserRegisterForm form) {
+        User user = form.toDTO();
+        user.setAvatarUrl(UploadUtils.upload(form.getAvatar()));
+        user.setStatus(User.Status.NORMAL);
+        user.setCreateTime(Date.from(Instant.now()));
+        if (0 == userDao.add(user)) {
+            throw new PersistenceException("user insert failed.");
+        }
+        return buildUserProfileVM(user);
     }
 
     public UserProfileVM login(@Valid UserLoginForm form) {
-        UserDto user = userDao.getForLogin(form.getUsername(), form.getPassword());
+        User where = form.toDTO();
+        User user = userDao.get(where);
         if (user == null) {
-            throw new BusinessException("user.loginFailed");
+            throw new BusinessException(ErrorCode.USER_LOGIN_FAIL);
         }
-        LoginUtils.login(user.getId());
-        return new UserProfileVM().withUser(user);
+        return buildUserProfileVM(user);
     }
 
-    public boolean logout() {
-        return LoginUtils.logout();
+    public void logout(@NonNull AccountContext account) {
+        // need to do nothing now.
     }
 
-    public UserProfileVM getProfile(AccountContext account) {
-        UserDto user = userDao.get(account.getId());
-        return new UserProfileVM().withUser(user);
+    public UserProfileVM getProfile(@NonNull AccountContext account) {
+        User user = userDao.get(account.getId());
+        if (user == null) {
+            throw new ResourceNotFoundException("user not found.");
+        }
+        return buildUserProfileVM(user);
     }
 
-    public UserProfileVM setProfile(AccountContext account, @Valid UserUpdateForm form) {
-        UserDto user = form.toDTO();
-        user.setId(account.getId());
-        user.setAvatarUrl(UploadUtils.upload(form.getAvatar()));
-        user = userDao.get(user.getId());
-        return new UserProfileVM().withUser(user);
+    public UserProfileVM setProfile(@NonNull AccountContext account, @Valid UserUpdateForm form) {
+        User where = account.toDTO();
+        User set = form.toDTO();
+        set.setAvatarUrl(UploadUtils.upload(form.getAvatar()));
+        if (0 == userDao.update(where, set)) {
+            throw new PersistenceException("user update failed.");
+        }
+        return buildUserProfileVM(userDao.get(account.getId()));
     }
 
 }

@@ -5,7 +5,7 @@ import java.io.*;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
-import xp.librarian.model.dto.BookDto;
+import xp.librarian.model.dto.Book;
 
 /**
  * @author xp
@@ -20,16 +20,12 @@ public class BookUpdateForm implements Serializable {
 
     private String name;
 
-    private Integer total;
+    private Book.Status status;
 
-    private Integer margin;
-
-    public BookDto toDTO() {
-        BookDto book = new BookDto();
-        book.setIsbn(isbn);
+    public Book toDTO() {
+        Book book = new Book();
         book.setName(name);
-        book.setTotal(total);
-        book.setMargin(margin);
+        book.setStatus(status);
         return book;
     }
 

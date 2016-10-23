@@ -4,7 +4,8 @@ import java.io.*;
 import java.util.*;
 
 import lombok.Data;
-import xp.librarian.model.dto.UserDto;
+import xp.librarian.model.dto.Role;
+import xp.librarian.model.dto.User;
 
 /**
  * @author xp
@@ -18,7 +19,7 @@ public class UserProfileVM implements Serializable {
 
     private String username;
 
-    private UserDto.Role role;
+    private Role[] roles;
 
     private String name;
 
@@ -34,13 +35,13 @@ public class UserProfileVM implements Serializable {
 
     private String remarks;
 
-    private Date createTime;
+    private Long createTime;
 
-    public UserProfileVM withUser(UserDto user) {
+    public UserProfileVM withUser(User user) {
         if (user != null) {
             this.id = user.getId();
             this.username = user.getUsername();
-            this.role = user.getRole();
+            this.roles = user.getRoles().toArray(new Role[0]);
             this.name = user.getName();
             this.avatarUrl = user.getAvatarUrl();
             this.age = user.getAge();
@@ -48,7 +49,7 @@ public class UserProfileVM implements Serializable {
             this.phone = user.getPhone();
             this.email = user.getEmail();
             this.remarks = user.getRemarks();
-            this.createTime = user.getCreateTime();
+            this.createTime = Optional.ofNullable(user.getCreateTime()).map(Date::getTime).orElse(null);
         }
         return this;
     }

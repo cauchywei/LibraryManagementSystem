@@ -5,7 +5,7 @@ import java.util.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import xp.librarian.model.dto.BookDto;
+import xp.librarian.model.dto.Book;
 
 /**
  * @author xp
@@ -13,20 +13,19 @@ import xp.librarian.model.dto.BookDto;
 @Mapper
 public interface BookMapper {
 
-    int insert(BookDto dto);
+    int insert(Book book);
 
-    int update(BookDto dto);
+    int update(@Param("where") Book where,
+               @Param("set") Book set);
 
-    int delete(@Param("isbn") String isbn);
+    List<Book> select(@Param("where") Book where,
+                      @Param("offset") Integer offset,
+                      @Param("limits") Integer limits);
 
-    BookDto select(@Param("isbn") String isbn);
+    List<Book> selectIN(@Param("isbns") Collection<String> isbns);
 
-    List<BookDto> selectList(@Param("offset") int offset, @Param("limits") int limits);
-
-    List<BookDto> selectIN(@Param("isbns") Collection<String> isbns);
-
-    List<BookDto> search(@Param("isbn") String isbn, @Param("name") String name);
-
-    int updateMargin(@Param("isbn") String isbn, @Param("delta") Integer delta);
+    List<Book> search(@Param("where") Book where,
+                      @Param("offset") Integer offset,
+                      @Param("limits") Integer limits);
 
 }

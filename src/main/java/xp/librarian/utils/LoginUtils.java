@@ -6,7 +6,7 @@ import org.springframework.security.crypto.codec.Hex;
 
 import lombok.Data;
 import xp.librarian.model.context.AccountContext;
-import xp.librarian.model.dto.UserDto;
+import xp.librarian.model.dto.User;
 import xp.librarian.repository.UserDao;
 
 /**
@@ -60,7 +60,7 @@ public class LoginUtils {
             CookieUtils.delCookie(COOKIE_NAME);
             return null;
         }
-        UserDto user = userDao.get(token.getUserId());
+        User user = userDao.get(token.getUserId());
         if (user == null) {
             CookieUtils.delCookie(COOKIE_NAME);
             return null;

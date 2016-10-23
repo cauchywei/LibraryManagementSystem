@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import lombok.Data;
-import xp.librarian.model.dto.BookDto;
+import xp.librarian.model.dto.Book;
 
 /**
  * @author xp
@@ -22,15 +22,15 @@ public class BookVM implements Serializable {
 
     private Integer margin;
 
-    private Date createTime;
+    private Long createTime;
 
-    public BookVM withBook(BookDto book) {
+    public BookVM withBook(Book book) {
         if (book != null) {
             this.isbn = book.getIsbn();
             this.name = book.getName();
             this.total = book.getTotal();
             this.margin = book.getMargin();
-            this.createTime = book.getCreateTime();
+            this.createTime = Optional.ofNullable(book.getCreateTime()).map(Date::getTime).orElse(null);
         }
         return this;
     }

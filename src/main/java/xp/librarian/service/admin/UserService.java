@@ -5,12 +5,14 @@ import java.util.stream.*;
 
 import javax.validation.Valid;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import xp.librarian.model.context.AccountContext;
-import xp.librarian.model.dto.UserDto;
+import lombok.NonNull;
+import xp.librarian.model.dto.User;
 import xp.librarian.model.form.PagingForm;
 import xp.librarian.model.result.UserProfileVM;
 import xp.librarian.repository.UserDao;
@@ -22,45 +24,55 @@ import xp.librarian.repository.UserDao;
 @Transactional
 public class UserService {
 
-    //TODO 检查管理员权限
-
     @Autowired
     private UserDao userDao;
 
-    public List<UserProfileVM> getList(PagingForm paging) {
-        List<UserDto> users = userDao.gets(paging.getPage(), paging.getLimits());
-        return users.stream()
-                .filter((e) -> e != null)
-                .map((e) -> new UserProfileVM().withUser(e))
-                .collect(Collectors.toList());
-    }
-
-    public UserProfileVM get(Integer userId) {
-        UserDto user = userDao.get(userId);
+    private UserProfileVM buildUserProfileVM(@NonNull User user) {
         return new UserProfileVM().withUser(user);
     }
 
-    private boolean setStatus(Integer userId, UserDto.Status oldStatus, UserDto.Status newStatus) {
-        return 1 == userDao.updateStatus(userId, oldStatus, newStatus);
+    public List<UserProfileVM> getUsers(@Valid PagingForm paging) {
+        List<User> users = userDao.gets(new User(), paging.getPage(), paging.getLimits(), true);
+        return users.stream()
+                .filter(e -> e != null)
+                .distinct()
+                .map(this::buildUserProfileVM)
+                .collect(Collectors.toList());
     }
 
-    private boolean setStatus(Integer userId, UserDto.Status newStatus) {
-        UserDto user = new UserDto();
-        user.setId(userId);
-        user.setStatus(newStatus);
-        return 1 == userDao.update(user);
+    public UserProfileVM getUser(@NonNull Integer userId) {
+        User user = userDao.get(userId, true);
+        if (user == null) {
+            throw new ResourceNotFoundException("user not found.");
+        }
+        return buildUserProfileVM(user);
     }
 
-    public boolean freeze(Integer userId) {
-        return setStatus(userId, UserDto.Status.NORMAL, UserDto.Status.FROZEN);
+    private void setStatus(Integer userId, User.Status oldValue, User.Status newValue) {
+        User where = new User();
+        where.setId(userId);
+        where.setStatus(oldValue);
+        User set = new User();
+        set.setStatus(newValue);
+        if (0 == userDao.update(where, set)) {
+            throw new PersistenceException("user update failed.");
+        }
     }
 
-    public boolean unfreeze(Integer userId) {
-        return setStatus(userId, UserDto.Status.FROZEN, UserDto.Status.NORMAL);
+    private void setStatus(Integer userId, User.Status newValue) {
+        setStatus(userId, null, newValue);
     }
 
-    public boolean delete(Integer userId) {
-        return setStatus(userId, UserDto.Status.DELETE);
+    public void freeze(@NonNull Integer userId) {
+        setStatus(userId, User.Status.NORMAL, User.Status.FROZEN);
+    }
+
+    public void unfreeze(@NonNull Integer userId) {
+        setStatus(userId, User.Status.FROZEN, User.Status.NORMAL);
+    }
+
+    public void delete(@NonNull Integer userId) {
+        setStatus(userId, User.Status.DELETED);
     }
 
 }

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xp.librarian.repository.mapper.LendMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `Lend`(
+            `userId`,
+            `traceId`,
+            `status`,
+            `applyingTime`,
+            `appointedTime`,
+            `expiredTime`
+        ) VALUES (
+            #{userId},
+            #{traceId},
+            #{status},
+            #{applyingTime},
+            #{appointedTime},
+            #{expiredTime}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE `Lend`
+        <set>
+            <if test="set.status != null">
+                `status`=#{set.status},
+            </if>
+            <if test="set.appointedTime != null">
+                `appointedTime`=#{set.appointedTime},
+            </if>
+        </set>
+        <trim prefix=" WHERE " prefixOverrides="AND">
+            <if test="where.id != null">
+                AND `id`=#{where.id}
+            </if>
+            <if test="where.userId != null">
+                AND `userId`=#{where.userId}
+            </if>
+            <if test="where.traceId != null">
+                AND `traceId`=#{where.traceId}
+            </if>
+            <if test="where.status != null">
+                AND `status`=#{where.status}
+            </if>
+            <if test="where.appointedTime != null">
+                AND `appointedTime`=#{where.appointedTime}
+            </if>
+        </trim>
+        LIMIT 1
+        ;
+    </update>
+
+    <select id="select" resultType="Lend">
+        SELECT * FROM `Lend`
+        <trim prefix=" WHERE " prefixOverrides="AND">
+            <if test="where.id != null">
+                AND `id`=#{where.id}
+            </if>
+            <if test="where.userId != null">
+                AND `userId`=#{where.userId}
+            </if>
+            <if test="where.traceId != null">
+                AND `traceId`=#{where.traceId}
+            </if>
+            <if test="where.status != null">
+                AND `status`=#{where.status}
+            </if>
+            <if test="where.appointedTime != null">
+                AND `appointedTime`=#{where.appointedTime}
+            </if>
+        </trim>
+        ORDER BY `applyingTime` DESC
+        <if test="limits != null &amp;&amp; limits != 0">
+            LIMIT #{offset}, #{limits};
+        </if>
+        ;
+    </select>
+
+</mapper>

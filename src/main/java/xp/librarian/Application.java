@@ -19,7 +19,6 @@ public class Application {
 
     public static void main(String[] args) {
         LOG.info("LOG ON");
-
         SpringApplication app = new SpringApplication(Application.class);
         app.run(args);
     }

@@ -6,27 +6,48 @@
         INSERT INTO `Book`(
             `isbn`,
             `name`,
-            `total`,
-            `margin`,
+            `status`,
             `createTime`
         ) VALUES (
             #{isbn},
             #{name},
-            #{total},
-            #{margin},
+            #{status},
             #{createTime}
         );
     </insert>
 
-    <select id="select" resultType="xp.librarian.model.dto.BookDto">
-        SELECT * FROM `Book`
-        WHERE `isbn`=#{isbn} AND `status`='NORMAL'
-        LIMIT 1;
-    </select>
+    <update id="update">
+        UPDATE `Book`
+        <set>
+            <if test="set.name != null">
+                `name`=#{set.name},
+            </if>
+            <if test="set.status != null">
+                `status`=#{set.status},
+            </if>
+        </set>
+        <trim prefix=" WHERE " prefixOverrides="AND">
+            <if test="where.isbn != null">
+                AND `isbn`=#{where.isbn}
+            </if>
+            <if test="where.status != null">
+                AND `status`=#{where.status}
+            </if>
+        </trim>
+        LIMIT 1
+        ;
+    </update>
 
-    <select id="selectList" resultType="xp.librarian.model.dto.BookDto">
+    <select id="select" resultType="Book">
         SELECT * FROM `Book`
-        WHERE `status`='NORMAL'
+        <trim prefix=" WHERE " prefixOverrides="AND">
+            <if test="where.id != null">
+                AND `id`=#{where.id}
+            </if>
+            <if test="where.status != null">
+                AND `status`=#{where.status}
+            </if>
+        </trim>
         ORDER BY `createTime` ASC
         <if test="limits != null &amp;&amp; limits != 0">
             LIMIT #{offset}, #{limits}
@@ -34,51 +55,36 @@
         ;
     </select>
 
-    <select id="selectIN" resultType="xp.librarian.model.dto.BookDto">
+    <select id="selectIN" resultType="Book">
         SELECT * FROM `Book`
         WHERE
             `isbn` IN
             <foreach collection="isbns" item="item" index="index" open="(" separator="," close=")">
                 #{item}
             </foreach>
-            AND `status`='NORMAL'
         ;
     </select>
 
-    <update id="update">
-        UPDATE `Book`
-        <set>
-            <if test="name != null">
-                `name`=#{name},
-            </if>
-            <if test="total != null">
-                `total`=#{total},
-            </if>
-            <if test="margin != null">
-                `margin`=#{margin},
-            </if>
-        </set>
-        WHERE `isbn`=#{isbn} AND `status`='NORMAL'
-        LIMIT 1;
-    </update>
-
-    <update id="delete">
-        UPDATE `Book` SET `status`='DELETE'
-        WHERE `isbn`=#{isbn} AND `status`='NORMAL'
-        LIMIT 1;
-    </update>
-
-    <select id="search" resultType="xp.librarian.model.dto.BookDto">
+    <select id="search" resultType="Book">
         SELECT * FROM `Book`
-        WHERE (locate(#{name}, `name`) > 0 OR locate(#{isbn}, `isbn`) > 0) AND `status`='NORMAL'
-        ORDER BY `createTime` ASC;
+        <trim prefix=" WHERE " prefixOverrides="AND">
+            <trim prefix=" AND (" suffix=")" prefixOverrides="OR">
+                <if test="where.name != null">
+                    OR (locate(#{where.name}, `name`) > 0
+                </if>
+                <if test="where.isbn != null">
+                    OR locate(#{where.isbn}, `isbn`) > 0)
+                </if>
+            </trim>
+            <if test="where.status != null">
+                AND `status`=#{where.status}
+            </if>
+        </trim>
+        ORDER BY `createTime` ASC
+        <if test="limits != null &amp;&amp; limits != 0">
+            LIMIT #{offset}, #{limits}
+        </if>
+        ;
     </select>
-
-    <update id="updateMargin">
-        UPDATE `Book`
-        SET `margin`=`margin`+#{delta}
-        WHERE `isbn`=#{isbn} AND `margin`+#{delta}>=0 AND `status`='NORMAL'
-        LIMIT 1;
-    </update>
 
 </mapper>

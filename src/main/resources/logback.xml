@@ -11,7 +11,7 @@
 
     <!-- loggers -->
 
-    <logger name="xp.librarian" level="DEBUG" additivity="false">
+    <logger name="xp.librarian" level="INFO" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
 

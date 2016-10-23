@@ -5,7 +5,7 @@ import java.io.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
-import xp.librarian.model.dto.UserDto;
+import xp.librarian.model.dto.User;
 
 /**
  * @author xp
@@ -31,8 +31,8 @@ public class UserUpdateForm implements Serializable {
 
     private String remarks;
 
-    public UserDto toDTO() {
-        UserDto user = new UserDto();
+    public User toDTO() {
+        User user = new User();
         user.setPassword(password);
         user.setName(name);
         user.setAge(age);

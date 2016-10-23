@@ -10,15 +10,10 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * @author xp
  */
 @Component
-public class SimpleCorsInterceptor extends HandlerInterceptorAdapter {
+public class SampleInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "*");
-        response.setHeader("Access-Control-Allow-Headers", "*");
-
-
-        return false;
+        return true;
     }
 }

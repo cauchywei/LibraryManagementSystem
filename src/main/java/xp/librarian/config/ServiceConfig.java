@@ -8,7 +8,10 @@ import org.springframework.context.annotation.Import;
  * @author xp
  */
 @Configuration
-@Import({RepositoryConfig.class})
+@Import({
+        RepositoryConfig.class,
+        ScheduleConfig.class
+})
 @ComponentScan(basePackages = {"xp.librarian.service"})
 public class ServiceConfig {
 

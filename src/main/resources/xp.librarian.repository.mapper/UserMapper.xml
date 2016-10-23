@@ -6,7 +6,7 @@
         INSERT INTO `User`(
             `username`,
             `password`,
-            `role`,
+            `roles`,
             `status`,
             `name`,
             `avatarUrl`,
@@ -17,9 +17,9 @@
             `remarks`,
             `createTime`
         ) VALUES (
-            #{username},
+            LOWER(#{username}),
             MD5(#{password}),
-            #{role},
+            #{roles},
             #{status},
             #{name},
             #{avatarUrl},
@@ -32,67 +32,79 @@
         );
     </insert>
 
-    <select id="selectByUsernameAndPassword" resultType="xp.librarian.model.dto.UserDto">
-        SELECT * FROM `User`
-        WHERE LOWER(`username`)=LOWER(#{username}) AND `password`=MD5(#{password})
-        LIMIT 1;
-    </select>
+    <update id="update">
+        UPDATE `User`
+        <set>
+            <if test="set.username != null">
+                `username`=LOWER(#{set.username}),
+            </if>
+            <if test="set.password != null">
+                `password`=MD5(#{set.password}),
+            </if>
+            <if test="set.status != null">
+                `status`=#{set.status},
+            </if>
+            <if test="set.name != null">
+                `name`=#{set.name},
+            </if>
+            <if test="set.avatarUrl != null">
+                `avatarUrl`=#{set.avatarUrl},
+            </if>
+            <if test="set.age != null">
+                `age`=#{set.age},
+            </if>
+            <if test="set.major != null">
+                `major`=#{set.major},
+            </if>
+            <if test="set.phone != null">
+                `phone`=#{set.phone},
+            </if>
+            <if test="set.email != null">
+                `email`=#{set.email},
+            </if>
+            <if test="set.remarks != null">
+                `remarks`=#{set.remarks},
+            </if>
+        </set>
+        <trim prefix=" WHERE " prefixOverrides="AND">
+            <if test="where.id != null">
+                AND `id`=#{where.id}
+            </if>
+            <if test="where.username != null">
+                AND `username`=LOWER(#{where.username})
+            </if>
+            <if test="where.password != null">
+                AND `password`=MD5(#{where.password})
+            </if>
+            <if test="where.status != null">
+                AND `status`=#{where.status}
+            </if>
+        </trim>
+        LIMIT 1
+        ;
+    </update>
 
-    <select id="select" resultType="xp.librarian.model.dto.UserDto">
+    <select id="select" resultType="User">
         SELECT * FROM `User`
-        WHERE `id`=#{id}
-        LIMIT 1;
-    </select>
-
-    <select id="selectList" resultType="xp.librarian.model.dto.UserDto">
-        SELECT * FROM `User`
+        <trim prefix=" WHERE " prefixOverrides="AND">
+            <if test="where.id != null">
+                AND `id`=#{where.id}
+            </if>
+            <if test="where.username != null">
+                AND `username`=LOWER(#{where.username})
+            </if>
+            <if test="where.password != null">
+                AND `password`=MD5(#{where.password})
+            </if>
+            <if test="where.status != null">
+                AND `status`=#{where.status}
+            </if>
+        </trim>
         ORDER BY `createTime` ASC
         <if test="limits != null &amp;&amp; limits != 0">
             LIMIT #{offset}, #{limits};
         </if>
         ;
     </select>
-
-    <update id="update">
-        UPDATE `User`
-        <set>
-            <if test="password != null">
-                `password`=MD5(#{password}),
-            </if>
-            <if test="status != null">
-                `status`=#{status},
-            </if>
-            <if test="name != null">
-                `name`=#{name},
-            </if>
-            <if test="avatarUrl != null">
-                `avatarUrl`=#{avatarUrl},
-            </if>
-            <if test="age != null">
-                `age`=#{age},
-            </if>
-            <if test="major != null">
-                `major`=#{major},
-            </if>
-            <if test="phone != null">
-                `phone`=#{phone},
-            </if>
-            <if test="email != null">
-                `email`=#{email},
-            </if>
-            <if test="remarks != null">
-                `remarks`=#{remarks},
-            </if>
-        </set>
-        WHERE `id`=#{id}
-        LIMIT 1;
-    </update>
-
-    <update id="updateStatus">
-        UPDATE `User`
-        SET `status`=#{newStatus}
-        WHERE `id`=#{id} AND `status`=#{oldStatus}
-        LIMIT 1;
-    </update>
 
 </mapper>

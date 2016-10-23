@@ -1,13 +1,21 @@
 package xp.librarian.service.admin;
 
+import java.time.*;
 import java.util.*;
 import java.util.stream.*;
 
+import javax.validation.Valid;
+
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import xp.librarian.model.dto.BookDto;
+import lombok.NonNull;
+import xp.librarian.model.context.BusinessException;
+import xp.librarian.model.context.ErrorCode;
+import xp.librarian.model.dto.Book;
 import xp.librarian.model.form.BookAddForm;
 import xp.librarian.model.form.BookUpdateForm;
 import xp.librarian.model.form.PagingForm;
@@ -18,45 +26,77 @@ import xp.librarian.repository.BookDao;
  * @author xp
  */
 @Service("adminBookService")
+@Transactional
 public class BookService {
 
     @Autowired
     private BookDao bookDao;
 
-    public BookVM add(BookAddForm form) {
-        BookDto book = form.toDTO();
-        book.setStatus(BookDto.Status.NORMAL);
-        book.setCreateTime(new Date(System.currentTimeMillis()));
-        if (1 != bookDao.add(book)) {
-            throw new PersistenceException();
-        }
+    private BookVM buildBookVM(@NonNull Book book) {
         return new BookVM().withBook(book);
     }
 
-    public List<BookVM> getList(PagingForm paging) {
-        List<BookDto> books = bookDao.gets(paging.getPage(), paging.getLimits());
+    public BookVM addBook(@Valid BookAddForm form) {
+        Book book = form.toDTO();
+        if (book.getStatus() == null) {
+            book.setStatus(Book.Status.NORMAL);
+        }
+        book.setCreateTime(Date.from(Instant.now()));
+        if (0 == bookDao.add(book)) {
+            throw new PersistenceException("book insert failed.");
+        }
+        return buildBookVM(book);
+    }
+
+    public BookVM updateBook(@Valid BookUpdateForm form) {
+        Book book = bookDao.get(form.getIsbn(), true);
+        if (book == null) {
+            throw new ResourceNotFoundException("book not found.");
+        }
+        Book where = new Book();
+        where.setIsbn(book.getIsbn());
+        where.setStatus(book.getStatus());
+        Book set = form.toDTO();
+        if (0 == bookDao.update(where, set)) {
+            throw new PersistenceException("book update failed.");
+        }
+        return buildBookVM(bookDao.get(book.getIsbn(), true));
+    }
+
+    public void deleteBook(@NonNull String isbn) {
+        Book book = bookDao.get(isbn, true);
+        if (book == null) {
+            throw new ResourceNotFoundException("book not found.");
+        }
+        if (!Book.Status.NORMAL.equals(book.getStatus())) {
+            throw new BusinessException(ErrorCode.ADMIN_BOOK_STATUS_MISMATCH);
+        }
+        Book where = new Book();
+        where.setIsbn(isbn);
+        where.setStatus(Book.Status.NORMAL);
+        Book set = new Book();
+        set.setStatus(Book.Status.DELETED);
+        if (0 == bookDao.update(where, set)) {
+            throw new PersistenceException("book update failed.");
+        }
+        //TODO DELETE all traces
+    }
+
+    public List<BookVM> getBooks(@Valid PagingForm paging) {
+        List<Book> books = bookDao.gets(new Book(), paging.getPage(), paging.getLimits(), true);
         return books.stream()
                 .filter((e) -> e != null)
-                .map((e) -> new BookVM().withBook(e))
+                .distinct()
+                .map(this::buildBookVM)
                 .collect(Collectors.toList());
     }
 
-    public BookVM get(String ISBN) {
-        BookDto book = bookDao.get(ISBN);
-        return new BookVM().withBook(book);
-    }
-
-    public BookVM update(BookUpdateForm form) {
-        BookDto book = form.toDTO();
-        if (1 != bookDao.update(book)) {
-            throw new PersistenceException();
+    public BookVM getBook(@NonNull String isbn) {
+        Book book = bookDao.get(isbn, true);
+        if (book == null) {
+            throw new ResourceNotFoundException("book not found.");
         }
-        book = bookDao.get(book.getIsbn());
-        return new BookVM().withBook(book);
-    }
-
-    public boolean delete(String isbn) {
-        return 1 == bookDao.delete(isbn);
+        return buildBookVM(book);
     }
 
 }
