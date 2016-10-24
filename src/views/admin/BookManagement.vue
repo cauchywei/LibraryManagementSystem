@@ -13,17 +13,38 @@
     <div id="book-list">
       <input class="input-search" autofocus autocomplete="off" placeholder="Search books here"
              v-model="searchInput" @keyup.enter="search"/>
-      <div v-for="book in filterBooks"
-           class="book"
-           :key="book.isbn">
-        <h4 id="title">《{{book.name}}》x{{book.total}}</h4>
+      <ul>
+        <li v-for="book in filterBooks"
+            class="book"
+            :key="book.isbn">
+          <div class="book-item" @click="selectBook(book)">
+            <h4 id="title">《{{book.name}}》<!--x{{book.total}}--></h4>
 
-        <div id="bottom">
-          <h6 id="isbn">ISBN: {{book.isbn}}</h6>
+            <div id="bottom">
+              <h6 id="isbn">ISBN: {{book.isbn}}</h6>
 
-          <a @click="deleteBook(book)" id="delete">Delete</a>
-        </div>
-      </div>
+              <a v-if="currentSelectBook === book">hide</a>
+              <a v-else>show detail</a>
+
+            </div>
+          </div>
+          <ul v-if="currentSelectBook == book" id="trace-list">
+            <li v-for="trace in currentTrace" class="trace-item">
+              <span class="trace-item-id">id: {{trace.id}}</span>
+              <span>     status: {{trace.status}}</span>
+              <div class="space"></div>
+              <button class="operation delete" v-if="trace.status !== 'DELETED'" @click="deleteTrace(trace)">delete
+              </button>
+              <button class="operation borrow" v-if="trace.status === 'LOCKED'" @click="borrowTrace(trace)">borrow
+              </button>
+            </li>
+            <div v-if=" currentTrace && currentTrace.length=== 0">
+              No traces.
+            </div>
+          </ul>
+
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -41,7 +62,9 @@
           margin: null
         },
         filterBooks: [],
-        searchInput: ''
+        searchInput: '',
+        currentSelectBook: null,
+        currentTrace: []
       }
     },
     methods: {
@@ -50,6 +73,9 @@
         service.addBookByAdmin(this.newBook).then(function (response) {
           if (response.data.success) {
             self.$store.dispatch('ADD_NEW_BOOK', self.newBook)
+            if (self.newBook.name.indexOf(self.searchInput) !== -1) {
+              self.filterBooks.unshift(self.newBook)
+            }
             self.newBook = {}
           } else {
             alert('add fail!')
@@ -71,12 +97,53 @@
           alert(e)
           alert('delete book fail!')
         })
+      },
+      selectBook (book) {
+        if (this.currentSelectBook === book) {
+          this.currentTrace = null
+          this.currentSelectBook = null
+        } else {
+          this.currentSelectBook = book
+          let self = this
+          service.getBookTraceByAdmin(book.isbn).then(function (response) {
+            if (response.data.success) {
+              self.currentTrace = response.data.entities
+            } else {
+              alert('fetch failed!')
+            }
+          }).catch(function (error) {
+            alert('fetch failed!' + error)
+          })
+        }
+      },
+      deleteTrace (trace) {
+        service.deleteBookTraceByAdmin(trace).then(function (response) {
+          if (response.data.success) {
+            trace.status = "DELETED"
+          } else {
+            alert('delete failed!')
+          }
+        }).catch(function (error) {
+          alert('delete failed!' + error)
+        })
+      },
+      borrowTrace (trace) {
+        service.borrowBookTraceByAdmin(trace).then(function (response) {
+          if (response.data.success) {
+            trace.status = "BORROWED"
+          } else {
+            alert('borrow failed!')
+          }
+        }).catch(function (error) {
+          alert('borrow failed!' + error)
+        })
       }
     },
     watch: {
       searchInput: function (newInput) {
+        this.currentSelectBook = null
         this.filterBooks = this.$store.state.books.filter(function (book) {
-          return book.name.toLowerCase().indexOf(newInput.toLowerCase()) !== -1
+          return book.name.toLowerCase().indexOf(newInput.toLowerCase().trim()) !== -1
         })
 //        alert(JSON.stringify(this.filterBooks))
       }
@@ -89,7 +156,7 @@
     beforeMount () {
       this.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN')
     }
-  }
+  };
 </script>
 
 <style scoped>
@@ -112,9 +179,22 @@
   #book-list {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     align-self: stretch;
     flex-grow: 14;
+  }
+
+  #trace-list {
+    width: 100%;
+  }
+
+  .operation {
+    align-self: flex-end;
+    margin: 4px;
+  }
+
+  .delete {
+    color: #af5b5e;
   }
 
   .book {
@@ -122,8 +202,33 @@
     display: flex;
     flex-direction: column;
     margin: 20px;
-    width: 50%;
+    height: auto;
+    min-width: 300px;
+    width: 100%;
     padding: 20px;
+    align-items: flex-start;
+    box-shadow: inset 0 -2px 2px rgba(0, 0, 0, 0.03);
+  }
+
+  .trace-item {
+    display: flex;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    width: 100%;
+  }
+
+  .trace-item-id {
+    width: 80px;
+    text-align: start;
+  }
+
+  .book-item {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    height: auto;
+    min-width: 300px;
+    width: 100%;
     align-items: flex-start;
   }
 
@@ -149,6 +254,7 @@
     height: 20px;
     align-self: flex-end;
     color: #af5b5e;
+    margin-left: 100px;
   }
 
   .input-search,
@@ -174,6 +280,10 @@
     border: none;
     background: rgba(0, 0, 0, 0.003);
     box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
+  }
+
+  .space {
+    width: 100px;
   }
 
   #add-book-panel form {

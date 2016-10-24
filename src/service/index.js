@@ -81,6 +81,10 @@ export function getBookByAdmin(ISBN) {
   return axios.get('/admin/books/' + ISBN + '/');
 }
 
+export function getBookTraceByAdmin(ISBN) {
+  return axios.get('/admin/books/' + ISBN + '/traces/');
+}
+
 export function addBookByAdmin(map) {
   return axios.post('/admin/books/add', extractMapToForm(map));
 }
@@ -89,10 +93,13 @@ export function updateBookByAdmin(ISBN, map) {
   return axios.post('/admin/books/' + ISBN + '/update', extractMapToForm(map));
 }
 
-export function deleteBookByAdmin(ISBN) {
-  return axios.post('admin/books/' + ISBN + '/delete');
+export function deleteBookTraceByAdmin(trace) {
+  return axios.post('admin/books/' + trace.book.isbn + '/traces/' + trace.id + '/delete');
 }
 
+export function borrowBookTraceByAdmin(trace) {
+  return axios.post('admin/books/' + trace.book.isbn + '/traces/' + trace.id + '/borrow');
+}
 export function getUsersByAdmin() {
   return axios.get('/admin/users/', {
     params: {

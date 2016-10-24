@@ -45,6 +45,15 @@
 <script>
   import * as service from '../service'
 
+  function removeByValue(arr, val) {
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i] === val) {
+        arr.splice(i, 1);
+        break;
+      }
+    }
+  }
+
   export default {
     data() {
       return {
@@ -112,7 +121,7 @@
           const success = response.data.success;
           if (success) {
             alert('lend success！');
-            self.currentBookTrace.remove(trace)
+            removeByValue(self.currentBookTrace, trace)
           } else {
             alert('lend fail！');
           }
@@ -126,7 +135,8 @@
           const success = response.data.success;
           if (success) {
             alert('reservation success！');
-            trace.status = "RESERVATION"
+            removeByValue(self.currentBookTrace, trace)
+            trace.status = 'RESERVATION'
           } else {
             alert('reservation fail！');
           }
