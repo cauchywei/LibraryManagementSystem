@@ -11,7 +11,9 @@
       </form>
     </div>
     <div id="book-list">
-      <div v-for="book in allBooks"
+      <input class="input-search" autofocus autocomplete="off" placeholder="Search books here"
+             v-model="searchInput" @keyup.enter="search"/>
+      <div v-for="book in filterBooks"
            class="book"
            :key="book.isbn">
         <h4 id="title">《{{book.name}}》x{{book.total}}</h4>
@@ -37,7 +39,9 @@
           isbn: '',
           total: null,
           margin: null
-        }
+        },
+        filterBooks: [],
+        searchInput: ''
       }
     },
     methods: {
@@ -69,7 +73,14 @@
         })
       }
     },
-    watch: {},
+    watch: {
+      searchInput: function (newInput) {
+        this.filterBooks = this.$store.state.books.filter(function (book) {
+          return book.name.toLowerCase().indexOf(newInput.toLowerCase()) !== -1
+        })
+//        alert(JSON.stringify(this.filterBooks))
+      }
+    },
     computed: {
       allBooks: function () {
         return this.$store.state.books
@@ -138,6 +149,31 @@
     height: 20px;
     align-self: flex-end;
     color: #af5b5e;
+  }
+
+  .input-search,
+  .edit {
+    position: relative;
+    margin: 0;
+    width: 100%;
+    font-size: 24px;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: 1.4em;
+    color: inherit;
+    padding: 6px;
+    border: 1px solid #999;
+    box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .input-search {
+    padding: 16px 16px 16px 60px;
+    border: none;
+    background: rgba(0, 0, 0, 0.003);
+    box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
   }
 
   #add-book-panel form {
