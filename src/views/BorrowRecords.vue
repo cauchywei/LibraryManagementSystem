@@ -1,9 +1,9 @@
 <template>
   <div class="record-page">
     <!--<button id="btn-refresh" class="btn btn-default btn-block" @click="refresh()"> Refresh </button>-->
-    <section class="main" v-show="borrowRecords.length" v-cloak>
+    <section class="main" v-if="borrowRecords && borrowRecords.length" v-cloak>
       <ul class="record-list">
-        <li v-for="borrowRecord in borrowRecords" class="book" :key="borrowRecord.id">
+        <li v-for="borrowRecord in borrowRecords" class="book" :key="borrowRecord.id" >
           <div class="view">
             <span>《{{ borrowRecord.book.name }}》</span>
             <span class="small">
@@ -16,6 +16,9 @@
           </div>
         </li>
       </ul>
+    </section>
+    <section class="main" v-if="borrowRecords && !borrowRecords.length">
+        You have no records.
     </section>
   </div>
 </template>
@@ -169,6 +172,7 @@
 
   .main {
     position: relative;
+    height: 100%;
     z-index: 2;
     border-top: 1px solid #e6e6e6;
   }

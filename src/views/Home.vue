@@ -5,14 +5,37 @@
     <section class="main" v-show="searchBooks.length" v-cloak>
       <ul class="book-list">
         <li v-for="book in searchBooks" class="book" :key="book.isbn">
-          <div class="view">
+          <div class="view" @click="selectBook(book)">
             <span>《{{ book.name }}》</span>
             <span class="small">
               [ISBN: {{ book.isbn }}]
               Total: {{book.total}}, Left: {{ book.margin }} .
             </span>
-            <button class="btn btn-default" @click="borrow(book)"> Borrow </button>
+            <a class="desc" v-if="currentSelectBook === book">⬇hide⬇️</a>
+            <a v-else>⬆️️ click to ️show detail️ ️️️️⬆️️</a>
           </div>
+          <div v-if="currentSelectBook === book">
+            <ul v-if="currentBookTrace && currentBookTrace.length">
+              <li v-for="trace in currentBookTrace" v-if="showTrace(trace)">
+                <span>
+                  id: {{trace.id}}
+                </span>
+                <button v-if="traceBorrowable(trace)" @click="borrow(trace)">
+                  Borrow
+                </button>
+                <button v-if="traceReservable(trace)" @click="reservation(trace)">
+                  Reservation
+                </button>
+                <a v-if="trace.status === 'RESERVATION'">
+                  has reservation
+                </a>
+              </li>
+            </ul>
+            <div v-if="currentBookTrace && currentBookTrace.length === 0">
+              no tracks
+            </div>
+          </div>
+
         </li>
       </ul>
     </section>
@@ -26,16 +49,49 @@
     data() {
       return {
         searchBooks: [],
-        searchInput: ''
+        searchInput: '',
+        currentSelectBook: null,
+        currentBookTrace: []
       }
     },
-    watch: {
-    },
+    watch: {},
+    computed: {},
     methods: {
-      search: function() {
+      traceBorrowable: function (trace) {
+        return trace.status === 'NORMAL'
+      },
+      traceReservable: function (trace) {
+        return trace.status === 'BORROWED'
+      },
+      showTrace: function (trace) {
+        return trace.status === 'NORMAL' || trace.status === 'BORROWED' || trace.status === 'RESERVATION'
+      },
+      isBookSelected: function (book) {
+        return this.currentSelectBook === book
+      },
+      selectBook: function (book) {
+        if (this.currentSelectBook === book) {
+          this.currentSelectBook = null
+        } else {
+          this.currentBookTrace = null
+          this.currentSelectBook = book
+          let self = this
+          service.getBookTraces(book.isbn).then(function (response) {
+            if (response.data.success) {
+              self.currentBookTrace = response.data.entities
+            } else {
+              alert('fetch error')
+            }
+          }).catch(function (e) {
+            alert(e)
+          })
+        }
+      },
+      search: function () {
         let self = this;
         const value = self.searchInput && self.searchInput.trim();
         if (!value) {
+          self.$store.dispatch('ON_SEARCH_BOOKS', []);
           return;
         }
         const params = {
@@ -50,17 +106,32 @@
           console.error(error);
         });
       },
-      borrow: function(book) {
-        service.borrowBook(book.isbn).then(function (response) {
+      borrow: function (trace) {
+        let self = this
+        service.lendBookTrace(trace).then(function (response) {
           const success = response.data.success;
           if (success) {
-            book.margin -= 1;
+            alert('lend success！');
+            self.currentBookTrace.remove(trace)
           } else {
-            alert('借书失败！');
+            alert('lend fail！');
           }
         }).catch(function (error) {
-          alert('借书失败！');
-          console.error(error);
+          alert('lend fail！' + error);
+        });
+      },
+      reservation: function (trace) {
+        let self = this
+        service.reservationBookTrace(trace).then(function (response) {
+          const success = response.data.success;
+          if (success) {
+            alert('reservation success！');
+            trace.status = "RESERVATION"
+          } else {
+            alert('reservation fail！');
+          }
+        }).catch(function (error) {
+          alert('reservation success！' + error);
         });
       }
     }
@@ -139,6 +210,11 @@
     text-rendering: optimizeLegibility;
   }
 
+  .view {
+    width: 100%;
+    height: 100%;
+  }
+
   .input-search,
   .edit {
     position: relative;
@@ -161,12 +237,13 @@
     padding: 16px 16px 16px 60px;
     border: none;
     background: rgba(0, 0, 0, 0.003);
-    box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
+    box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
   }
 
   .main {
     position: relative;
-    z-index: 2;
+    height: 100%;
+    z-index: 1;
     border-top: 1px solid #e6e6e6;
   }
 

@@ -73,6 +73,10 @@ export function getBooksByAdmin() {
   });
 }
 
+export function lendBookTrace(trace) {
+  return axios.post(`/books/${trace.book.isbn}/traces/${trace.id}/lend`);
+}
+
 export function getBookByAdmin(ISBN) {
   return axios.get('/admin/books/' + ISBN + '/');
 }
@@ -91,6 +95,15 @@ export function deleteBookByAdmin(ISBN) {
 
 export function getUsersByAdmin() {
   return axios.get('/admin/users/', {
+    params: {
+      page: 1,
+      limits: 0
+    }
+  });
+}
+
+export function getBookTraces(isbn) {
+  return axios.get(`/books/${isbn}/traces/`, {
     params: {
       page: 1,
       limits: 0
