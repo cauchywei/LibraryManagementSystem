@@ -9,7 +9,7 @@
 
         <div v-if="isAdmin" class="action-bar">
           <h5 class="admin"> ( admin ) </h5>
-          <div class="button-divider">|</div>
+          <span class="button-divider">|</span>
           <router-link to="/book_management" class="header-button">Manage Books</router-link>
 
           <div class="button-divider">|</div>
@@ -19,7 +19,10 @@
           <div class="button-divider">|</div>
           <router-link to="/my/borrow_records" class="header-button">My Borrow Record</router-link>
         </div>
-
+        <span class="action-bar" v-else>
+          <span class="button-divider">|</span>
+          <router-link to="/my/borrow_records" class="header-button">My Borrow Records</router-link>
+        </span>
 
         <div class="button-divider">|</div>
         <a class="header-button" @click="logout">Logout</a>

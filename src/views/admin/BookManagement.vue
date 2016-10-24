@@ -18,7 +18,10 @@
             class="book"
             :key="book.isbn">
           <div class="book-item" @click="selectBook(book)">
-            <h4 id="title">《{{book.name}}》<!--x{{book.total}}--></h4>
+
+            <h4 id="title">《{{book.name}}》
+              <small>{{book.margin}} / {{book.total}}</small>
+            </h4>
 
             <div id="bottom">
               <h6 id="isbn">ISBN: {{book.isbn}}</h6>
@@ -45,7 +48,12 @@
 
         </li>
       </ul>
+      =======
+      <button @click="deleteBook(book)" class="btn btn-danger btn-delete">delete</button>
     </div>
+  </div>
+  >>>>>>> d05abd1fb1ddf4195bebe10db761a4f382ba825f
+  </div>
   </div>
 </template>
 

@@ -9,7 +9,7 @@
 
       <div style="{ display: flex; flex-direction: row}">
         <input v-model="account.name" placeholder="name" type="text"/>
-        <input v-model="account.age" placeholder="age" v-model.number="age" type="number"/>
+        <input v-model.number="account.age" placeholder="age" type="number"/>
       </div>
 
       <input v-model="account.major" class="full-input" placeholder="major" type="text"/>
