@@ -11,6 +11,9 @@
           <h5 class="admin"> ( admin ) </h5>
           <div class="button-divider">|</div>
           <router-link to="/book_management" class="header-button">Manage Books</router-link>
+
+          <div class="button-divider">|</div>
+          <router-link to="/user_management" class="header-button">Manage Users</router-link>
         </div>
         <div class="action-bar" v-else>
           <div class="button-divider">|</div>
@@ -62,7 +65,7 @@
         return this.$store.state.account;
       },
       isAdmin() {
-        return this.$store.state.account.role === 'ADMIN'
+        return this.$store.state.account.roles.contains('ADMIN')
       }
     }
   }

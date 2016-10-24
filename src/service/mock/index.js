@@ -7,7 +7,7 @@ const mock = new MockAdapter(instance)
 mock.onPost('/users/login').reply(200, {
   success: true,
   entity: {
-    role: 'READER',
+    roles: ['READER'],
     id: 1,
     username: 'cauchywei',
     name: 'Wei Qin',
