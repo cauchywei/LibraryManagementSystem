@@ -19,7 +19,7 @@
         <div id="bottom">
           <h6 id="isbn">ISBN: {{book.isbn}}</h6>
 
-          <a @click="deleteBook(book)" id="delete">X</a>
+          <a @click="deleteBook(book)" id="delete">Delete</a>
         </div>
       </div>
     </div>
@@ -135,10 +135,9 @@
   }
 
   #delete {
-    width: 20px;
     height: 20px;
-    background: #ff0000;
     align-self: flex-end;
+    color: #af5b5e;
   }
 
   #add-book-panel form {

@@ -65,7 +65,7 @@
         return this.$store.state.account;
       },
       isAdmin() {
-        return this.$store.state.account.roles.contains('ADMIN')
+        return this.$store.state.account.roles.indexOf('ADMIN') !== -1
       }
     }
   }
