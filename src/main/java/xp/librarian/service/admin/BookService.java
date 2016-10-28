@@ -41,7 +41,7 @@ public class BookService {
         if (book.getStatus() == null) {
             book.setStatus(Book.Status.NORMAL);
         }
-        book.setCreateTime(Date.from(Instant.now()));
+        book.setCreateTime(Instant.now());
         if (0 == bookDao.add(book)) {
             throw new PersistenceException("book insert failed.");
         }

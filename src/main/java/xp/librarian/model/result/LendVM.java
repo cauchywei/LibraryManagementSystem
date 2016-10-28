@@ -1,6 +1,7 @@
 package xp.librarian.model.result;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
 import lombok.Data;
@@ -41,9 +42,9 @@ public class LendVM implements Serializable {
             this.userId = lend.getUserId();
             this.traceId = lend.getTraceId();
             this.status = lend.getStatus();
-            this.applyingTime = Optional.ofNullable(lend.getApplyingTime()).map(Date::getTime).orElse(null);
-            this.appointedTime = Optional.ofNullable(lend.getAppointedTime()).map(Date::getTime).orElse(null);
-            this.expiredTime = Optional.ofNullable(lend.getExpiredTime()).map(Date::getTime).orElse(null);
+            this.applyingTime = Optional.ofNullable(lend.getApplyingTime()).map(Instant::toEpochMilli).orElse(null);
+            this.appointedTime = Optional.ofNullable(lend.getAppointedTime()).map(Instant::toEpochMilli).orElse(null);
+            this.expiredTime = Optional.ofNullable(lend.getExpiredTime()).map(Instant::toEpochMilli).orElse(null);
         }
         return this;
     }

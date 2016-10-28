@@ -16,7 +16,9 @@
 
     <select id="select" resultType="UserRole">
         SELECT * FROM `UserRole`
-        WHERE `userId`=#{userId}
+        <where>
+            `userId`=#{userId}
+        </where>
         ;
     </select>
 

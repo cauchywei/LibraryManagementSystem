@@ -1,17 +1,19 @@
 package xp.librarian.model.dto;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author xp
  */
 @Getter
 @Setter
+@Accessors(chain = true)
 public class User implements Serializable {
 
     private static final long serialVersionUID = -3210175692337394666L;
@@ -47,7 +49,7 @@ public class User implements Serializable {
 
     public String remarks;
 
-    public Date createTime;
+    public Instant createTime;
 
     @Override
     public boolean equals(Object object) {

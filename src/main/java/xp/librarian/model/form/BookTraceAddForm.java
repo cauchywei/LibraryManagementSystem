@@ -22,11 +22,10 @@ public class BookTraceAddForm implements Serializable {
     private String location;
 
     public BookTrace toDTO() {
-        BookTrace trace = new BookTrace();
-        trace.setIsbn(isbn);
-        trace.setStatus(status);
-        trace.setLocation(location);
-        return trace;
+        return new BookTrace()
+                .setIsbn(isbn)
+                .setStatus(status)
+                .setLocation(location);
     }
 
 }

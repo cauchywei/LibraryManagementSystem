@@ -64,7 +64,7 @@
                 `remarks`=#{set.remarks},
             </if>
         </set>
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.id != null">
                 AND `id`=#{where.id}
             </if>
@@ -77,14 +77,14 @@
             <if test="where.status != null">
                 AND `status`=#{where.status}
             </if>
-        </trim>
+        </where>
         LIMIT 1
         ;
     </update>
 
     <select id="select" resultType="User">
         SELECT * FROM `User`
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.id != null">
                 AND `id`=#{where.id}
             </if>
@@ -97,7 +97,7 @@
             <if test="where.status != null">
                 AND `status`=#{where.status}
             </if>
-        </trim>
+        </where>
         ORDER BY `createTime` ASC
         <if test="limits != null &amp;&amp; limits != 0">
             LIMIT #{offset}, #{limits};

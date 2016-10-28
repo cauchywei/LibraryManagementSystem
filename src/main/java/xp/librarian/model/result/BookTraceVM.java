@@ -1,6 +1,7 @@
 package xp.librarian.model.result;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
 import lombok.Data;
@@ -40,7 +41,7 @@ public class BookTraceVM implements Serializable {
             this.status = trace.getStatus();
             this.location = trace.getLocation();
             this.lendId = trace.getLendId();
-            this.createTime = Optional.ofNullable(trace.getCreateTime()).map(Date::getTime).orElse(null);
+            this.createTime = Optional.ofNullable(trace.getCreateTime()).map(Instant::toEpochMilli).orElse(null);
         }
         return this;
     }

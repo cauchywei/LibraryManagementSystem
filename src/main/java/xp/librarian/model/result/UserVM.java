@@ -1,7 +1,6 @@
 package xp.librarian.model.result;
 
 import java.io.*;
-import java.util.*;
 
 import lombok.Data;
 import xp.librarian.model.dto.User;

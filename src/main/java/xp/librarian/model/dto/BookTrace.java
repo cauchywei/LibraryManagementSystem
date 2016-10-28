@@ -1,16 +1,19 @@
 package xp.librarian.model.dto;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author xp
  */
 @Getter
 @Setter
+@Accessors(chain = true)
 public class BookTrace implements Serializable {
 
     private static final long serialVersionUID = -7884633389893650476L;
@@ -33,7 +36,7 @@ public class BookTrace implements Serializable {
 
     public Integer lendId;
 
-    public Date createTime;
+    public Instant createTime;
 
     @Override
     public boolean equals(Object object) {

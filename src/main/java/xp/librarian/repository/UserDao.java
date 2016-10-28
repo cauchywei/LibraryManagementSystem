@@ -12,7 +12,6 @@ import lombok.NonNull;
 import xp.librarian.model.dto.Role;
 import xp.librarian.model.dto.User;
 import xp.librarian.model.dto.UserRole;
-import xp.librarian.model.param.LoginParam;
 import xp.librarian.repository.mapper.UserMapper;
 import xp.librarian.repository.mapper.UserRoleMapper;
 

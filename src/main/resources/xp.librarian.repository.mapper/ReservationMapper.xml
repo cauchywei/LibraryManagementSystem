@@ -26,7 +26,7 @@
                 `enabledTime`=#{set.enabledTime},
             </if>
         </set>
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.id != null">
                 AND `id`=#{where.id}
             </if>
@@ -42,14 +42,14 @@
             <if test="where.enabledTime != null">
                 AND `enabledTime`=#{where.enabledTime}
             </if>
-        </trim>
+        </where>
         LIMIT 1
         ;
     </update>
 
     <select id="select" resultType="Reservation">
         SELECT * FROM `Reservation`
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.id != null">
                 AND `id`=#{where.id}
             </if>
@@ -65,7 +65,7 @@
             <if test="where.enabledTime != null">
                 AND `enabledTime`=#{where.enabledTime}
             </if>
-        </trim>
+        </where>
         ORDER BY `applyingTime` DESC
         <if test="limits != null &amp;&amp; limits != 0">
             LIMIT #{offset}, #{limits};

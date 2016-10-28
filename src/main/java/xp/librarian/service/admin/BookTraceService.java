@@ -70,7 +70,7 @@ public class BookTraceService {
         if (trace.getStatus() == null) {
             trace.setStatus(BookTrace.Status.NORMAL);
         }
-        trace.setCreateTime(Date.from(Instant.now()));
+        trace.setCreateTime(Instant.now());
         if (0 == traceDao.add(trace)) {
             throw new PersistenceException("book trace insert failed.");
         }

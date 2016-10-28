@@ -7,11 +7,13 @@
             `isbn`,
             `name`,
             `status`,
+            `desc`,
             `createTime`
         ) VALUES (
             #{isbn},
             #{name},
             #{status},
+            #{desc},
             #{createTime}
         );
     </insert>
@@ -25,29 +27,38 @@
             <if test="set.status != null">
                 `status`=#{set.status},
             </if>
+            <if test="set.desc != null">
+                `desc`=#{set.desc},
+            </if>
         </set>
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.isbn != null">
                 AND `isbn`=#{where.isbn}
+            </if>
+            <if test="where.name != null">
+                AND `name`=#{where.name}
             </if>
             <if test="where.status != null">
                 AND `status`=#{where.status}
             </if>
-        </trim>
+        </where>
         LIMIT 1
         ;
     </update>
 
     <select id="select" resultType="Book">
         SELECT * FROM `Book`
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.isbn != null">
                 AND `isbn`=#{where.isbn}
+            </if>
+            <if test="where.name != null">
+                AND `name`=#{where.name}
             </if>
             <if test="where.status != null">
                 AND `status`=#{where.status}
             </if>
-        </trim>
+        </where>
         ORDER BY `createTime` ASC
         <if test="limits != null &amp;&amp; limits != 0">
             LIMIT #{offset}, #{limits}
@@ -57,17 +68,18 @@
 
     <select id="selectIN" resultType="Book">
         SELECT * FROM `Book`
-        WHERE
+        <where>
             `isbn` IN
             <foreach collection="isbns" item="item" index="index" open="(" separator="," close=")">
                 #{item}
             </foreach>
+        </where>
         ;
     </select>
 
     <select id="search" resultType="Book">
         SELECT * FROM `Book`
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <trim prefix=" AND (" suffix=")" prefixOverrides="OR">
                 <if test="where.name != null">
                     OR (locate(#{where.name}, `name`) > 0)
@@ -79,7 +91,7 @@
             <if test="where.status != null">
                 AND `status`=#{where.status}
             </if>
-        </trim>
+        </where>
         ORDER BY `createTime` ASC
         <if test="limits != null &amp;&amp; limits != 0">
             LIMIT #{offset}, #{limits}

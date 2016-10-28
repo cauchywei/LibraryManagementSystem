@@ -23,11 +23,10 @@ public class BookAddForm implements Serializable {
     private Book.Status status;
 
     public Book toDTO() {
-        Book book = new Book();
-        book.setIsbn(isbn);
-        book.setName(name);
-        book.setStatus(status);
-        return book;
+        return new Book()
+                .setIsbn(isbn)
+                .setName(name)
+                .setStatus(status);
     }
 
 }

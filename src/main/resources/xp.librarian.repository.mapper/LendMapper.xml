@@ -30,7 +30,7 @@
                 `appointedTime`=#{set.appointedTime},
             </if>
         </set>
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.id != null">
                 AND `id`=#{where.id}
             </if>
@@ -46,14 +46,14 @@
             <if test="where.appointedTime != null">
                 AND `appointedTime`=#{where.appointedTime}
             </if>
-        </trim>
+        </where>
         LIMIT 1
         ;
     </update>
 
     <select id="select" resultType="Lend">
         SELECT * FROM `Lend`
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.id != null">
                 AND `id`=#{where.id}
             </if>
@@ -69,7 +69,7 @@
             <if test="where.appointedTime != null">
                 AND `appointedTime`=#{where.appointedTime}
             </if>
-        </trim>
+        </where>
         ORDER BY `applyingTime` DESC
         <if test="limits != null &amp;&amp; limits != 0">
             LIMIT #{offset}, #{limits};

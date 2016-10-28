@@ -1,16 +1,19 @@
 package xp.librarian.model.dto;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author xp
  */
 @Getter
 @Setter
+@Accessors(chain = true)
 public class Reservation implements Serializable {
 
     private static final long serialVersionUID = -4293391434805797781L;
@@ -30,9 +33,9 @@ public class Reservation implements Serializable {
 
     public Status status;
 
-    public Date applyingTime;
+    public Instant applyingTime;
 
-    public Date enabledTime;
+    public Instant enabledTime;
 
     @Override
     public boolean equals(Object object) {

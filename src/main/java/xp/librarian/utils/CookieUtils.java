@@ -8,10 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.core.serializer.DefaultSerializer;
-import org.springframework.core.serializer.Serializer;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
-import org.springframework.util.StringUtils;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;

@@ -6,12 +6,14 @@ import java.util.*;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author xp
  */
 @Getter
 @Setter
+@Accessors(chain = true)
 public class Record implements Serializable {
 
     private static final long serialVersionUID = 8338137113945623443L;
@@ -26,14 +28,14 @@ public class Record implements Serializable {
 
     public Object payload;
 
-    public Date time;
+    public Instant time;
 
     public static Record apply(Lend lend) {
         Record record = new Record();
         record.setAction(Action.APPLY);
         record.setUserId(lend.getUserId());
         record.setTraceId(lend.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -42,7 +44,7 @@ public class Record implements Serializable {
         record.setAction(Action.CANCEL_APPLICATION);
         record.setUserId(lend.getUserId());
         record.setTraceId(lend.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -51,7 +53,7 @@ public class Record implements Serializable {
         record.setAction(Action.RENEW);
         record.setUserId(lend.getUserId());
         record.setTraceId(lend.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -60,7 +62,7 @@ public class Record implements Serializable {
         record.setAction(Action.RESERVE);
         record.setUserId(reservation.getUserId());
         record.setTraceId(reservation.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -69,7 +71,7 @@ public class Record implements Serializable {
         record.setAction(Action.CANCEL_RESERVATION);
         record.setUserId(reservation.getUserId());
         record.setTraceId(reservation.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -78,7 +80,7 @@ public class Record implements Serializable {
         record.setAction(Action.ACCEPT);
         record.setUserId(lend.getUserId());
         record.setTraceId(lend.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -87,7 +89,7 @@ public class Record implements Serializable {
         record.setAction(Action.REJECT);
         record.setUserId(lend.getUserId());
         record.setTraceId(lend.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -96,7 +98,7 @@ public class Record implements Serializable {
         record.setAction(Action.CONFIRM_RETURNED);
         record.setUserId(lend.getUserId());
         record.setTraceId(lend.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -105,7 +107,7 @@ public class Record implements Serializable {
         record.setAction(Action.CONFIRM_DISABLED);
         record.setUserId(lend.getUserId());
         record.setTraceId(lend.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -114,7 +116,7 @@ public class Record implements Serializable {
         record.setAction(Action.EXPIRED);
         record.setUserId(lend.getUserId());
         record.setTraceId(lend.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -123,7 +125,7 @@ public class Record implements Serializable {
         record.setAction(Action.RESERVED);
         record.setUserId(reservation.getUserId());
         record.setTraceId(reservation.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 
@@ -132,7 +134,7 @@ public class Record implements Serializable {
         record.setAction(Action.LATE);
         record.setUserId(lend.getUserId());
         record.setTraceId(lend.getTraceId());
-        record.setTime(Date.from(Instant.now()));
+        record.setTime(Instant.now());
         return record;
     }
 

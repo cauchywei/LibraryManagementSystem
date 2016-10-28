@@ -20,7 +20,7 @@
 
     <select id="select" resultType="Record">
         SELECT * FROM `Record`
-        <trim prefix=" WHERE" prefixOverrides="AND">
+        <where>
             <if test="where.id != null">
                 AND `id`=#{where.id}
             </if>
@@ -33,7 +33,7 @@
             <if test="where.action != null">
                 AND `action`=#{where.action}
             </if>
-        </trim>
+        </where>
         ORDER BY `time` DESC
         <if test="limits != null &amp;&amp; limits != 0">
             LIMIT #{offset}, #{limits};

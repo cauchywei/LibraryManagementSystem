@@ -1,6 +1,7 @@
 package xp.librarian.model.result;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
 import lombok.Data;
@@ -39,8 +40,8 @@ public class ReservationVM implements Serializable {
             this.userId = reservation.getUserId();
             this.traceId = reservation.getTraceId();
             this.status = reservation.getStatus();
-            this.applyingTime = Optional.ofNullable(reservation.getApplyingTime()).map(Date::getTime).orElse(null);
-            this.enabledTime = Optional.ofNullable(reservation.getEnabledTime()).map(Date::getTime).orElse(null);
+            this.applyingTime = Optional.ofNullable(reservation.getApplyingTime()).map(Instant::toEpochMilli).orElse(null);
+            this.enabledTime = Optional.ofNullable(reservation.getEnabledTime()).map(Instant::toEpochMilli).orElse(null);
         }
         return this;
     }

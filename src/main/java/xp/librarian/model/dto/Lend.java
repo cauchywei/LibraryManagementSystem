@@ -1,17 +1,19 @@
 package xp.librarian.model.dto;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author xp
  */
 @Getter
 @Setter
+@Accessors(chain = true)
 public class Lend implements Serializable {
 
     private static final long serialVersionUID = 7741202507373698255L;
@@ -37,11 +39,11 @@ public class Lend implements Serializable {
 
     public Status status;
 
-    public Date applyingTime;
+    public Instant applyingTime;
 
-    public Date appointedTime;
+    public Instant appointedTime;
 
-    public Date expiredTime;
+    public Instant expiredTime;
 
     @Override
     public boolean equals(Object object) {

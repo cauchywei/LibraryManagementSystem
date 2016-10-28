@@ -25,10 +25,9 @@ public class BookUpdateForm implements Serializable {
     private Book.Status status;
 
     public Book toDTO() {
-        Book book = new Book();
-        book.setName(name);
-        book.setStatus(status);
-        return book;
+        return new Book()
+                .setName(name)
+                .setStatus(status);
     }
 
 }

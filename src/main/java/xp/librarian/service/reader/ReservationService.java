@@ -84,7 +84,7 @@ public class ReservationService {
         Reservation reservation = form.toDTO();
         reservation.setUserId(account.getId());
         reservation.setStatus(Reservation.Status.WAITING);
-        reservation.setApplyingTime(Date.from(Instant.now()));
+        reservation.setApplyingTime(Instant.now());
         if (0 == reservationDao.add(reservation)) {
             throw new PersistenceException("reservation insert failed.");
         }

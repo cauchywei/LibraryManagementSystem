@@ -32,15 +32,14 @@ public class UserUpdateForm implements Serializable {
     private String remarks;
 
     public User toDTO() {
-        User user = new User();
-        user.setPassword(password);
-        user.setName(name);
-        user.setAge(age);
-        user.setMajor(major);
-        user.setPhone(phone);
-        user.setEmail(email);
-        user.setRemarks(remarks);
-        return user;
+        return new User()
+                .setPassword(password)
+                .setName(name)
+                .setAge(age)
+                .setMajor(major)
+                .setPhone(phone)
+                .setEmail(email)
+                .setRemarks(remarks);
     }
 
 }

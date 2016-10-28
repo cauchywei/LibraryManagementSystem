@@ -1,7 +1,6 @@
 package xp.librarian.repository;
 
 import java.util.*;
-import java.util.function.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

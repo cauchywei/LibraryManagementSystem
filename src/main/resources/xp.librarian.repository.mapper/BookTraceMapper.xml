@@ -29,7 +29,7 @@
                 `lendId`=#{set.lendId},
             </if>
         </set>
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.id != null">
                 AND `id`=#{where.id}
             </if>
@@ -42,14 +42,14 @@
             <if test="where.lendId != null">
                 AND `lendId`=#{where.lendId}
             </if>
-        </trim>
+        </where>
         LIMIT 1
         ;
     </update>
 
     <select id="select" resultType="BookTrace">
         SELECT * FROM `BookTrace`
-        <trim prefix=" WHERE " prefixOverrides="AND">
+        <where>
             <if test="where.id != null">
                 AND `id`=#{where.id}
             </if>
@@ -62,7 +62,7 @@
             <if test="where.lendId != null">
                 AND `lendId`=#{where.lendId}
             </if>
-        </trim>
+        </where>
         ORDER BY `createTime` ASC
         <if test="limits != null &amp;&amp; limits != 0">
             LIMIT #{offset}, #{limits}

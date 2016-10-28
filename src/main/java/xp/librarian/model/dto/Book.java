@@ -1,24 +1,26 @@
 package xp.librarian.model.dto;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author xp
  */
 @Getter
 @Setter
+@Accessors(chain = true)
 public class Book implements Serializable {
 
     private static final long serialVersionUID = -2528891458266093773L;
 
-    public String isbn;
+    private String isbn;
 
-    public String name;
+    private String name;
 
     public enum Status {
         NORMAL,
@@ -26,13 +28,15 @@ public class Book implements Serializable {
         ;
     }
 
-    public Status status;
+    private Status status;
 
-    public transient Integer total;
+    private String desc;
 
-    public transient Integer margin;
+    private transient Integer total;
 
-    public Date createTime;
+    private transient Integer margin;
+
+    private Instant createTime;
 
     @Override
     public boolean equals(Object object) {

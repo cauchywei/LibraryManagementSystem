@@ -1,12 +1,12 @@
 package xp.librarian.model.result;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
 import lombok.Data;
 import xp.librarian.model.dto.Role;
 import xp.librarian.model.dto.User;
-import xp.librarian.model.dto.UserRole;
 
 /**
  * @author xp
@@ -50,7 +50,7 @@ public class UserProfileVM implements Serializable {
             this.phone = user.getPhone();
             this.email = user.getEmail();
             this.remarks = user.getRemarks();
-            this.createTime = Optional.ofNullable(user.getCreateTime()).map(Date::getTime).orElse(null);
+            this.createTime = Optional.ofNullable(user.getCreateTime()).map(Instant::toEpochMilli).orElse(null);
         }
         return this;
     }

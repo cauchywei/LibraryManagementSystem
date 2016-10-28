@@ -5,12 +5,14 @@ import java.util.*;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * @author xp
  */
 @Getter
 @Setter
+@Accessors(chain = true)
 public class UserRole implements Serializable {
 
     private static final long serialVersionUID = -298349867748056048L;

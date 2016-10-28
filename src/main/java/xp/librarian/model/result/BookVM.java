@@ -1,6 +1,7 @@
 package xp.librarian.model.result;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
 import lombok.Data;
@@ -18,6 +19,8 @@ public class BookVM implements Serializable {
 
     private String name;
 
+    private String desc;
+
     private Integer total;
 
     private Integer margin;
@@ -30,7 +33,7 @@ public class BookVM implements Serializable {
             this.name = book.getName();
             this.total = book.getTotal();
             this.margin = book.getMargin();
-            this.createTime = Optional.ofNullable(book.getCreateTime()).map(Date::getTime).orElse(null);
+            this.createTime = Optional.ofNullable(book.getCreateTime()).map(Instant::toEpochMilli).orElse(null);
         }
         return this;
     }

@@ -1,7 +1,6 @@
 package xp.librarian.service;
 
 import java.time.*;
-import java.util.*;
 
 import javax.validation.Valid;
 
@@ -13,15 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.NonNull;
 import xp.librarian.model.context.AccountContext;
+import xp.librarian.model.context.BusinessException;
 import xp.librarian.model.context.ErrorCode;
 import xp.librarian.model.dto.User;
 import xp.librarian.model.form.UserLoginForm;
 import xp.librarian.model.form.UserRegisterForm;
 import xp.librarian.model.form.UserUpdateForm;
-import xp.librarian.model.param.LoginParam;
 import xp.librarian.model.result.UserProfileVM;
 import xp.librarian.repository.UserDao;
-import xp.librarian.model.context.BusinessException;
 import xp.librarian.utils.UploadUtils;
 
 /**
@@ -42,7 +40,7 @@ public class UserService {
         User user = form.toDTO();
         user.setAvatarUrl(UploadUtils.upload(form.getAvatar()));
         user.setStatus(User.Status.NORMAL);
-        user.setCreateTime(Date.from(Instant.now()));
+        user.setCreateTime(Instant.now());
         if (0 == userDao.add(user)) {
             throw new PersistenceException("user insert failed.");
         }

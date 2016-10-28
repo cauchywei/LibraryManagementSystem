@@ -48,12 +48,12 @@ public class ScheduledService {
 
     @Scheduled(fixedDelay = 5 * 1000)
     public void lendExpiryTick() {
-        Date now = Date.from(Instant.now());
+        Instant now = Instant.now();
         Lend where = new Lend();
         where.setStatus(Lend.Status.APPLYING);
         List<Lend> lends = lendDao.gets(where, 1, 0);
         lends.stream()
-                .filter(lend -> now.after(lend.getExpiredTime()))
+                .filter(lend -> now.isAfter(lend.getExpiredTime()))
                 .forEach(lend -> {
                     Lend where1 = new Lend();
                     where1.setId(lend.getId());
@@ -86,12 +86,12 @@ public class ScheduledService {
 
     @Scheduled(fixedDelay = 60 * 1000)
     public void lendAppointmentTick() {
-        Date now = Date.from(Instant.now());
+        Instant now = Instant.now();
         Lend where = new Lend();
         where.setStatus(Lend.Status.ACTIVE);
         List<Lend> lends = lendDao.gets(where, 1, 0);
         lends.stream()
-                .filter(lend -> now.after(lend.getAppointedTime()))
+                .filter(lend -> now.isAfter(lend.getAppointedTime()))
                 .forEach(lend -> {
                     Lend where1 = new Lend();
                     where1.setId(lend.getId());
@@ -137,17 +137,17 @@ public class ScheduledService {
             }
             Reservation set2 = new Reservation();
             set2.setStatus(Reservation.Status.ENABLED);
-            set2.setEnabledTime(Date.from(Instant.now()));
+            set2.setEnabledTime(Instant.now());
             if (0 == reservationDao.update(where2, set2)) {
                 throw new PersistenceException("reservation update failed.");
             }
 
             Lend lend = new Lend();
-            lend.setAppointedTime(Date.from(TimeUtils.afterNow(30L, ChronoUnit.DAYS)));
+            lend.setAppointedTime(TimeUtils.afterNow(30L, ChronoUnit.DAYS));
             lend.setUserId(reservation.getUserId());
             lend.setStatus(Lend.Status.APPLYING);
-            lend.setExpiredTime(Date.from(TimeUtils.afterNow(24L, ChronoUnit.HOURS)));
-            lend.setApplyingTime(Date.from(Instant.now()));
+            lend.setExpiredTime(TimeUtils.afterNow(24L, ChronoUnit.HOURS));
+            lend.setApplyingTime(Instant.now());
             if (0 == lendDao.add(lend)) {
                 throw new PersistenceException("lend insert failed.");
             }

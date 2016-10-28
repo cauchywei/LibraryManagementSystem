@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
 import xp.librarian.model.form.PagingForm;
 import xp.librarian.model.result.BookTraceVM;
 import xp.librarian.service.reader.BookTraceService;

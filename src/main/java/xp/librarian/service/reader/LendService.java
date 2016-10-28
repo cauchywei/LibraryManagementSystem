@@ -85,8 +85,8 @@ public class LendService {
         Lend lend = form.toDTO();
         lend.setUserId(account.getId());
         lend.setStatus(Lend.Status.APPLYING);
-        lend.setExpiredTime(Date.from(TimeUtils.afterNow(2L, ChronoUnit.HOURS)));
-        lend.setApplyingTime(Date.from(Instant.now()));
+        lend.setExpiredTime(TimeUtils.afterNow(2L, ChronoUnit.HOURS));
+        lend.setApplyingTime(Instant.now());
         if (0 == lendDao.add(lend)) {
             throw new PersistenceException("lend insert failed.");
         }
@@ -173,7 +173,7 @@ public class LendService {
         where.setStatus(Lend.Status.ACTIVE);
         where.setAppointedTime(lend.getAppointedTime());
         Lend set = new Lend();
-        set.setAppointedTime(Date.from(TimeUtils.afterNow(30L, ChronoUnit.DAYS)));
+        set.setAppointedTime(TimeUtils.afterNow(30L, ChronoUnit.DAYS));
         if (0 == lendDao.update(where, set)) {
             throw new PersistenceException("lend update failed.");
         }

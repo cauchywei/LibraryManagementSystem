@@ -1,12 +1,11 @@
 package xp.librarian.model.result;
 
 import java.io.*;
+import java.time.*;
 import java.util.*;
 
 import lombok.Data;
 import xp.librarian.model.dto.Action;
-import xp.librarian.model.dto.Book;
-import xp.librarian.model.dto.Lend;
 import xp.librarian.model.dto.Record;
 
 /**
@@ -33,7 +32,7 @@ public class RecordVM implements Serializable {
             this.userId = record.getUserId();
             this.traceId = record.getTraceId();
             this.action = record.getAction();
-            this.time = Optional.ofNullable(record.getTime()).map(Date::getTime).orElse(null);
+            this.time = Optional.ofNullable(record.getTime()).map(Instant::toEpochMilli).orElse(null);
         }
         return this;
     }

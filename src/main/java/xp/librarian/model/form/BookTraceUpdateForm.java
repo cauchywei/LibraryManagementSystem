@@ -25,10 +25,9 @@ public class BookTraceUpdateForm implements Serializable {
     private String location;
 
     public BookTrace toDTO() {
-        BookTrace trace = new BookTrace();
-        trace.setStatus(status);
-        trace.setLocation(location);
-        return trace;
+        return new BookTrace()
+                .setStatus(status)
+                .setLocation(location);
     }
 
 }

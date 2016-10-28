@@ -25,9 +25,8 @@ public class ReserveBookForm implements Serializable {
     private Integer traceId;
 
     public Reservation toDTO() {
-        Reservation reservation = new Reservation();
-        reservation.setTraceId(traceId);
-        return reservation;
+        return new Reservation()
+                .setTraceId(traceId);
     }
 
     public static ReserveBookForm build(String isbn, Integer traceId) {

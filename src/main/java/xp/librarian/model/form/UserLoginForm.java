@@ -18,10 +18,9 @@ public class UserLoginForm implements Serializable {
     private String password;
 
     public User toDTO() {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        return user;
+        return new User()
+                .setUsername(username)
+                .setPassword(password);
     }
 
 }
