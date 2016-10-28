@@ -1,6 +1,5 @@
 package xp.librarian.service.reader;
 
-import java.time.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -8,21 +7,18 @@ import javax.validation.Valid;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.NonNull;
-import xp.librarian.model.context.AccountContext;
-import xp.librarian.model.context.BusinessException;
-import xp.librarian.model.context.ErrorCode;
+import xp.librarian.model.context.*;
 import xp.librarian.model.dto.*;
 import xp.librarian.model.form.PagingForm;
 import xp.librarian.model.form.ReservationListForm;
 import xp.librarian.model.form.ReserveBookForm;
 import xp.librarian.model.result.ReservationVM;
 import xp.librarian.repository.*;
+import xp.librarian.utils.TimeUtils;
 
 /**
  * @author xp
@@ -84,7 +80,7 @@ public class ReservationService {
         Reservation reservation = form.toDTO();
         reservation.setUserId(account.getId());
         reservation.setStatus(Reservation.Status.WAITING);
-        reservation.setApplyingTime(Instant.now());
+        reservation.setApplyingTime(TimeUtils.now());
         if (0 == reservationDao.add(reservation)) {
             throw new PersistenceException("reservation insert failed.");
         }
@@ -116,7 +112,7 @@ public class ReservationService {
             throw new ResourceNotFoundException("lend not found.");
         }
         if (!reservation.getUserId().equals(account.getId())) {
-            throw new AccessDeniedException("access denied.");
+            throw new AccessForbiddenException("access denied.");
         }
         return buildReservationVM(reservation);
     }
@@ -128,7 +124,7 @@ public class ReservationService {
             throw new ResourceNotFoundException("reservation not found.");
         }
         if (!reservation.getUserId().equals(account.getId())) {
-            throw new AccessDeniedException("access denied.");
+            throw new AccessForbiddenException("access denied.");
         }
         if (!Reservation.Status.WAITING.equals(reservation.getStatus())) {
             throw new BusinessException(ErrorCode.RESERVATION_STATUS_MISMATCH);

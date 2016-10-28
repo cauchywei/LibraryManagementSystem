@@ -6,20 +6,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * @author xp
  */
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-public class InternalServerException extends RuntimeException {
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
+public class UnauthorizedException extends RuntimeException {
 
-    private static final long serialVersionUID = -7156163369713202580L;
+    private static final long serialVersionUID = -7424380455806394517L;
 
-    public InternalServerException(String message) {
+    public UnauthorizedException(String message) {
         super(message);
     }
 
-    public InternalServerException(Throwable cause) {
+    public UnauthorizedException(Throwable cause) {
         super(cause);
     }
 
-    public InternalServerException(String message, Throwable cause) {
+    public UnauthorizedException(String message, Throwable cause) {
         super(message, cause);
     }
 

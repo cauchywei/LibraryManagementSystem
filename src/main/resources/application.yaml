@@ -5,12 +5,10 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # schema: migration/init.sql
     sql-script-encoding: UTF-8
-    tomcat:
+    dbcp2:
       initial-size: 4
       min-idle: 2
       max-idle: 8
-      max-active: 16
-      max-wait: 4096
       validation-query: "SELECT 1"
       validation-query-timeout: 10
       test-while-idle: true
@@ -44,5 +42,3 @@ mybatis:
 server:
   address: 0.0.0.0
   port: 6001
-  tomcat:
-    uri-encoding: utf-8

@@ -22,11 +22,14 @@ public class BookAddForm implements Serializable {
 
     private Book.Status status;
 
+    private String desc;
+
     public Book toDTO() {
         return new Book()
                 .setIsbn(isbn)
                 .setName(name)
-                .setStatus(status);
+                .setStatus(status)
+                .setDesc(desc);
     }
 
 }

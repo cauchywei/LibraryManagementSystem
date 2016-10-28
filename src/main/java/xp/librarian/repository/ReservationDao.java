@@ -2,47 +2,21 @@ package xp.librarian.repository;
 
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import lombok.NonNull;
 import xp.librarian.model.dto.Reservation;
-import xp.librarian.repository.mapper.ReservationMapper;
 
 /**
  * @author xp
  */
-@Repository
-public class ReservationDao {
+public interface ReservationDao {
 
-    @Autowired
-    private ReservationMapper reservationMapper;
+    int add(Reservation reservation);
 
-    public int add(@NonNull Reservation reservation) {
-        return reservationMapper.insert(reservation);
-    }
+    int update(Reservation where, Reservation set);
 
-    public int update(@NonNull Reservation where,
-                      @NonNull Reservation set) {
-        return reservationMapper.update(where, set);
-    }
+    Reservation get(Integer reservationId);
 
-    public Reservation get(@NonNull Integer reservationId) {
-        Reservation where = new Reservation();
-        where.setId(reservationId);
-        return get(where);
-    }
+    Reservation get(Reservation where);
 
-    public Reservation get(@NonNull Reservation where) {
-        return gets(where, 1, 1).stream()
-                .findFirst().orElse(null);
-    }
-
-    public List<Reservation> gets(@NonNull Reservation where,
-                                  @NonNull Integer page,
-                                  @NonNull Integer limits) {
-        Integer offset = (page - 1) * limits;
-        return reservationMapper.select(where, offset, limits);
-    }
+    List<Reservation> gets(Reservation where, Integer page, Integer limits);
 
 }

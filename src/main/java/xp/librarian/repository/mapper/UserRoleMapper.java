@@ -13,6 +13,8 @@ public interface UserRoleMapper {
 
     int insert(UserRole role);
 
+    int delete(UserRole role);
+
     List<UserRole> select(@Param("userId") Integer userId);
 
 }

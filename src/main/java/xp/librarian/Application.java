@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 import xp.librarian.config.WebConfig;
@@ -12,6 +13,7 @@ import xp.librarian.config.WebConfig;
  * @author xp
  */
 @SpringBootConfiguration
+@EnableAutoConfiguration
 @Import({WebConfig.class})
 public class Application {
 

@@ -6,20 +6,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * @author xp
  */
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-public class InternalServerException extends RuntimeException {
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException {
 
-    private static final long serialVersionUID = -7156163369713202580L;
+    private static final long serialVersionUID = 8996109177639717683L;
 
-    public InternalServerException(String message) {
+    public ResourceNotFoundException(String message) {
         super(message);
     }
 
-    public InternalServerException(Throwable cause) {
+    public ResourceNotFoundException(Throwable cause) {
         super(cause);
     }
 
-    public InternalServerException(String message, Throwable cause) {
+    public ResourceNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 

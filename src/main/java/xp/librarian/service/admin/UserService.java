@@ -7,11 +7,11 @@ import javax.validation.Valid;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.NonNull;
+import xp.librarian.model.context.ResourceNotFoundException;
 import xp.librarian.model.dto.User;
 import xp.librarian.model.form.PagingForm;
 import xp.librarian.model.result.UserProfileVM;

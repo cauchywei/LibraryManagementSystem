@@ -5,9 +5,9 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationException;
 
 import xp.librarian.model.context.AccountContext;
+import xp.librarian.model.context.UnauthorizedException;
 import xp.librarian.model.result.ResultWrapper;
 import xp.librarian.repository.UserDao;
 import xp.librarian.utils.LoginUtils;
@@ -27,7 +27,7 @@ public class BaseController {
     protected AccountContext getAccount(boolean force) {
         AccountContext account = LoginUtils.getAccount(userDao);
         if (account == null && force) {
-            throw new RememberMeAuthenticationException("not login or token expired.");
+            throw new UnauthorizedException("not login or token expired.");
         }
         return account;
     }

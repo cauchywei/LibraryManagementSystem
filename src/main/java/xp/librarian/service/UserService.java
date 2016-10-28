@@ -1,12 +1,9 @@
 package xp.librarian.service;
 
-import java.time.*;
-
 import javax.validation.Valid;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +11,15 @@ import lombok.NonNull;
 import xp.librarian.model.context.AccountContext;
 import xp.librarian.model.context.BusinessException;
 import xp.librarian.model.context.ErrorCode;
+import xp.librarian.model.context.ResourceNotFoundException;
+import xp.librarian.model.dto.Role;
 import xp.librarian.model.dto.User;
 import xp.librarian.model.form.UserLoginForm;
 import xp.librarian.model.form.UserRegisterForm;
 import xp.librarian.model.form.UserUpdateForm;
 import xp.librarian.model.result.UserProfileVM;
 import xp.librarian.repository.UserDao;
+import xp.librarian.utils.TimeUtils;
 import xp.librarian.utils.UploadUtils;
 
 /**
@@ -40,9 +40,12 @@ public class UserService {
         User user = form.toDTO();
         user.setAvatarUrl(UploadUtils.upload(form.getAvatar()));
         user.setStatus(User.Status.NORMAL);
-        user.setCreateTime(Instant.now());
+        user.setCreateTime(TimeUtils.now());
         if (0 == userDao.add(user)) {
             throw new PersistenceException("user insert failed.");
+        }
+        if (0 == userDao.addRole(user, Role.READER)) {
+            throw new PersistenceException("user role insert failed.");
         }
         return buildUserProfileVM(user);
     }

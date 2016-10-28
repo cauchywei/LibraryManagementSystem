@@ -24,7 +24,7 @@ public class User implements Serializable {
 
     private String password;
 
-    private transient Set<Role> roles;
+    private transient Set<Role> roles = new HashSet<>();
 
     public enum Status {
         NORMAL,
@@ -33,23 +33,23 @@ public class User implements Serializable {
         ;
     }
 
-    public Status status;
+    private Status status;
 
-    public String name;
+    private String name;
 
-    public String avatarUrl;
+    private String avatarUrl;
 
-    public Integer age;
+    private Integer age;
 
-    public String major;
+    private String major;
 
-    public String phone;
+    private String phone;
 
-    public String email;
+    private String email;
 
-    public String remarks;
+    private String remarks;
 
-    public Instant createTime;
+    private Instant createTime;
 
     @Override
     public boolean equals(Object object) {

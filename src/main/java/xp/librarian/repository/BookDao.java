@@ -1,78 +1,28 @@
 package xp.librarian.repository;
 
 import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import lombok.NonNull;
 import xp.librarian.model.dto.Book;
-import xp.librarian.repository.mapper.BookMapper;
 
 /**
  * @author xp
  */
-@Repository
-public class BookDao {
+public interface BookDao {
 
-    @Autowired
-    private BookMapper bookMapper;
+    int add(Book book);
 
-    private static final Function<Boolean, Predicate<Book>> forceFilter =
-            force -> e -> force || !Book.Status.DELETED.equals(e.getStatus());
+    int update(Book where, Book set);
 
-    public int add(@NonNull Book book) {
-        return bookMapper.insert(book);
-    }
+    Book get(String isbn);
 
-    public int update(@NonNull Book where,
-                      @NonNull Book set) {
-        return bookMapper.update(where, set);
-    }
+    Book get(String isbn, boolean force);
 
-    public Book get(@NonNull String isbn) {
-        return get(isbn, false);
-    }
+    List<Book> gets(Book where, Integer page, Integer limits);
 
-    public Book get(@NonNull String isbn, boolean force) {
-        Book where = new Book();
-        where.setIsbn(isbn);
-        return gets(where, 1, 1, force).stream()
-                .findFirst().orElse(null);
-    }
+    List<Book> gets(Book where, Integer page, Integer limits, boolean force);
 
-    public List<Book> gets(@NonNull Book where,
-                           @NonNull Integer page,
-                           @NonNull Integer limits) {
-        return gets(where, page, limits, false);
-    }
+    List<Book> search(Book book, Integer page, Integer limits);
 
-    public List<Book> gets(@NonNull Book where,
-                           @NonNull Integer page,
-                           @NonNull Integer limits,
-                           boolean force) {
-        int offset = (page - 1) * limits;
-        return bookMapper.select(where, offset, limits).stream()
-                .filter(forceFilter.apply(force))
-                .collect(Collectors.toList());
-    }
-
-    public List<Book> search(@NonNull Book book,
-                             @NonNull Integer page,
-                             @NonNull Integer limits) {
-        return search(book, page, limits, false);
-    }
-
-    public List<Book> search(@NonNull Book book,
-                             @NonNull Integer page,
-                             @NonNull Integer limits,
-                             boolean force) {
-        Integer offset = (page - 1) * limits;
-        return bookMapper.search(book, offset, limits).stream()
-                .filter(forceFilter.apply(force))
-                .collect(Collectors.toList());
-    }
+    List<Book> search(Book book, Integer page, Integer limits, boolean force);
 
 }

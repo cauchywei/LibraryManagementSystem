@@ -48,7 +48,7 @@ public class ScheduledService {
 
     @Scheduled(fixedDelay = 5 * 1000)
     public void lendExpiryTick() {
-        Instant now = Instant.now();
+        Instant now = TimeUtils.now();
         Lend where = new Lend();
         where.setStatus(Lend.Status.APPLYING);
         List<Lend> lends = lendDao.gets(where, 1, 0);
@@ -86,7 +86,7 @@ public class ScheduledService {
 
     @Scheduled(fixedDelay = 60 * 1000)
     public void lendAppointmentTick() {
-        Instant now = Instant.now();
+        Instant now = TimeUtils.now();
         Lend where = new Lend();
         where.setStatus(Lend.Status.ACTIVE);
         List<Lend> lends = lendDao.gets(where, 1, 0);
@@ -137,7 +137,7 @@ public class ScheduledService {
             }
             Reservation set2 = new Reservation();
             set2.setStatus(Reservation.Status.ENABLED);
-            set2.setEnabledTime(Instant.now());
+            set2.setEnabledTime(TimeUtils.now());
             if (0 == reservationDao.update(where2, set2)) {
                 throw new PersistenceException("reservation update failed.");
             }
@@ -147,7 +147,7 @@ public class ScheduledService {
             lend.setUserId(reservation.getUserId());
             lend.setStatus(Lend.Status.APPLYING);
             lend.setExpiredTime(TimeUtils.afterNow(24L, ChronoUnit.HOURS));
-            lend.setApplyingTime(Instant.now());
+            lend.setApplyingTime(TimeUtils.now());
             if (0 == lendDao.add(lend)) {
                 throw new PersistenceException("lend insert failed.");
             }

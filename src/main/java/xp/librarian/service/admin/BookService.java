@@ -1,6 +1,5 @@
 package xp.librarian.service.admin;
 
-import java.time.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -8,19 +7,20 @@ import javax.validation.Valid;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.NonNull;
 import xp.librarian.model.context.BusinessException;
 import xp.librarian.model.context.ErrorCode;
+import xp.librarian.model.context.ResourceNotFoundException;
 import xp.librarian.model.dto.Book;
 import xp.librarian.model.form.BookAddForm;
 import xp.librarian.model.form.BookUpdateForm;
 import xp.librarian.model.form.PagingForm;
 import xp.librarian.model.result.BookVM;
 import xp.librarian.repository.BookDao;
+import xp.librarian.utils.TimeUtils;
 
 /**
  * @author xp
@@ -41,7 +41,7 @@ public class BookService {
         if (book.getStatus() == null) {
             book.setStatus(Book.Status.NORMAL);
         }
-        book.setCreateTime(Instant.now());
+        book.setCreateTime(TimeUtils.now());
         if (0 == bookDao.add(book)) {
             throw new PersistenceException("book insert failed.");
         }

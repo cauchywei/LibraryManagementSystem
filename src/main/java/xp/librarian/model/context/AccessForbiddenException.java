@@ -6,20 +6,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 /**
  * @author xp
  */
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-public class InternalServerException extends RuntimeException {
+@ResponseStatus(HttpStatus.FORBIDDEN)
+public class AccessForbiddenException extends RuntimeException {
 
-    private static final long serialVersionUID = -7156163369713202580L;
+    private static final long serialVersionUID = 916775889525216995L;
 
-    public InternalServerException(String message) {
+    public AccessForbiddenException(String message) {
         super(message);
     }
 
-    public InternalServerException(Throwable cause) {
+    public AccessForbiddenException(Throwable cause) {
         super(cause);
     }
 
-    public InternalServerException(String message, Throwable cause) {
+    public AccessForbiddenException(String message, Throwable cause) {
         super(message, cause);
     }
 

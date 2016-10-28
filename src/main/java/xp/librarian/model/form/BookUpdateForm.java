@@ -24,10 +24,13 @@ public class BookUpdateForm implements Serializable {
 
     private Book.Status status;
 
+    private String desc;
+
     public Book toDTO() {
         return new Book()
                 .setName(name)
-                .setStatus(status);
+                .setStatus(status)
+                .setDesc(desc);
     }
 
 }

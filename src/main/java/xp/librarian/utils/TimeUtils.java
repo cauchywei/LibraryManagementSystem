@@ -8,8 +8,12 @@ import java.time.temporal.*;
  */
 public class TimeUtils {
 
+    public static Instant now() {
+        return Instant.now().truncatedTo(ChronoUnit.SECONDS);
+    }
+
     public static Instant afterNow(long amount, ChronoUnit unit) {
-        return Instant.now().plus(amount, unit);
+        return now().plus(amount, unit);
     }
 
 }

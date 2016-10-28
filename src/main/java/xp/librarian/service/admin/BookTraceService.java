@@ -1,6 +1,5 @@
 package xp.librarian.service.admin;
 
-import java.time.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -8,13 +7,13 @@ import javax.validation.Valid;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.NonNull;
 import xp.librarian.model.context.BusinessException;
 import xp.librarian.model.context.ErrorCode;
+import xp.librarian.model.context.ResourceNotFoundException;
 import xp.librarian.model.dto.Book;
 import xp.librarian.model.dto.BookTrace;
 import xp.librarian.model.dto.Lend;
@@ -26,6 +25,7 @@ import xp.librarian.repository.BookDao;
 import xp.librarian.repository.BookTraceDao;
 import xp.librarian.repository.LendDao;
 import xp.librarian.repository.UserDao;
+import xp.librarian.utils.TimeUtils;
 
 /**
  * @author xp
@@ -70,7 +70,7 @@ public class BookTraceService {
         if (trace.getStatus() == null) {
             trace.setStatus(BookTrace.Status.NORMAL);
         }
-        trace.setCreateTime(Instant.now());
+        trace.setCreateTime(TimeUtils.now());
         if (0 == traceDao.add(trace)) {
             throw new PersistenceException("book trace insert failed.");
         }

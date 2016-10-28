@@ -2,7 +2,7 @@ package xp.librarian.utils;
 
 import java.security.*;
 
-import org.springframework.security.crypto.codec.Hex;
+import org.apache.commons.codec.binary.Hex;
 
 import lombok.Data;
 import xp.librarian.model.context.AccountContext;
@@ -44,7 +44,7 @@ public class LoginUtils {
             throw new IllegalStateException("No MD5 algorithm available!");
         }
         String data = token.toString() + SECRET_KEY;
-        return new String(Hex.encode(digest.digest(data.getBytes())));
+        return new String(Hex.encodeHex(digest.digest(data.getBytes())));
     }
 
     public static boolean isTokenExpired(Long expiryTime) {

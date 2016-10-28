@@ -1,6 +1,5 @@
 package xp.librarian.service.reader;
 
-import java.time.*;
 import java.time.temporal.*;
 import java.util.*;
 import java.util.stream.*;
@@ -9,15 +8,11 @@ import javax.validation.Valid;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.NonNull;
-import xp.librarian.model.context.AccountContext;
-import xp.librarian.model.context.BusinessException;
-import xp.librarian.model.context.ErrorCode;
+import xp.librarian.model.context.*;
 import xp.librarian.model.dto.*;
 import xp.librarian.model.form.LendBookForm;
 import xp.librarian.model.form.LendListForm;
@@ -86,7 +81,7 @@ public class LendService {
         lend.setUserId(account.getId());
         lend.setStatus(Lend.Status.APPLYING);
         lend.setExpiredTime(TimeUtils.afterNow(2L, ChronoUnit.HOURS));
-        lend.setApplyingTime(Instant.now());
+        lend.setApplyingTime(TimeUtils.now());
         if (0 == lendDao.add(lend)) {
             throw new PersistenceException("lend insert failed.");
         }
@@ -128,7 +123,7 @@ public class LendService {
             throw new ResourceNotFoundException("lend not found.");
         }
         if (!lend.getUserId().equals(account.getId())) {
-            throw new AccessDeniedException("access denied.");
+            throw new AccessForbiddenException("access denied.");
         }
         return buildLendVM(lend);
     }
@@ -140,7 +135,7 @@ public class LendService {
             throw new ResourceNotFoundException("lend not found.");
         }
         if (!lend.getUserId().equals(account.getId())) {
-            throw new AccessDeniedException("access denied.");
+            throw new AccessForbiddenException("access denied.");
         }
         Lend where = new Lend();
         where.setId(lend.getId());
@@ -163,7 +158,7 @@ public class LendService {
             throw new ResourceNotFoundException("lend not found.");
         }
         if (!lend.getUserId().equals(account.getId())) {
-            throw new AccessDeniedException("access denied.");
+            throw new AccessForbiddenException("access denied.");
         }
         if (!Lend.Status.ACTIVE.equals(lend.getStatus())) {
             throw new BusinessException(ErrorCode.BOOK_TRACE_HAS_BEEN_LOCKED);

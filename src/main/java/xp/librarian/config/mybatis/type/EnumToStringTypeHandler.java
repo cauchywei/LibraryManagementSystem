@@ -10,6 +10,7 @@ import org.apache.ibatis.type.MappedTypes;
 /**
  * @author xp
  */
+@Deprecated
 @MappedTypes(Enum.class)
 @MappedJdbcTypes(JdbcType.VARCHAR)
 public class EnumToStringTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {

@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
+
+import xp.librarian.model.context.InvalidCookieException;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -61,7 +62,7 @@ public class CookieUtils {
         return encode(value.getBytes());
     }
 
-    private static byte[] decode(String cookie) throws InvalidCookieException {
+    private static byte[] decode(String cookie) {
         try {
             return Base64.getDecoder().decode(cookie.getBytes());
         } catch (IllegalArgumentException e) {
@@ -69,7 +70,7 @@ public class CookieUtils {
         }
     }
 
-    private static String decodeToString(String cookie) throws InvalidCookieException {
+    private static String decodeToString(String cookie) {
         return new String(decode(cookie));
     }
 
@@ -78,7 +79,7 @@ public class CookieUtils {
         return contextPath.length() > 0 ? contextPath : "/";
     }
 
-    public static <T> T getCookie(String name) throws InvalidCookieException {
+    public static <T> T getCookie(String name) {
         HttpServletRequest request = ServletUtils.getRequest();
 
         Cookie[] cookies = request.getCookies();
