@@ -1,23 +1,30 @@
 <template>
   <div id="manage-book-panel">
     <div id="add-book-panel">
-      <div>Add a book</div>
+      <div class="operation-title">Add a book</div>
       <form v-on:submit.prevent="addNewBook">
         <input placeholder="book name" v-model="newBook.name" type="text">
         <input placeholder="ISBN" v-model="newBook.isbn" type="text">
-        <input placeholder="total" v-model="newBook.total" type="number">
-        <input placeholder="margin" v-model="newBook.margin" type="number">
+        <input placeholder="desc" v-model="newBook.desc" type="text">
         <button type="submit" class="action-button">Add</button>
       </form>
+      <div v-if="!!currentSelectBook">
+        <div class="operation-title">Add a trace for 《{{currentSelectBook.name}}》</div>
+        <form v-on:submit.prevent="addTrace">
+          <input placeholder="location" v-model="newTrace.location" type="text">
+          <button type="submit" class="action-button">Add</button>
+        </form>
+      </div>
     </div>
     <div id="book-list">
       <input class="input-search" autofocus autocomplete="off" placeholder="Search books here"
              v-model="searchInput" @keyup.enter="search"/>
       <ul>
         <li v-for="book in filterBooks"
-            class="book"
             :key="book.isbn">
-          <div class="book-item" @click="selectBook(book)">
+          <div class="book-item" @click="selectBook(book)"
+               v-bind:class="{ 'selected-item': currentSelectBook === book, book: true}"
+          >
 
             <h4 id="title">《{{book.name}}》
               <small>{{book.margin}} / {{book.total}}</small>
@@ -26,34 +33,37 @@
             <div id="bottom">
               <h6 id="isbn">ISBN: {{book.isbn}}</h6>
 
-              <a v-if="currentSelectBook === book">hide</a>
+              <a v-if="currentSelectBook === book" style="{color: #ffffff;}">hide</a>
               <a v-else>show detail</a>
 
             </div>
           </div>
-          <ul v-if="currentSelectBook == book" id="trace-list">
-            <li v-for="trace in currentTrace" class="trace-item">
-              <span class="trace-item-id">id: {{trace.id}}</span>
-              <span>     status: {{trace.status}}</span>
-              <div class="space"></div>
-              <button class="operation delete" v-if="trace.status !== 'DELETED'" @click="deleteTrace(trace)">delete
-              </button>
-              <button class="operation borrow" v-if="trace.status === 'LOCKED'" @click="borrowTrace(trace)">borrow
-              </button>
-            </li>
-            <div v-if=" currentTrace && currentTrace.length=== 0">
-              No traces.
+          <div v-if="currentSelectBook == book">
+            <ul v-if="!loadingTrace" id="trace-list">
+              <li v-for="trace in currentTrace" class="trace-item">
+                <span class="trace-item-info">id: {{trace.id}}</span>
+                <span class="trace-item-info">     status: {{trace.status}}</span>
+                <span class="trace-item-info">     location: {{trace.location}}</span>
+                <div class="space"></div>
+                <div class="trace-item-operation">
+                  <button class="operation delete" v-if="trace.status !== 'DELETED'" @click="deleteTrace(trace)">delete
+                  </button>
+                  <!--<button class="operation borrow" v-if="trace.status === 'LOCKED'" @click="borrowTrace(trace)">borrow-->
+                  <!--</button>-->
+                </div>
+              </li>
+              <div v-if=" currentTrace && currentTrace.length=== 0">
+                No traces.
+              </div>
+            </ul>
+            <div v-else>
+                Loading...
             </div>
-          </ul>
+          </div>
 
         </li>
       </ul>
-      =======
-      <button @click="deleteBook(book)" class="btn btn-danger btn-delete">delete</button>
     </div>
-  </div>
-  >>>>>>> d05abd1fb1ddf4195bebe10db761a4f382ba825f
-  </div>
   </div>
 </template>
 
@@ -69,6 +79,8 @@
           total: null,
           margin: null
         },
+        loadingTrace: false,
+        newTrace: {},
         filterBooks: [],
         searchInput: '',
         currentSelectBook: null,
@@ -107,22 +119,45 @@
         })
       },
       selectBook (book) {
+        if (this.loadingTrace) {
+          return
+        }
+
         if (this.currentSelectBook === book) {
           this.currentTrace = null
           this.currentSelectBook = null
         } else {
           this.currentSelectBook = book
-          let self = this
-          service.getBookTraceByAdmin(book.isbn).then(function (response) {
+          this.loadingTrace = true
+          service.getBookTraceByAdmin(book.isbn).then(response => {
+            this.loadingTrace = false
             if (response.data.success) {
-              self.currentTrace = response.data.entities
+              this.currentTrace = response.data.entities
             } else {
               alert('fetch failed!')
             }
-          }).catch(function (error) {
+          }).catch(error => {
+            this.loadingTrace = false
             alert('fetch failed!' + error)
           })
         }
+      },
+      addTrace () {
+        if (this.loadingTrace) {
+          return
+        }
+
+        service.addBookTraceByAdmin(this.currentSelectBook, this.newTrace).then((response) => {
+          this.newTrace = {}
+          if (!response.data.success) {
+            alert('add trace failed!')
+          } else {
+            self.currentTrace.add(response.data.entity)
+          }
+        }).catch(function (error) {
+          this.newTrace = {}
+          alert('add trace failed!' + error)
+        })
       },
       deleteTrace (trace) {
         service.deleteBookTraceByAdmin(trace).then(function (response) {
@@ -168,6 +203,10 @@
 </script>
 
 <style scoped>
+
+  ul {
+    list-style: none;
+  }
 
   #manage-book-panel {
     display: flex;
@@ -225,9 +264,11 @@
     width: 100%;
   }
 
-  .trace-item-id {
-    width: 80px;
+  .trace-item-info {
+    min-width: 80px;
     text-align: start;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 
   .book-item {
@@ -290,13 +331,27 @@
     box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
   }
 
-  .space {
-    width: 100px;
-  }
-
   #add-book-panel form {
     display: flex;
     flex-direction: column;
+  }
+
+  .trace-item-operation {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .selected-item {
+    border: dashed #42b983;
+  }
+
+  .selected-item-info {
+    color: #ffffff;
+  }
+
+  .operation-title {
+    margin-top: 50px;
   }
 
 </style>

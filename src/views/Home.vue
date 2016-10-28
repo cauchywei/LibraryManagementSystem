@@ -6,28 +6,34 @@
       <ul class="book-list">
         <li v-for="book in searchBooks" class="book" :key="book.isbn">
           <div class="view" @click="selectBook(book)">
+            <div>
             <span>《{{ book.name }}》</span>
+
             <span class="small">
-              [ISBN: {{ book.isbn }}]
+              ISBN: {{ book.isbn }}
               Total: {{book.total}}, Left: {{ book.margin }} .
             </span>
             <a class="desc" v-if="currentSelectBook === book">⬇hide⬇️</a>
             <a v-else>⬆️️ click to ️show detail️ ️️️️⬆️️</a>
+            </div>
+            <div>
+              {{ book.desc }}
+            </div>
           </div>
           <div v-if="currentSelectBook === book">
             <ul v-if="currentBookTrace && currentBookTrace.length">
               <li v-for="trace in currentBookTrace" v-if="showTrace(trace)">
-                <span>
-                  id: {{trace.id}}
+                <span class="item-info">
+                  location: {{trace.location}}
                 </span>
                 <button v-if="traceBorrowable(trace)" @click="borrow(trace)">
                   Borrow
                 </button>
                 <button v-if="traceReservable(trace)" @click="reservation(trace)">
-                  Reservation
+                  Reserve
                 </button>
                 <a v-if="trace.status === 'RESERVATION'">
-                  has reservation
+                  has reserved
                 </a>
               </li>
             </ul>
@@ -131,17 +137,17 @@
       },
       reservation: function (trace) {
         let self = this
-        service.reservationBookTrace(trace).then(function (response) {
+        service.reserveBookTrace(trace).then(function (response) {
           const success = response.data.success;
           if (success) {
-            alert('reservation success！');
+            alert('reserve success！');
             removeByValue(self.currentBookTrace, trace)
             trace.status = 'RESERVATION'
           } else {
-            alert('reservation fail！');
+            alert('reserve fail！');
           }
         }).catch(function (error) {
-          alert('reservation success！' + error);
+          alert('reserve success！' + error);
         });
       }
     }
@@ -283,6 +289,12 @@
 
   .book-list li span.small {
     font-size: small;
+  }
+
+  .item-info {
+    min-width: 100px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 
 </style>
