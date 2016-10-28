@@ -29,7 +29,7 @@ public class ReservationController extends BaseController {
             notes = "只能对 BORROWED 状态的 BookTrace 使用。得到 WAITING 状态的 Reservation。",
             response = ReservationVM.class
     )
-    @PostMapping("books/{isbn:[0-9\\-]+}/traces/{traceId}/reserve")
+    @PostMapping("books/{isbn:[0-9A-Za-z\\-]+}/traces/{traceId}/reserve")
     public Object reserveBook(@PathVariable String isbn, @PathVariable Integer traceId, ReserveBookForm form) {
         form.setIsbn(isbn);
         form.setTraceId(traceId);

@@ -16,11 +16,11 @@ public class Lend implements Serializable {
 
     private static final long serialVersionUID = 7741202507373698255L;
 
-    private Integer id;
+    public Integer id;
 
-    private Integer userId;
+    public Integer userId;
 
-    private Integer traceId;
+    public Integer traceId;
 
     public enum
     Status {
@@ -35,13 +35,13 @@ public class Lend implements Serializable {
         ;
     }
 
-    private Status status;
+    public Status status;
 
-    private Date applyingTime;
+    public Date applyingTime;
 
-    private Date appointedTime;
+    public Date appointedTime;
 
-    private Date expiredTime;
+    public Date expiredTime;
 
     @Override
     public boolean equals(Object object) {

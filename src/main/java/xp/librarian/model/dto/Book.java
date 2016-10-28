@@ -16,9 +16,9 @@ public class Book implements Serializable {
 
     private static final long serialVersionUID = -2528891458266093773L;
 
-    private String isbn;
+    public String isbn;
 
-    private String name;
+    public String name;
 
     public enum Status {
         NORMAL,
@@ -26,13 +26,13 @@ public class Book implements Serializable {
         ;
     }
 
-    private Status status;
+    public Status status;
 
-    private transient Integer total;
+    public transient Integer total;
 
-    private transient Integer margin;
+    public transient Integer margin;
 
-    private Date createTime;
+    public Date createTime;
 
     @Override
     public boolean equals(Object object) {

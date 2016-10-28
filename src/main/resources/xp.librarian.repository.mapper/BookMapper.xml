@@ -41,8 +41,8 @@
     <select id="select" resultType="Book">
         SELECT * FROM `Book`
         <trim prefix=" WHERE " prefixOverrides="AND">
-            <if test="where.id != null">
-                AND `id`=#{where.id}
+            <if test="where.isbn != null">
+                AND `isbn`=#{where.isbn}
             </if>
             <if test="where.status != null">
                 AND `status`=#{where.status}
@@ -70,10 +70,10 @@
         <trim prefix=" WHERE " prefixOverrides="AND">
             <trim prefix=" AND (" suffix=")" prefixOverrides="OR">
                 <if test="where.name != null">
-                    OR (locate(#{where.name}, `name`) > 0
+                    OR (locate(#{where.name}, `name`) > 0)
                 </if>
                 <if test="where.isbn != null">
-                    OR locate(#{where.isbn}, `isbn`) > 0)
+                    OR (locate(#{where.isbn}, `isbn`) > 0)
                 </if>
             </trim>
             <if test="where.status != null">

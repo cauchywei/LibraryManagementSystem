@@ -13,8 +13,8 @@ public enum Action {
     CANCEL_RESERVATION,     // 取消预订
 
     // admin
-    ACCEPT,     // 接受借书
-    REJECT,     // 拒绝借书
+    ACCEPT,                 // 接受借书
+    REJECT,                 // 拒绝借书
 
     CONFIRM_RETURNED,       // 证实归还
     CONFIRM_DISABLED,       // 证实无法归还

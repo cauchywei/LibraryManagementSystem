@@ -34,7 +34,7 @@ public class AdminLendController extends BaseController {
             response = LendVM.class,
             responseContainer = "List"
     )
-    @GetMapping("lands/")
+    @GetMapping("lends/")
     public Object getLends(AdminLendListForm form, PagingForm paging) {
         return renderForEntities(lendService.getLends(form, paging));
     }

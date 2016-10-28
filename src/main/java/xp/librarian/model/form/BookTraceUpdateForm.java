@@ -2,6 +2,7 @@ package xp.librarian.model.form;
 
 import java.io.*;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import xp.librarian.model.dto.BookTrace;
 
@@ -13,9 +14,11 @@ public class BookTraceUpdateForm implements Serializable {
 
     private static final long serialVersionUID = 5069386085980515997L;
 
-    private Integer traceId;
-
+    @ApiModelProperty(hidden = true)
     private String isbn;
+
+    @ApiModelProperty(hidden = true)
+    private Integer traceId;
 
     private BookTrace.Status status;
 

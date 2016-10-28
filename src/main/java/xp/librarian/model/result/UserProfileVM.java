@@ -6,6 +6,7 @@ import java.util.*;
 import lombok.Data;
 import xp.librarian.model.dto.Role;
 import xp.librarian.model.dto.User;
+import xp.librarian.model.dto.UserRole;
 
 /**
  * @author xp
@@ -41,7 +42,7 @@ public class UserProfileVM implements Serializable {
         if (user != null) {
             this.id = user.getId();
             this.username = user.getUsername();
-            this.roles = user.getRoles().toArray(new Role[0]);
+            this.roles = Optional.ofNullable(user.getRoles()).map(e -> e.toArray(new Role[0])).orElse(null);
             this.name = user.getName();
             this.avatarUrl = user.getAvatarUrl();
             this.age = user.getAge();

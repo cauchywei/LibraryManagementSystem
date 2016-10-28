@@ -1,5 +1,6 @@
 package xp.librarian.service.admin;
 
+import java.time.*;
 import java.util.*;
 import java.util.stream.*;
 
@@ -69,6 +70,7 @@ public class BookTraceService {
         if (trace.getStatus() == null) {
             trace.setStatus(BookTrace.Status.NORMAL);
         }
+        trace.setCreateTime(Date.from(Instant.now()));
         if (0 == traceDao.add(trace)) {
             throw new PersistenceException("book trace insert failed.");
         }

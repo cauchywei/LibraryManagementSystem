@@ -31,10 +31,16 @@
         </set>
         <trim prefix=" WHERE " prefixOverrides="AND">
             <if test="where.id != null">
-                `id`=#{where.id},
+                AND `id`=#{where.id}
+            </if>
+            <if test="where.isbn != null">
+                AND `isbn`=#{where.isbn}
             </if>
             <if test="where.status != null">
-                `status`=#{where.status},
+                AND `status`=#{where.status}
+            </if>
+            <if test="where.lendId != null">
+                AND `lendId`=#{where.lendId}
             </if>
         </trim>
         LIMIT 1
@@ -52,6 +58,9 @@
             </if>
             <if test="where.status != null">
                 AND `status`=#{where.status}
+            </if>
+            <if test="where.lendId != null">
+                AND `lendId`=#{where.lendId}
             </if>
         </trim>
         ORDER BY `createTime` ASC

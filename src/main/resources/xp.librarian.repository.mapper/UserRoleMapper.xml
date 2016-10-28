@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xp.librarian.repository.mapper.UserRoleMapper">
+
+    <insert id="insert">
+        INSERT INTO `UserRole`(
+            `userId`,
+            `role`,
+            `createTime`
+        ) VALUE (
+            #{userId},
+            #{role},
+            #{createTime}
+        );
+    </insert>
+
+    <select id="select" resultType="UserRole">
+        SELECT * FROM `UserRole`
+        WHERE `userId`=#{userId}
+        ;
+    </select>
+
+</mapper>

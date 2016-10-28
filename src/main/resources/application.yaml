@@ -31,8 +31,11 @@ spring:
       .FAIL_ON_UNKNOWN_PROPERTIES: false
   http:
     encoding:
+      enabled: true
       charset: UTF-8
       force: true
+      force-request: true
+      force-response: true
 mybatis:
   mapper-locations: classpath:xp.librarian.repository.mapper/*.xml
   type-aliases-package: xp.librarian.model.dto

@@ -2,36 +2,47 @@
 
 JAR="librarian-1.0-SNAPSHOT.jar"
 MAIN_CLASS="xp.librarian.Application"
+JAVA_OPTS=""
 
 function get_pids() {
-    PIDS=`ps x | grep ${JAR} | grep -v grep | grep java | awk '{print $1}'`
+    PIDS=`ps x | grep ${MAIN_CLASS} | grep -v grep | grep java | awk '{print $1}'`
 }
 
 function dump() {
     get_pids
-    echo "running: ${PIDS}"
+    echo "current: ${PIDS}"
 }
-function stop() {
-    dump
 
+function stop() {
+    echo -n "stopping.. ${MAIN_CLASS} "
+
+    get_pids
     for PID in ${PIDS};do
+        echo "killing ${PID}"
         kill ${PID}
-        echo "killing: ${PID}"
     done
 
+    echo "waiting stop: ${PIDS}"
     while [ $PIDS ];do
-        sleep 1
-        echo "waiting exited: ${PIDS}"
+        sleep 3
         get_pids
     done
 }
 
 function start() {
-    nohup java -jar ${JAR} --spring.profiles.active=production 1>app.log 2>app.err &
-    sleep 1
+    echo "starting.. ${MAIN_CLASS}"
+
+    SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
+    cd ${SCRIPT_DIR}/ &&
+
+    CLASSPATH=${CLASSPATH}:${JAR}
+    export CLASSPATH
+
+    mkdir ./logs >/dev/null 2>&1
+    nohup java -jar ${JAR} ${MAIN_CLASS} --spring.profiles.active=production 1>app.log 2>app.err &
+    sleep 3
     dump
 }
 
-stop
-start
+stop && start
 

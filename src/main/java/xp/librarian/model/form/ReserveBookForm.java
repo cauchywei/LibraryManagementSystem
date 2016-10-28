@@ -4,6 +4,7 @@ import java.io.*;
 
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import xp.librarian.model.dto.Reservation;
 
@@ -15,9 +16,11 @@ public class ReserveBookForm implements Serializable {
 
     private static final long serialVersionUID = 8475848013383572700L;
 
+    @ApiModelProperty(hidden = true)
     @NotNull
     private String isbn;
 
+    @ApiModelProperty(hidden = true)
     @NotNull
     private Integer traceId;
 

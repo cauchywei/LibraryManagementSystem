@@ -16,17 +16,17 @@ public class Record implements Serializable {
 
     private static final long serialVersionUID = 8338137113945623443L;
 
-    private Integer id;
+    public Integer id;
 
-    private Integer userId;
+    public Integer userId;
 
-    private Integer traceId;
+    public Integer traceId;
 
-    private Action action;
+    public Action action;
 
-    private Object payload;
+    public Object payload;
 
-    private Date time;
+    public Date time;
 
     public static Record apply(Lend lend) {
         Record record = new Record();

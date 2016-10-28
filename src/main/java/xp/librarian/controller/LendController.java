@@ -29,7 +29,7 @@ public class LendController extends BaseController {
             notes = "只能对 NORMAL 状态的 BookTrace 使用，将使其转变为 LOCKED 状态。最后得到 APPLYING 状态的 Lend。",
             response = LendVM.class
     )
-    @PostMapping("books/{isbn:[0-9\\-]+}/traces/{traceId}/lend")
+    @PostMapping("books/{isbn:[0-9A-Za-z\\-]+}/traces/{traceId}/lend")
     public Object lendBook(@PathVariable String isbn, @PathVariable Integer traceId, LendBookForm form) {
         form.setIsbn(isbn);
         form.setTraceId(traceId);

@@ -4,6 +4,7 @@ import java.io.*;
 
 import javax.validation.constraints.NotNull;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import xp.librarian.model.dto.Book;
 
@@ -15,6 +16,7 @@ public class BookUpdateForm implements Serializable {
 
     private static final long serialVersionUID = 3424097931640604030L;
 
+    @ApiModelProperty(hidden = true)
     @NotNull
     private String isbn;
 

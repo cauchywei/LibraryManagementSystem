@@ -31,23 +31,23 @@ public class User implements Serializable {
         ;
     }
 
-    private Status status;
+    public Status status;
 
-    private String name;
+    public String name;
 
-    private String avatarUrl;
+    public String avatarUrl;
 
-    private Integer age;
+    public Integer age;
 
-    private String major;
+    public String major;
 
-    private String phone;
+    public String phone;
 
-    private String email;
+    public String email;
 
-    private String remarks;
+    public String remarks;
 
-    private Date createTime;
+    public Date createTime;
 
     @Override
     public boolean equals(Object object) {

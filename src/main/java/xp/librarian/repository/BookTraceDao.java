@@ -21,7 +21,7 @@ public class BookTraceDao {
     private BookTraceMapper traceMapper;
 
     private static final Function<Boolean, Predicate<BookTrace>> forceFilter =
-            force -> e -> force || BookTrace.Status.DELETED.equals(e.getStatus());
+            force -> e -> force || !BookTrace.Status.DELETED.equals(e.getStatus());
 
     public int add(@NonNull BookTrace trace) {
         return traceMapper.insert(trace);

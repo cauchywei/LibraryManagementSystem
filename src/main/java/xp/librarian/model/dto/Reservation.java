@@ -15,11 +15,11 @@ public class Reservation implements Serializable {
 
     private static final long serialVersionUID = -4293391434805797781L;
 
-    private Integer id;
+    public Integer id;
 
-    private Integer userId;
+    public Integer userId;
 
-    private Integer traceId;
+    public Integer traceId;
 
     public enum Status {
         WAITING,    // 等待被归还
@@ -28,11 +28,11 @@ public class Reservation implements Serializable {
         ;
     }
 
-    private Status status;
+    public Status status;
 
-    private Date applyingTime;
+    public Date applyingTime;
 
-    private Date enabledTime;
+    public Date enabledTime;
 
     @Override
     public boolean equals(Object object) {

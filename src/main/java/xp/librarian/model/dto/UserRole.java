@@ -15,11 +15,11 @@ public class UserRole implements Serializable {
 
     private static final long serialVersionUID = -298349867748056048L;
 
-    private Integer userId;
+    public Integer userId;
 
-    private Role role;
+    public Role role;
 
-    private Date createTime;
+    public Date createTime;
 
     @Override
     public boolean equals(Object object) {
