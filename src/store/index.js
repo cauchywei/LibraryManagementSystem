@@ -48,7 +48,13 @@ const store = new Vuex.Store({
         }
       })
     },
-
+    FETCH_ALL_LENDS_BY_ADMIN: ({commit, dispatch, state}) => {
+      return service.getLendsByAdmin().then(function (response) {
+        if (response.data.success) {
+          commit('SET_NEW_BOOKS', response.data.entities)
+        }
+      })
+    },
     ON_LIST_BORROW_RECORDS: ({commit, dispatch, state}, borrowRecords) => {
       commit('SET_BORROW_RECORDS', borrowRecords);
       return Promise.resolve();

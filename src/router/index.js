@@ -7,6 +7,7 @@ import RegisterView from '../views/Register.vue'
 import UserView from '../views/User.vue'
 import BorrowRecordsView from '../views/BorrowRecords.vue'
 import BookManagementView from '../views/admin/BookManagement.vue'
+import LoanManagementView from '../views/admin/LoanManagement.vue'
 
 Vue.use(Router);
 
@@ -20,6 +21,7 @@ var router = new Router({
     { path: '/my', component: UserView },
     { path: '/my/borrow_records', component: BorrowRecordsView },
     { path: '/book_management', component: BookManagementView },
+    { path: '/loan_management', component: LoanManagementView },
     { path: '*', redirect: '/index' }
   ]
 });

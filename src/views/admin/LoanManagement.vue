@@ -1,73 +1,33 @@
 <template>
-  <div id="manage-book-panel">
-    <div id="add-book-panel">
-      <div class="operation-title">Add a book</div>
-      <form v-on:submit.prevent="addNewBook">
-        <input placeholder="book name" v-model="newBook.name" type="text">
-        <input placeholder="ISBN" v-model="newBook.isbn" type="text">
-        <input placeholder="desc" v-model="newBook.desc" type="text">
-        <button type="submit" class="action-button">Add</button>
-      </form>
-      <div v-if="!!currentSelectBook">
-        <div class="operation-title">Add a trace for 《{{currentSelectBook.name}}》</div>
-        <form v-on:submit.prevent="addTrace">
-          <input placeholder="location" v-model="newTrace.location" type="text">
-          <button type="submit" class="action-button">Add</button>
-        </form>
-      </div>
-    </div>
-    <div id="book-list">
-      <input class="input-search" autofocus autocomplete="off" placeholder="Search books here"
+  <div id="loan-book-panel">
+      <input class="input-search" autofocus autocomplete="off" placeholder="Search books or users here"
              v-model="searchInput" @keyup.enter="search"/>
       <ul>
-        <li v-for="book in filterBooks"
-            :key="book.isbn">
+        <li v-for="lend in filterLends"
+            :key="lend.id">
           <div class="book-item" @click="selectBook(book)"
-               v-bind:class="{ 'selected-item': currentSelectBook === book, book: true}"
           >
 
-            <h4 id="title">《{{book.name}}》
-              <small>{{book.margin}} / {{book.total}}</small>
+            <h4 id="title">《{{lend.trace.book.name}}》
+              <small>ISBN: {{lend.trace.isbn}}</small>
             </h4>
 
-
             <div id="bottom">
-              <h6 id="isbn">ISBN: {{book.isbn}}</h6>
-              <div>
-                {{book.desc}}
-              </div>
-              <a v-if="currentSelectBook === book" style="{color: #ffffff;}">hide</a>
-              <a v-else>show detail</a>
+              <h6 id="isbn" class="info-item">User: {{lend.user.name}}({{lend.user.username}})</h6>
+              <h6 class="info-item">Apply Time: {{new Date(lend.applyingTime)}}</h6>
+              <span class="info-item"> Status: {{lend.status}}</span>
 
-            </div>
-          </div>
-          <div v-if="currentSelectBook == book">
-            <ul v-if="!loadingTrace" id="trace-list">
-              <li v-for="trace in currentTrace" class="trace-item">
-                <span class="trace-item-info">id: {{trace.id}}</span>
-                <span class="trace-item-info">     status: {{trace.status}}</span>
-                <span class="trace-item-info">     location: {{trace.location}}</span>
-                <div class="space"></div>
-                <div class="trace-item-operation">
-                  <button class="operation delete" v-if="trace.status !== 'DELETED'" @click="deleteTrace(trace)">delete
-                  </button>
-                  <!--<button class="operation borrow" v-if="trace.status === 'LOCKED'" @click="borrowTrace(trace)">borrow-->
-                  <!--</button>-->
-                </div>
-              </li>
-              <div v-if=" currentTrace && currentTrace.length=== 0">
-                No traces.
+              <div class="operation">
+                <button v-if="lend.status === 'APPLYING'" @click="acceptLendApplying(lend)">accept</button>
+                <button v-if="lend.status === 'APPLYING'" @click="rejectLendApplying(lend)">reject</button>
+                <button v-if="lend.status === 'ACTIVE' || lend.status === 'LATE'" @click="confirmReturn(lend)">return</button>
               </div>
-            </ul>
-            <div v-else>
-                Loading...
             </div>
           </div>
 
         </li>
       </ul>
     </div>
-  </div>
 </template>
 
 <script>
@@ -84,42 +44,48 @@
         },
         loadingTrace: false,
         newTrace: {},
-        filterBooks: [],
+        allLends: [],
         searchInput: '',
         currentSelectBook: null,
         currentTrace: []
       }
     },
     methods: {
-      addNewBook () {
-        let self = this
-        service.addBookByAdmin(this.newBook).then(function (response) {
+      acceptLendApplying (lend) {
+        service.acceptLendByAdmin(lend).then(response => {
           if (response.data.success) {
-            self.$store.dispatch('ADD_NEW_BOOK', self.newBook)
-            if (self.newBook.name.indexOf(self.searchInput) !== -1) {
-              self.filterBooks.unshift(self.newBook)
-            }
-            self.newBook = {}
+            lend.status = "ACTIVE"
           } else {
-            alert('add fail!')
+            alert('accept fail!')
           }
         }).catch(function (e) {
-          alert('add fail!')
+          alert('accept fail!')
         })
         return false
       },
-      deleteBook (book) {
-        let self = this
-        service.deleteBookByAdmin(book.isbn).then(function (response) {
+      rejectLendApplying (lend) {
+        service.rejectLendByAdmin(lend).then(response => {
           if (response.data.success) {
-            self.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN')
-          } else {
-            alert('delete book fail!')
-          }
-        }).catch(function (e) {
-          alert(e)
-          alert('delete book fail!')
+          lend.status = "REJECTED"
+        } else {
+          alert('reject fail!')
+        }
+      }).catch(function (e) {
+          alert('reject fail!')
         })
+        return false
+      },
+      confirmReturn (lend) {
+        service.confirmReturnLendByAdmin(lend).then(response => {
+          if (response.data.success) {
+          lend.status = "RETURNED"
+        } else {
+          alert('return fail!')
+        }
+      }).catch(function (e) {
+          alert('return fail!')
+        })
+        return false
       },
       selectBook (book) {
         if (this.loadingTrace) {
@@ -149,15 +115,14 @@
         if (this.loadingTrace) {
           return
         }
-
         service.addBookTraceByAdmin(this.currentSelectBook, this.newTrace).then((response) => {
           this.newTrace = {}
           if (!response.data.success) {
             alert('add trace failed!')
           } else {
-            this.currentTrace.push(response.data.entity)
+            self.currentTrace.add(response.data.entity)
           }
-        }).catch((error) => {
+        }).catch(function (error) {
           this.newTrace = {}
           alert('add trace failed!' + error)
         })
@@ -187,22 +152,24 @@
     },
     watch: {
       searchInput: function (newInput) {
-        this.currentSelectBook = null
-        this.filterBooks = this.$store.state.books.filter(function (book) {
-          return book.name.toLowerCase().indexOf(newInput.toLowerCase().trim()) !== -1
-        })
+//        this.currentSelectBook = null
+//        this.filterBooks = this.$store.state.books.filter(function (book) {
+//          return book.name.toLowerCase().indexOf(newInput.toLowerCase().trim()) !== -1
+//        })
 //        alert(JSON.stringify(this.filterBooks))
       }
     },
     computed: {
-      allBooks: function () {
-        return this.$store.state.books
+      filterLends: function () {
+        return this.allLends.filter(lend => (lend.trace.book.name.toLowerCase().indexOf(this.searchInput.toLowerCase().trim()) !== -1 ||
+          lend.user.name.toLowerCase().indexOf(this.searchInput.toLowerCase().trim()) !== -1 ||
+          lend.user.username.toLowerCase().indexOf(this.searchInput.toLowerCase().trim()) !== -1))
       }
     },
     beforeMount () {
-      this.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN').then(() => {
-        if (!this.searchInput) {
-          this.filterBooks = this.$store.state.books
+      service.getLendsByAdmin().then(response => {
+        if (response.data.success) {
+          this.allLends = response.data.entities
         }
       })
     }
@@ -303,7 +270,6 @@
     flex-direction: row;
     align-items: center;
     align-self: stretch;
-    justify-content: space-between;
   }
 
   #delete {
@@ -359,6 +325,11 @@
 
   .operation-title {
     margin-top: 50px;
+  }
+
+  .info-item {
+    margin-left: 10px;
+    margin-right: 10px;
   }
 
 </style>

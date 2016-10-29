@@ -85,12 +85,28 @@ export function getBookByAdmin(ISBN) {
   return axios.get('/admin/books/' + ISBN + '/');
 }
 
+export function getLendsByAdmin() {
+  return axios.get('/admin/lends/');
+}
+
 export function getBookTraceByAdmin(ISBN) {
   return axios.get('/admin/books/' + ISBN + '/traces/');
 }
 
 export function addBookByAdmin(map) {
   return axios.post('/admin/books/add', extractMapToForm(map));
+}
+
+export function acceptLendByAdmin(lend) {
+  return axios.post(`/admin/lends/${lend.id}/accept`);
+}
+
+export function rejectLendByAdmin(lend) {
+  return axios.post(`/admin/lends/${lend.id}/reject`);
+}
+
+export function confirmReturnLendByAdmin(lend) {
+  return axios.post(`/admin/lends/${lend.id}/confirmReturned`);
 }
 
 export function addBookTraceByAdmin(book, trace) {

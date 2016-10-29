@@ -9,10 +9,14 @@
 
         <div v-if="isAdmin" class="action-bar">
           <h5 class="admin"> ( admin ) </h5>
+
+          <span class="button-divider">|</span>
+          <router-link to="/loan_management" class="header-button">Manage loans</router-link>
+
           <span class="button-divider">|</span>
           <router-link to="/book_management" class="header-button">Manage Books</router-link>
 
-          <div class="button-divider">|</div>
+          <span class="button-divider">|</span>
           <router-link to="/user_management" class="header-button">Manage Users</router-link>
         </div>
         <div class="action-bar" v-else>
