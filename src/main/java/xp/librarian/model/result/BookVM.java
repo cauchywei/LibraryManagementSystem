@@ -31,6 +31,7 @@ public class BookVM implements Serializable {
         if (book != null) {
             this.isbn = book.getIsbn();
             this.name = book.getName();
+            this.desc = book.getDesc();
             this.total = book.getTotal();
             this.margin = book.getMargin();
             this.createTime = Optional.ofNullable(book.getCreateTime()).map(Instant::toEpochMilli).orElse(null);

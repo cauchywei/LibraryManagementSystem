@@ -33,11 +33,11 @@ public class BookService {
 
     public List<BookVM> search(@Valid BookSearchForm form,
                                @Valid PagingForm paging) {
-        Book book = new Book();
-        book.setIsbn(form.getIsbn());
-        book.setName(form.getName());
-        book.setStatus(Book.Status.NORMAL);
-        List<Book> books = bookDao.search(book, paging.getPage(), paging.getLimits(), true);
+        Book where = new Book();
+        where.setIsbn(form.getIsbn());
+        where.setName(form.getName());
+        where.setStatus(Book.Status.NORMAL);
+        List<Book> books = bookDao.search(where, paging.getPage(), paging.getLimits(), true);
         return books.stream()
                 .filter(e -> e != null)
                 .distinct()
