@@ -13,7 +13,6 @@ import xp.librarian.config.WebConfig;
  * @author xp
  */
 @SpringBootConfiguration
-@EnableAutoConfiguration
 @Import({WebConfig.class})
 public class Application {
 

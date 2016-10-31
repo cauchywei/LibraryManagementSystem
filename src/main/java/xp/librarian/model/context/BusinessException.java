@@ -1,16 +1,19 @@
 package xp.librarian.model.context;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import java.util.*;
+
+import org.apache.commons.lang3.StringUtils;
+
+import lombok.Getter;
 
 /**
  * @author xp
  */
-@ResponseStatus(HttpStatus.OK)
 public class BusinessException extends RuntimeException {
 
     private static final long serialVersionUID = 7872506909592221398L;
 
+    @Getter
     private ErrorCode key;
 
     public BusinessException(ErrorCode key) {
@@ -18,14 +21,14 @@ public class BusinessException extends RuntimeException {
     }
 
     public BusinessException(ErrorCode key, Throwable cause) {
-        super(cause);
+        super(Optional.ofNullable(key).map(ErrorCode::getKey).orElse(StringUtils.EMPTY), cause);
         this.key = key;
     }
 
     @Override
-    public String getMessage() {
+    public String getLocalizedMessage() {
         //TODO I18N
-        return key.getKey();
+        return super.getLocalizedMessage();
     }
 
     @Override

@@ -71,7 +71,7 @@ public class ReservationService {
             throw new BusinessException(ErrorCode.BOOK_TRACE_STATUS_MISMATCH);
         }
         Reservation where = new Reservation();
-        where.setId(trace.getId());
+        where.setTraceId(trace.getId());
         where.setStatus(Reservation.Status.WAITING);
         Reservation existReservation = reservationDao.get(where);
         if (existReservation != null) {

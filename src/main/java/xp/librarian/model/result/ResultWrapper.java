@@ -28,21 +28,21 @@ public class ResultWrapper implements Serializable {
         return result;
     }
 
-    public static ResultWrapper entity(@NonNull Object entity) {
+    public static ResultWrapper entity(Object entity) {
         ResultWrapper result = new ResultWrapper();
         result.success = true;
         result.entity = entity;
         return result;
     }
 
-    public static ResultWrapper entities(@NonNull List entities) {
+    public static ResultWrapper entities(List entities) {
         ResultWrapper result = new ResultWrapper();
         result.success = true;
         result.entities = entities;
         return result;
     }
 
-    public static ResultWrapper error(@NonNull Object error) {
+    public static ResultWrapper error(Object error) {
         ResultWrapper result = new ResultWrapper();
         result.success = false;
         result.error = error;

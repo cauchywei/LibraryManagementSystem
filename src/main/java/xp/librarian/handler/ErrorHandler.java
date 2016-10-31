@@ -31,7 +31,8 @@ public class ErrorHandler {
     // 200
 
     @ExceptionHandler({BusinessException.class})
-    public Object handleLogicException(BusinessException e) {
+    @ResponseStatus(HttpStatus.OK)
+    public Object handleBusinessException(BusinessException e) {
         return ResultWrapper.error(e.getLocalizedMessage());
     }
 
@@ -70,6 +71,7 @@ public class ErrorHandler {
     // 401
 
     @ExceptionHandler({UnauthorizedException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Object handleUnauthorizedException(UnauthorizedException e) {
         return ResultWrapper.error(e.getLocalizedMessage());
     }
@@ -77,6 +79,7 @@ public class ErrorHandler {
     // 403
 
     @ExceptionHandler({AccessForbiddenException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public Object handleAccessForbiddenException(AccessForbiddenException e) {
         return ResultWrapper.error(e.getLocalizedMessage());
     }
@@ -84,11 +87,13 @@ public class ErrorHandler {
     // 404
 
     @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Object handleNoResourceFoundException(ResourceNotFoundException e) {
         return ResultWrapper.error(e.getLocalizedMessage());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Object handleNoHandlerFoundException(NoHandlerFoundException e) {
         return ResultWrapper.error(e.getLocalizedMessage());
     }
@@ -106,14 +111,14 @@ public class ErrorHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Object handleRuntimeException(RuntimeException e) {
-        LOG.info(null, e);
+        LOG.info("RuntimeException", e);
         return ResultWrapper.error(e.getLocalizedMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Object handleException(Exception e) {
-        LOG.info(null, e);
+        LOG.info("Exception", e);
         return ResultWrapper.error(e.getLocalizedMessage());
     }
 
