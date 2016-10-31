@@ -2,7 +2,7 @@
   <div id="app">
     <div id="header">
 
-      <router-link id="header-title" to="/">Library Management System</router-link>
+      <router-link id="header-title" to="/">Purjoy Library Management System</router-link>
 
       <div class="user-operation-panel" v-if="login">
         <span>Welcome <router-link id="username" to="/my">{{account.name}} </router-link></span>

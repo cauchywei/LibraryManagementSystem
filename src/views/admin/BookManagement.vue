@@ -18,7 +18,7 @@
     </div>
     <div id="book-list">
       <input class="input-search" autofocus autocomplete="off" placeholder="Search books here"
-             v-model="searchInput" @keyup.enter="search"/>
+             v-model="searchInput"/>
       <ul>
         <li v-for="book in filterBooks"
             :key="book.isbn">
@@ -27,15 +27,14 @@
           >
 
             <h4 id="title">《{{book.name}}》
-              <small>{{book.margin}} / {{book.total}}</small>
+              <small>ISBN: {{book.isbn}}</small>
+            </h4>
+            <h4 >
+              <small>{{book.desc}}</small>
             </h4>
 
-
             <div id="bottom">
-              <h6 id="isbn">ISBN: {{book.isbn}}</h6>
-              <div>
-                {{book.desc}}
-              </div>
+              <h6 id="isbn"></h6>
               <a v-if="currentSelectBook === book" style="{color: #ffffff;}">hide</a>
               <a v-else>show detail</a>
 
@@ -189,9 +188,8 @@
       searchInput: function (newInput) {
         this.currentSelectBook = null
         this.filterBooks = this.$store.state.books.filter(function (book) {
-          return book.name.toLowerCase().indexOf(newInput.toLowerCase().trim()) !== -1
+          return book.name && book.name.toLowerCase().indexOf(newInput.toLowerCase().trim()) !== -1
         })
-//        alert(JSON.stringify(this.filterBooks))
       }
     },
     computed: {

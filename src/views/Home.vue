@@ -7,18 +7,18 @@
         <li v-for="book in searchBooks" class="book" :key="book.isbn">
           <div class="view" @click="selectBook(book)">
             <div>
-            <span>《{{ book.name }}》</span>
+              <h4>《{{ book.name }}》
+                <small>ISBN: {{ book.isbn }}</small>
+              </h4>
+              <div>
+                <h8>
+                  {{ book.desc }}
+                </h8>
+              </div>
+              <a class="desc" v-if="currentSelectBook === book">⬇hide⬇️</a>
+              <a v-else>⬆️️ click to ️show detail️ ️️️️⬆️️</a>
+            </div>
 
-            <span class="small">
-              ISBN: {{ book.isbn }}
-              Total: {{book.total}}, Left: {{ book.margin }} .
-            </span>
-            <a class="desc" v-if="currentSelectBook === book">⬇hide⬇️</a>
-            <a v-else>⬆️️ click to ️show detail️ ️️️️⬆️️</a>
-            </div>
-            <div>
-              {{ book.desc }}
-            </div>
           </div>
           <div v-if="currentSelectBook === book">
             <ul v-if="currentBookTrace && currentBookTrace.length">
@@ -141,7 +141,7 @@
           const success = response.data.success;
           if (success) {
             alert('reserve success！');
-            removeByValue(self.currentBookTrace, trace)
+//            removeByValue(self.currentBookTrace, trace)
             trace.status = 'RESERVATION'
           } else {
             alert('reserve fail！');

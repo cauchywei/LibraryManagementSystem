@@ -55,8 +55,29 @@ export function returnBook(ISBN) {
   return axios.post(`/books/${ISBN}/return`);
 }
 
+export function cancelApplying(trace) {
+  return axios.post(`/users/self/lends/${trace.id}/cancel`);
+}
+
+export function renewBook(trace) {
+  return axios.post(`/users/self/lends/${trace.id}/renew`);
+}
+
+export function cancelReserve(trace) {
+  return axios.post(`/users/self/reservations/${trace.id}/cancel`);
+}
+
 export function getBorrowRecords() {
-  return axios.get('/users/self/records/', {
+  return axios.get('/users/self/lends/', {
+    params: {
+      page: 1,
+      limits: 0
+    }
+  });
+}
+
+export function getReservation() {
+  return axios.get('/users/self/reservations/', {
     params: {
       page: 1,
       limits: 0

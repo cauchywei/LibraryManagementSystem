@@ -2,23 +2,62 @@
   <div class="record-page">
     <!--<button id="btn-refresh" class="btn btn-default btn-block" @click="refresh()"> Refresh </button>-->
     <section class="main" v-if="borrowRecords && borrowRecords.length" v-cloak>
+      <h2 v-if="reservations && reservations.length">My Reservations ({{reservations.length}})</h2>
       <ul class="record-list">
-        <li v-for="borrowRecord in borrowRecords" class="book" :key="borrowRecord.id" >
-          <div class="view">
-            <span>《{{ borrowRecord.book.name }}》</span>
-            <span class="small">
-              [ISBN: {{ borrowRecord.isbn }}]
-              <br/>
-              borrow at {{ new Date(borrowRecord.borrowTime) }}
+        <li v-for="borrowRecord in reservations" class="trace-item">
+          <div>
+            <h4>
+              《{{borrowRecord.trace.book.name}}》
+              <small>ISBN: {{borrowRecord.trace.isbn}}</small>
+            </h4>
+          </div>
+          <div>
+            <span class="trace-item-info">id: {{borrowRecord.id}}</span>
+            <span class="trace-item-info">     location: {{borrowRecord.location}}</span>
+            <span class="trace-item-info">     status: {{borrowRecord.status}}</span>
+            <span class="trace-item-info">
+              Applying Time: {{new Date(borrowRecord.applyingTime)}}</span>
+            <!--<div class="space"></div>-->
+            <span >
+              <button class="operation delete" v-if="borrowRecord.status === 'WAITING'"
+                      @click="cancelReserve(borrowRecord)">CANCEL</button>
+              <!--<button class="operation borrow" v-if="trace.status === 'LOCKED'" @click="borrowTrace(trace)">borrow-->
+              <!--</button>-->
             </span>
-            <span class="small" v-if="borrowRecord.status == 'RETURNED'">returned at {{ new Date(borrowRecord.returnTime) }}</span>
-            <button class="btn btn-default" v-if="borrowRecord.status == 'BORROWING'" @click="revert(borrowRecord)"> Return </button>
+          </div>
+        </li>
+      </ul>
+
+      <h2 v-if="borrowRecords && borrowRecords.length">My Borrow Record ({{borrowRecords.length}})</h2>
+      <ul class="record-list">
+        <li v-for="borrowRecord in borrowRecords" class="trace-item">
+          <div>
+            <h4>
+              《{{borrowRecord.trace.book.name}}》
+              <small>ISBN: {{borrowRecord.trace.isbn}}</small>
+            </h4>
+          </div>
+          <div>
+            <span class="trace-item-info">id: {{borrowRecord.id}}</span>
+            <span class="trace-item-info">     location: {{borrowRecord.location}}</span>
+            <span class="trace-item-info">     status: {{borrowRecord.status}}</span>
+            <span class="trace-item-info" v-if="borrowRecord.status === 'APPLYING'">
+              Applying Time: {{new Date(borrowRecord.applyingTime)}}</span>
+            <!--<div class="space"></div>-->
+            <span >
+              <button class="operation" v-if="borrowRecord.status === 'ACTIVE'"
+                      @click="renew(borrowRecord)">RENEW</button>
+                <button class="operation delete" v-if="borrowRecord.status === 'APPLYING'"
+                        @click="cancelApplying(borrowRecord)">CANCEL</button>
+              <!--<button class="operation borrow" v-if="trace.status === 'LOCKED'" @click="borrowTrace(trace)">borrow-->
+              <!--</button>-->
+            </span>
           </div>
         </li>
       </ul>
     </section>
     <section class="main" v-if="borrowRecords && !borrowRecords.length">
-        You have no records.
+      You have no records.
     </section>
   </div>
 </template>
@@ -29,13 +68,34 @@
   export default {
     data() {
       return {
-        borrowRecords: []
+        borrowRecords: [],
+        reservations: []
       }
     },
-    watch: {
-    },
+    watch: {},
     methods: {
-      refresh: function() {
+      cancelApplying: function (lend) {
+        service.cancelApplying(lend).then((response) => {
+          lend.status = 'CANCELED'
+        }).catch(function (error) {
+          console.error(error);
+        });
+      },
+      renew: function (lend) {
+        service.renewBook(lend).then((response) => {
+          lend.status = 'CANCELED'
+      }).catch(function (error) {
+          console.error(error);
+        });
+      },
+      cancelReserve: function (lend) {
+        service.cancelReserve(lend).then((response) => {
+          lend.status = 'CANCELED'
+      }).catch(function (error) {
+          console.error(error);
+        });
+      },
+      refresh: function () {
         let self = this;
         service.getBorrowRecords().then(function (response) {
           console.log(response.data.entities);
@@ -45,7 +105,7 @@
           console.error(error);
         });
       },
-      revert: function(record) {
+      revert: function (record) {
         service.returnBook(record.book.isbn).then(function (response) {
           const success = response.data.success;
           if (success) {
@@ -60,13 +120,17 @@
         });
       }
     },
-    created: function() {
-      let self = this;
-      service.getBorrowRecords().then(function (response) {
-        console.log(response.data.entities);
-        self.borrowRecords = response.data.entities;
-        self.$store.dispatch('ON_LIST_BORROW_RECORDS', self.borrowRecords);
-      }).catch(function (error) {
+    created: function () {
+      service.getBorrowRecords().then((response) => {
+        this.borrowRecords = response.data.entities;
+      this.$store.dispatch('ON_LIST_BORROW_RECORDS', self.borrowRecords);
+    }).catch(function (error) {
+        console.error(error);
+      });
+
+      service.getReservation().then((response) => {
+        this.reservations = response.data.entities;
+    }).catch(function (error) {
         console.error(error);
       });
     }
@@ -110,8 +174,8 @@
     background: #fff;
     margin: 0;
     position: relative;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),
-    0 25px 50px 0 rgba(0, 0, 0, 0.1);
+    /*box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),*/
+    /*0 25px 50px 0 rgba(0, 0, 0, 0.1);*/
   }
 
   .record-page input::-webkit-input-placeholder {
@@ -167,7 +231,7 @@
     padding: 16px 16px 16px 60px;
     border: none;
     background: rgba(0, 0, 0, 0.003);
-    box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
+    box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
   }
 
   .main {
@@ -203,6 +267,27 @@
 
   .record-list li span.small {
     font-size: small;
+  }
+
+  .trace-item {
+    display: flex;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .trace-item-operation {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .trace-item-info {
+    min-width: 80px;
+    text-align: start;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 
 </style>
