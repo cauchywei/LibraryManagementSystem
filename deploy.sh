@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
-cnpm run build
-ssh xp@xupu.name "rm -rf ~/librarian/"
-scp -P 22 -r ./dist/ xp@xupu.name:~/librarian/
+
+cnpm run build &&
+cd dist/ &&
+git add . && git commit -m "update" && git push origin master:dist &&
+ssh xp@xupu.name "cd ~/librarian/ && git pull origin dist" &&
+cd ..
