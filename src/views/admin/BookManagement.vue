@@ -95,9 +95,9 @@
         service.addBookByAdmin(this.newBook).then(function (response) {
           if (response.data.success) {
             self.$store.dispatch('ADD_NEW_BOOK', self.newBook)
-            if (self.newBook.name.indexOf(self.searchInput) !== -1) {
-              self.filterBooks.unshift(self.newBook)
-            }
+//            if (self.newBook.name.indexOf(self.searchInput) !== -1) {
+//              self.$store.state.books.unshift(self.newBook)
+//            }
             self.newBook = {}
           } else {
             alert('add fail!')
