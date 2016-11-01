@@ -39,13 +39,15 @@
           </div>
           <div>
             <span class="trace-item-info">id: {{borrowRecord.id}}</span>
-            <span class="trace-item-info">     location: {{borrowRecord.location}}</span>
+            <span class="trace-item-info" v-if="borrowRecord.status === 'ACTIVE'">
+              appointed time: {{new Date(borrowRecord.appointedTime)}}
+            </span>
             <span class="trace-item-info">     status: {{borrowRecord.status}}</span>
             <span class="trace-item-info" v-if="borrowRecord.status === 'APPLYING'">
               Applying Time: {{new Date(borrowRecord.applyingTime)}}</span>
             <!--<div class="space"></div>-->
             <span >
-              <button class="operation" v-if="borrowRecord.status === 'ACTIVE'"
+              <button class="operation" v-if="borrowRecord.status === 'ACTIVE' && borrowRecord.renew === 0"
                       @click="renew(borrowRecord)">RENEW</button>
                 <button class="operation delete" v-if="borrowRecord.status === 'APPLYING'"
                         @click="cancelApplying(borrowRecord)">CANCEL</button>
@@ -83,7 +85,8 @@
       },
       renew: function (lend) {
         service.renewBook(lend).then((response) => {
-          lend.status = 'CANCELED'
+          lend.renew = response.data.entity.renew;
+          lend.appointedTime = response.data.entity.appointedTime;
       }).catch(function (error) {
           console.error(error);
         });
