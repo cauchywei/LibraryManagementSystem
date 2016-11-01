@@ -9,12 +9,13 @@
           >
 
             <h4 id="title">《{{lend.trace.book.name}}》
-              <small>ISBN: {{lend.trace.isbn}}</small>
+              <small>ISBN: {{lend.trace.isbn}} &nbsp id: {{lend.trace.id}}</small>
             </h4>
+	    
 
             <div id="bottom">
               <h6 id="isbn" class="info-item">User: {{lend.user.name}}({{lend.user.username}})</h6>
-              <h6 class="info-item">Apply Time: {{new Date(lend.applyingTime)}}</h6>
+              <h6 class="info-item">Apply Time: {{new Date(lend.applyingTime)}} &nbsp Appointed Time:{{new Date(lend.appointedTime)}}</h6>
               <span class="info-item"> Status: {{lend.status}}</span>
 
               <div class="operation">
