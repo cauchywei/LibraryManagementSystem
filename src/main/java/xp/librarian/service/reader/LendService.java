@@ -186,7 +186,7 @@ public class LendService {
                 .setAppointedTime(lend.getAppointedTime());
         Lend set = new Lend()
                 .setRenew(lend.getRenew() + 1)
-                .setAppointedTime(TimeUtils.afterNow(30L, ChronoUnit.DAYS));
+                .setAppointedTime(TimeUtils.after(lend.getAppointedTime(), 30L, ChronoUnit.DAYS));
         if (0 == lendDao.update(where, set)) {
             throw new PersistenceException("lend update failed.");
         }
