@@ -23,7 +23,7 @@ public class BookUpdateForm implements Serializable {
     @NotBlank
     private String isbn;
 
-    @Length(max = 256)
+    @Length(min = 1, max = 256)
     private String name;
 
     private Book.Status status;

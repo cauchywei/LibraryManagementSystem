@@ -6,6 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 import lombok.Data;
 import xp.librarian.model.dto.Book;
@@ -23,6 +24,7 @@ public class BookAddForm implements Serializable {
     @Pattern(regexp = "[0-9\\-]+")
     private String isbn;
 
+    @NotNull
     @Length(min = 1, max = 256)
     private String name;
 
