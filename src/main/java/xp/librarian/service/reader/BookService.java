@@ -3,7 +3,9 @@ package xp.librarian.service.reader;
 import java.util.*;
 import java.util.stream.*;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.NonNull;
 import xp.librarian.model.context.ResourceNotFoundException;
+import xp.librarian.model.context.ValidationException;
 import xp.librarian.model.dto.Book;
 import xp.librarian.model.form.BookSearchForm;
 import xp.librarian.model.form.PagingForm;
+import xp.librarian.model.form.UserUpdateForm;
 import xp.librarian.model.result.BookVM;
 import xp.librarian.repository.BookDao;
 
@@ -25,6 +29,9 @@ import xp.librarian.repository.BookDao;
 public class BookService {
 
     @Autowired
+    private Validator validator;
+
+    @Autowired
     private BookDao bookDao;
 
     private BookVM buildBookVM(@NonNull Book book) {
@@ -33,10 +40,14 @@ public class BookService {
 
     public List<BookVM> search(@Valid BookSearchForm form,
                                @Valid PagingForm paging) {
-        Book where = new Book();
-        where.setIsbn(form.getIsbn());
-        where.setName(form.getName());
-        where.setStatus(Book.Status.NORMAL);
+        Set<ConstraintViolation<BookSearchForm>> vSet = validator.validate(form);
+        if (!vSet.isEmpty()) {
+            throw new ValidationException(vSet);
+        }
+        Book where = new Book()
+                .setIsbn(form.getIsbn())
+                .setName(form.getName())
+                .setStatus(Book.Status.NORMAL);
         List<Book> books = bookDao.search(where, paging.getPage(), paging.getLimits(), true);
         return books.stream()
                 .filter(e -> e != null)

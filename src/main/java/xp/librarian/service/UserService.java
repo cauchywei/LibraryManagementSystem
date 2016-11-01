@@ -1,6 +1,10 @@
 package xp.librarian.service;
 
+import java.util.*;
+
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.NonNull;
-import xp.librarian.model.context.AccountContext;
-import xp.librarian.model.context.BusinessException;
-import xp.librarian.model.context.ErrorCode;
-import xp.librarian.model.context.ResourceNotFoundException;
+import xp.librarian.model.context.*;
 import xp.librarian.model.dto.Role;
 import xp.librarian.model.dto.User;
 import xp.librarian.model.form.UserLoginForm;
@@ -30,6 +31,9 @@ import xp.librarian.utils.UploadUtils;
 public class UserService {
 
     @Autowired
+    private Validator validator;
+
+    @Autowired
     private UserDao userDao;
 
     private UserProfileVM buildUserProfileVM(@NonNull User user) {
@@ -37,14 +41,18 @@ public class UserService {
     }
 
     public UserProfileVM register(@Valid UserRegisterForm form) {
+        Set<ConstraintViolation<UserRegisterForm>> vSet = validator.validate(form);
+        if (!vSet.isEmpty()) {
+            throw new ValidationException(vSet);
+        }
         User where = new User().setUsername(form.getUsername());
         if (userDao.get(where, true) != null) {
             throw new BusinessException(ErrorCode.USER_EXISTS);
         }
-        User user = form.toDTO();
-        user.setAvatarUrl(UploadUtils.upload(form.getAvatar()));
-        user.setStatus(User.Status.NORMAL);
-        user.setCreateTime(TimeUtils.now());
+        User user = form.toDTO()
+                .setAvatarUrl(UploadUtils.upload(form.getAvatar()))
+                .setStatus(User.Status.NORMAL)
+                .setCreateTime(TimeUtils.now());
         if (0 == userDao.add(user)) {
             throw new PersistenceException("user insert failed.");
         }
@@ -55,6 +63,10 @@ public class UserService {
     }
 
     public UserProfileVM login(@Valid UserLoginForm form) {
+        Set<ConstraintViolation<UserLoginForm>> vSet = validator.validate(form);
+        if (!vSet.isEmpty()) {
+            throw new ValidationException(vSet);
+        }
         User where = form.toDTO();
         User user = userDao.get(where);
         if (user == null) {
@@ -76,9 +88,13 @@ public class UserService {
     }
 
     public UserProfileVM setProfile(@NonNull AccountContext account, @Valid UserUpdateForm form) {
+        Set<ConstraintViolation<UserUpdateForm>> vSet = validator.validate(form);
+        if (!vSet.isEmpty()) {
+            throw new ValidationException(vSet);
+        }
         User where = account.toDTO();
-        User set = form.toDTO();
-        set.setAvatarUrl(UploadUtils.upload(form.getAvatar()));
+        User set = form.toDTO()
+                .setAvatarUrl(UploadUtils.upload(form.getAvatar()));
         if (0 == userDao.update(where, set)) {
             throw new PersistenceException("user update failed.");
         }

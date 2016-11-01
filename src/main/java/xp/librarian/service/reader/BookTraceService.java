@@ -45,8 +45,9 @@ public class BookTraceService {
         if (book == null) {
             throw new ResourceNotFoundException("book not found.");
         }
-        BookTraceVM vm = new BookTraceVM();
-        vm.withTrace(trace).withBook(book);
+        BookTraceVM vm = new BookTraceVM()
+                .withTrace(trace)
+                .withBook(book);
         Lend lend = Optional.ofNullable(trace.getLendId()).map(lendDao::get).orElse(null);
         if (lend != null) {
             vm.withLend(lend, Optional.ofNullable(lend.getUserId())
@@ -61,8 +62,8 @@ public class BookTraceService {
         if (book == null) {
             throw new ResourceNotFoundException("book not found.");
         }
-        BookTrace where = new BookTrace();
-        where.setIsbn(isbn);
+        BookTrace where = new BookTrace()
+                .setIsbn(isbn);
         List<BookTrace> traces = traceDao.gets(where, paging.getPage(), paging.getLimits(), true);
         return traces.stream()
                 .filter(e -> e != null)

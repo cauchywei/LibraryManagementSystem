@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import xp.librarian.model.dto.Lend;
+import xp.librarian.model.validator.MyFuture;
 
 /**
  * @author xp
@@ -29,7 +30,7 @@ public class LendBookForm implements Serializable {
     @NotNull
     private Integer traceId;
 
-    @Future
+    @MyFuture
     private Long appointedTime;
 
     public Lend toDTO() {

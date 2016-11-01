@@ -15,6 +15,8 @@ public interface LendDao {
 
     Lend get(Integer lendId);
 
+    Lend get(Lend where);
+
     List<Lend> gets(Lend where, Integer page, Integer limits);
 
 }

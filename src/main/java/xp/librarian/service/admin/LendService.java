@@ -3,7 +3,9 @@ package xp.librarian.service.admin;
 import java.util.*;
 import java.util.stream.*;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.NonNull;
-import xp.librarian.model.context.BusinessException;
-import xp.librarian.model.context.ErrorCode;
-import xp.librarian.model.context.InternalServerException;
-import xp.librarian.model.context.ResourceNotFoundException;
+import xp.librarian.model.context.*;
 import xp.librarian.model.dto.*;
 import xp.librarian.model.form.AdminLendListForm;
 import xp.librarian.model.form.PagingForm;
+import xp.librarian.model.form.UserUpdateForm;
 import xp.librarian.model.result.LendVM;
 import xp.librarian.repository.*;
 
@@ -27,6 +27,9 @@ import xp.librarian.repository.*;
 @Service("adminLendService")
 @Transactional
 public class LendService {
+
+    @Autowired
+    private Validator validator;
 
     @Autowired
     private UserDao userDao;
@@ -61,9 +64,13 @@ public class LendService {
 
     public List<LendVM> getLends(@Valid AdminLendListForm form,
                                  @Valid PagingForm paging) {
-        Lend where = new Lend();
-        where.setUserId(form.getUserId());
-        where.setStatus(form.getStatus());
+        Set<ConstraintViolation<AdminLendListForm>> vSet = validator.validate(form);
+        if (!vSet.isEmpty()) {
+            throw new ValidationException(vSet);
+        }
+        Lend where = new Lend()
+                .setUserId(form.getUserId())
+                .setStatus(form.getStatus());
         List<Lend> lends = lendDao.gets(where, paging.getPage(), paging.getLimits());
         return lends.stream()
                 .filter(e -> e != null)
@@ -98,20 +105,20 @@ public class LendService {
         if (!lend.getId().equals(trace.getLendId())) {
             throw new InternalServerException("book trace -> lend not matched.");
         }
-        Lend where = new Lend();
-        where.setId(lendId);
-        where.setStatus(Lend.Status.APPLYING);
-        Lend set = new Lend();
-        set.setStatus(Lend.Status.ACTIVE);
+        Lend where = new Lend()
+                .setId(lendId)
+                .setStatus(Lend.Status.APPLYING);
+        Lend set = new Lend()
+                .setStatus(Lend.Status.ACTIVE);
         if (0 == lendDao.update(where, set)) {
             throw new PersistenceException("lend update failed.");
         }
 
-        BookTrace where1 = new BookTrace();
-        where1.setId(trace.getId());
-        where1.setStatus(BookTrace.Status.LOCKED);
-        BookTrace set1 = new BookTrace();
-        set1.setStatus(BookTrace.Status.BORROWED);
+        BookTrace where1 = new BookTrace()
+                .setId(trace.getId())
+                .setStatus(BookTrace.Status.LOCKED);
+        BookTrace set1 = new BookTrace()
+                .setStatus(BookTrace.Status.BORROWED);
         if (0 == traceDao.update(where1, set1)) {
             throw new PersistenceException("book trace update failed.");
         }
@@ -139,21 +146,21 @@ public class LendService {
         if (!lend.getId().equals(trace.getLendId())) {
             throw new InternalServerException("book trace -> lend not matched.");
         }
-        Lend where = new Lend();
-        where.setId(lendId);
-        where.setStatus(Lend.Status.APPLYING);
-        Lend set = new Lend();
-        set.setStatus(Lend.Status.REJECTED);
+        Lend where = new Lend()
+                .setId(lendId)
+                .setStatus(Lend.Status.APPLYING);
+        Lend set = new Lend()
+                .setStatus(Lend.Status.REJECTED);
         if (0 == lendDao.update(where, set)) {
             throw new PersistenceException("lend update failed.");
         }
 
-        BookTrace where1 = new BookTrace();
-        where1.setId(trace.getId());
-        where1.setStatus(BookTrace.Status.LOCKED);
-        BookTrace set1 = new BookTrace();
-        set1.setStatus(BookTrace.Status.NORMAL);
-        set1.setLendId(0);
+        BookTrace where1 = new BookTrace()
+                .setId(trace.getId())
+                .setStatus(BookTrace.Status.LOCKED);
+        BookTrace set1 = new BookTrace()
+                .setStatus(BookTrace.Status.NORMAL)
+                .setLendId(0);
         if (0 == traceDao.update(where1, set1)) {
             throw new PersistenceException("book trace update failed.");
         }
@@ -181,24 +188,24 @@ public class LendService {
         if (!lend.getId().equals(trace.getLendId())) {
             throw new InternalServerException("book trace -> lend not matched.");
         }
-        Lend whereA = new Lend();
-        whereA.setId(lendId);
-        whereA.setStatus(Lend.Status.ACTIVE);
-        Lend whereB = new Lend();
-        whereB.setId(lendId);
-        whereB.setStatus(Lend.Status.LATE);
-        Lend set = new Lend();
-        set.setStatus(Lend.Status.RETURNED);
+        Lend whereA = new Lend()
+                .setId(lendId)
+                .setStatus(Lend.Status.ACTIVE);
+        Lend whereB = new Lend()
+                .setId(lendId)
+                .setStatus(Lend.Status.LATE);
+        Lend set = new Lend()
+                .setStatus(Lend.Status.RETURNED);
         if (0 == lendDao.update(whereA, set) && 0 == lendDao.update(whereB, set)) {
             throw new PersistenceException("lend update failed.");
         }
 
-        BookTrace where1 = new BookTrace();
-        where1.setId(trace.getId());
-        where1.setStatus(BookTrace.Status.BORROWED);
-        BookTrace set1 = new BookTrace();
-        set1.setStatus(BookTrace.Status.LOCKED);
-        set1.setLendId(0);
+        BookTrace where1 = new BookTrace()
+                .setId(trace.getId())
+                .setStatus(BookTrace.Status.BORROWED);
+        BookTrace set1 = new BookTrace()
+                .setStatus(BookTrace.Status.LOCKED)
+                .setLendId(0);
         if (0 == traceDao.update(where1, set1)) {
             throw new PersistenceException("book trace update failed.");
         }
@@ -226,23 +233,23 @@ public class LendService {
         if (!lend.getId().equals(trace.getLendId())) {
             throw new InternalServerException("book trace -> lend not matched.");
         }
-        Lend whereA = new Lend();
-        whereA.setId(lendId);
-        whereA.setStatus(Lend.Status.ACTIVE);
-        Lend whereB = new Lend();
-        whereB.setId(lendId);
-        whereB.setStatus(Lend.Status.LATE);
-        Lend set = new Lend();
-        set.setStatus(Lend.Status.DISABLED);
+        Lend whereA = new Lend()
+                .setId(lendId)
+                .setStatus(Lend.Status.ACTIVE);
+        Lend whereB = new Lend()
+                .setId(lendId)
+                .setStatus(Lend.Status.LATE);
+        Lend set = new Lend()
+                .setStatus(Lend.Status.DISABLED);
         if (0 == lendDao.update(whereA, set) && 0 == lendDao.update(whereB, set)) {
             throw new PersistenceException("lend update failed.");
         }
 
-        BookTrace where1 = new BookTrace();
-        where1.setId(trace.getId());
-        where1.setStatus(BookTrace.Status.BORROWED);
-        BookTrace set1 = new BookTrace();
-        set1.setStatus(BookTrace.Status.DELETED);
+        BookTrace where1 = new BookTrace()
+                .setId(trace.getId())
+                .setStatus(BookTrace.Status.BORROWED);
+        BookTrace set1 = new BookTrace()
+                .setStatus(BookTrace.Status.DELETED);
         if (0 == traceDao.update(where1, set1)) {
             throw new PersistenceException("book trace update failed.");
         }

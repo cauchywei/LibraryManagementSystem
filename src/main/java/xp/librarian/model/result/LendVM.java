@@ -30,6 +30,8 @@ public class LendVM implements Serializable {
 
     private Lend.Status status;
 
+    private Integer renew;
+
     private Long applyingTime;
 
     private Long appointedTime;
@@ -42,6 +44,7 @@ public class LendVM implements Serializable {
             this.userId = lend.getUserId();
             this.traceId = lend.getTraceId();
             this.status = lend.getStatus();
+            this.renew = lend.getRenew();
             this.applyingTime = Optional.ofNullable(lend.getApplyingTime()).map(Instant::toEpochMilli).orElse(null);
             this.appointedTime = Optional.ofNullable(lend.getAppointedTime()).map(Instant::toEpochMilli).orElse(null);
             this.expiredTime = Optional.ofNullable(lend.getExpiredTime()).map(Instant::toEpochMilli).orElse(null);

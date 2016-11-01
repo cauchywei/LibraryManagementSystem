@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ import xp.librarian.repository.UserDao;
 @Service("adminUserService")
 @Transactional
 public class UserService {
+
+    @Autowired
+    private Validator validator;
 
     @Autowired
     private UserDao userDao;
@@ -48,12 +52,12 @@ public class UserService {
         return buildUserProfileVM(user);
     }
 
-    private void setStatus(Integer userId, User.Status oldValue, User.Status newValue) {
-        User where = new User();
-        where.setId(userId);
-        where.setStatus(oldValue);
-        User set = new User();
-        set.setStatus(newValue);
+    private void setStatus(Integer userId,User.Status oldValue, User.Status newValue) {
+        User where = new User()
+                .setId(userId)
+                .setStatus(oldValue);
+        User set = new User()
+                .setStatus(newValue);
         if (0 == userDao.update(where, set)) {
             throw new PersistenceException("user update failed.");
         }

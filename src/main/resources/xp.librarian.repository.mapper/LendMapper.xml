@@ -26,6 +26,9 @@
             <if test="set.status != null">
                 `status`=#{set.status},
             </if>
+            <if test="set.renew != null">
+                `renew`=#{set.renew},
+            </if>
             <if test="set.appointedTime != null">
                 `appointedTime`=#{set.appointedTime},
             </if>
@@ -42,6 +45,9 @@
             </if>
             <if test="where.status != null">
                 AND `status`=#{where.status}
+            </if>
+            <if test="where.renew != null">
+                AND `renew`=#{where.renew}
             </if>
             <if test="where.appointedTime != null">
                 AND `appointedTime`=#{where.appointedTime}
@@ -65,6 +71,9 @@
             </if>
             <if test="where.status != null">
                 AND `status`=#{where.status}
+            </if>
+            <if test="where.renew != null">
+                AND `renew`=#{where.renew}
             </if>
             <if test="where.appointedTime != null">
                 AND `appointedTime`=#{where.appointedTime}

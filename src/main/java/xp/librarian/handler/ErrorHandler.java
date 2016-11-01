@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import xp.librarian.model.context.AccessForbiddenException;
-import xp.librarian.model.context.BusinessException;
-import xp.librarian.model.context.ResourceNotFoundException;
-import xp.librarian.model.context.UnauthorizedException;
+import xp.librarian.model.context.*;
 import xp.librarian.model.result.ResultWrapper;
 
 /**
@@ -66,6 +63,12 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Object handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         return ResultWrapper.error(e.getLocalizedMessage());
+    }
+
+    @ExceptionHandler({ValidationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Object handleValidationException(ValidationException e) {
+        return ResultWrapper.error(e.getMessages());
     }
 
     // 401

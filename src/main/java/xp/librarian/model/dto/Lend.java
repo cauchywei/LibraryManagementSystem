@@ -39,6 +39,8 @@ public class Lend implements Serializable {
 
     public Status status;
 
+    public Integer renew;
+
     public Instant applyingTime;
 
     public Instant appointedTime;

@@ -1,8 +1,12 @@
 package xp.librarian.config;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+import org.hibernate.validator.internal.engine.ValidatorFactoryImpl;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.*;
 
 /**
  * @author xp
@@ -14,5 +18,18 @@ import org.springframework.context.annotation.Import;
 })
 @ComponentScan(basePackages = {"xp.librarian.service"})
 public class ServiceConfig {
+
+    @Bean
+    public ValidatorFactory validatorFactory() {
+        return Validation.byDefaultProvider()
+                .configure()
+                .buildValidatorFactory();
+    }
+
+    @Bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public Validator validator(ValidatorFactory factory) {
+        return factory.getValidator();
+    }
 
 }

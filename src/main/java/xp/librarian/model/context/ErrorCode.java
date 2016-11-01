@@ -11,6 +11,7 @@ public enum ErrorCode {
     BOOK_TRACE_HAS_BEEN_LOCKED("book_trace.locked"),
     BOOK_TRACE_STATUS_MISMATCH("book_trace.status_mismatch"),
     LEND_STATUS_MISMATCH("lend.status_mismatch"),
+    LEND_RENEW_ONLY_ONCE_ALLOWED("lend.renew_only_once_allowed"),
     RESERVATION_STATUS_MISMATCH("reservation.status_mismatch"),
     RESERVATION_EXISTS("reservation.exists"),
 

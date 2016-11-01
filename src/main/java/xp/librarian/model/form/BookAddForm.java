@@ -3,6 +3,7 @@ package xp.librarian.model.form;
 import java.io.*;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -19,6 +20,7 @@ public class BookAddForm implements Serializable {
 
     @NotNull
     @Length(min = 1, max = 128)
+    @Pattern(regexp = "[0-9\\-]+")
     private String isbn;
 
     @Length(min = 1, max = 256)

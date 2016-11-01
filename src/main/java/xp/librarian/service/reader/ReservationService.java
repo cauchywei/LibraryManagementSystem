@@ -3,7 +3,9 @@ package xp.librarian.service.reader;
 import java.util.*;
 import java.util.stream.*;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import xp.librarian.model.dto.*;
 import xp.librarian.model.form.PagingForm;
 import xp.librarian.model.form.ReservationListForm;
 import xp.librarian.model.form.ReserveBookForm;
+import xp.librarian.model.form.UserUpdateForm;
 import xp.librarian.model.result.ReservationVM;
 import xp.librarian.repository.*;
 import xp.librarian.utils.TimeUtils;
@@ -26,6 +29,9 @@ import xp.librarian.utils.TimeUtils;
 @Service("readerReservationService")
 @Transactional
 public class ReservationService {
+
+    @Autowired
+    private Validator validator;
 
     @Autowired
     private UserDao userDao;
@@ -60,6 +66,10 @@ public class ReservationService {
 
     public ReservationVM reserveBook(@NonNull AccountContext account,
                                      @Valid ReserveBookForm form) {
+        Set<ConstraintViolation<ReserveBookForm>> vSet = validator.validate(form);
+        if (!vSet.isEmpty()) {
+            throw new ValidationException(vSet);
+        }
         BookTrace trace = traceDao.get(form.getTraceId());
         if (trace == null) {
             throw new ResourceNotFoundException("book trace not found.");
@@ -70,17 +80,17 @@ public class ReservationService {
         if (!BookTrace.Status.BORROWED.equals(trace.getStatus())) {
             throw new BusinessException(ErrorCode.BOOK_TRACE_STATUS_MISMATCH);
         }
-        Reservation where = new Reservation();
-        where.setTraceId(trace.getId());
-        where.setStatus(Reservation.Status.WAITING);
+        Reservation where = new Reservation()
+                .setTraceId(trace.getId())
+                .setStatus(Reservation.Status.WAITING);
         Reservation existReservation = reservationDao.get(where);
         if (existReservation != null) {
             throw new BusinessException(ErrorCode.RESERVATION_EXISTS);
         }
-        Reservation reservation = form.toDTO();
-        reservation.setUserId(account.getId());
-        reservation.setStatus(Reservation.Status.WAITING);
-        reservation.setApplyingTime(TimeUtils.now());
+        Reservation reservation = form.toDTO()
+                .setUserId(account.getId())
+                .setStatus(Reservation.Status.WAITING)
+                .setApplyingTime(TimeUtils.now());
         if (0 == reservationDao.add(reservation)) {
             throw new PersistenceException("reservation insert failed.");
         }
@@ -95,9 +105,13 @@ public class ReservationService {
     public List<ReservationVM> getReservations(@NonNull AccountContext account,
                                                @Valid ReservationListForm form,
                                                @Valid PagingForm paging) {
-        Reservation where = new Reservation();
-        where.setUserId(account.getId());
-        where.setStatus(form.getStatus());
+        Set<ConstraintViolation<ReservationListForm>> vSet = validator.validate(form);
+        if (!vSet.isEmpty()) {
+            throw new ValidationException(vSet);
+        }
+        Reservation where = new Reservation()
+                .setUserId(account.getId())
+                .setStatus(form.getStatus());
         List<Reservation> reservations = reservationDao.gets(where, paging.getPage(), paging.getLimits());
         return reservations.stream()
                 .filter(e -> e != null)
@@ -106,7 +120,8 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
-    public ReservationVM getReservation(@NonNull AccountContext account, @NonNull Integer reservationId) {
+    public ReservationVM getReservation(@NonNull AccountContext account,
+                                        @NonNull Integer reservationId) {
         Reservation reservation = reservationDao.get(reservationId);
         if (reservation == null) {
             throw new ResourceNotFoundException("lend not found.");
@@ -129,11 +144,11 @@ public class ReservationService {
         if (!Reservation.Status.WAITING.equals(reservation.getStatus())) {
             throw new BusinessException(ErrorCode.RESERVATION_STATUS_MISMATCH);
         }
-        Reservation where = new Reservation();
-        where.setId(reservation.getId());
-        where.setStatus(Reservation.Status.WAITING);
-        Reservation set = new Reservation();
-        set.setStatus(Reservation.Status.CANCELED);
+        Reservation where = new Reservation()
+                .setId(reservation.getId())
+                .setStatus(Reservation.Status.WAITING);
+        Reservation set = new Reservation()
+                .setStatus(Reservation.Status.CANCELED);
         if (0 == reservationDao.update(where, set)) {
             throw new PersistenceException("reservation update failed.");
         }

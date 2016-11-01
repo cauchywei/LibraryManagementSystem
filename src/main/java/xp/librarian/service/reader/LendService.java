@@ -4,7 +4,9 @@ import java.time.temporal.*;
 import java.util.*;
 import java.util.stream.*;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ import xp.librarian.utils.TimeUtils;
 @Service("readerLendService")
 @Transactional
 public class LendService {
+
+    @Autowired
+    private Validator validator;
 
     @Autowired
     private UserDao userDao;
@@ -61,6 +66,10 @@ public class LendService {
 
     public LendVM lendBook(@NonNull AccountContext account,
                            @Valid LendBookForm form) {
+        Set<ConstraintViolation<LendBookForm>> vSet = validator.validate(form);
+        if (!vSet.isEmpty()) {
+            throw new ValidationException(vSet);
+        }
         BookTrace trace = traceDao.get(form.getTraceId());
         if (trace == null) {
             throw new ResourceNotFoundException("book trace not found.");
@@ -68,29 +77,29 @@ public class LendService {
         if (!trace.getIsbn().equals(form.getIsbn())) {
             throw new InputMismatchException("isbn not match.");
         }
-        BookTrace where = new BookTrace();
-        where.setId(trace.getId());
-        where.setStatus(BookTrace.Status.NORMAL);
-        BookTrace set = new BookTrace();
-        set.setStatus(BookTrace.Status.LOCKED);
+        BookTrace where = new BookTrace()
+                .setId(trace.getId())
+                .setStatus(BookTrace.Status.NORMAL);
+        BookTrace set = new BookTrace()
+                .setStatus(BookTrace.Status.LOCKED);
         if (0 == traceDao.update(where, set)) {
             throw new BusinessException(ErrorCode.BOOK_TRACE_HAS_BEEN_LOCKED);
         }
 
-        Lend lend = form.toDTO();
-        lend.setUserId(account.getId());
-        lend.setStatus(Lend.Status.APPLYING);
-        lend.setExpiredTime(TimeUtils.afterNow(2L, ChronoUnit.HOURS));
-        lend.setApplyingTime(TimeUtils.now());
+        Lend lend = form.toDTO()
+                .setUserId(account.getId())
+                .setStatus(Lend.Status.APPLYING)
+                .setApplyingTime(TimeUtils.now())
+                .setExpiredTime(TimeUtils.afterNow(2L, ChronoUnit.HOURS));
         if (0 == lendDao.add(lend)) {
             throw new PersistenceException("lend insert failed.");
         }
 
-        where = new BookTrace();
-        where.setId(trace.getId());
-        where.setStatus(BookTrace.Status.LOCKED);
-        set = new BookTrace();
-        set.setLendId(lend.getId());
+        where = new BookTrace()
+                .setId(trace.getId())
+                .setStatus(BookTrace.Status.LOCKED);
+        set = new BookTrace()
+                .setLendId(lend.getId());
         if (0 == traceDao.update(where, set)) {
             throw new PersistenceException("book trace update failed.");
         }
@@ -105,9 +114,13 @@ public class LendService {
     public List<LendVM> getLends(@NonNull AccountContext account,
                                  @Valid LendListForm form,
                                  @Valid PagingForm paging) {
-        Lend where = new Lend();
-        where.setUserId(account.getId());
-        where.setStatus(form.getStatus());
+        Set<ConstraintViolation<LendListForm>> vSet = validator.validate(form);
+        if (!vSet.isEmpty()) {
+            throw new ValidationException(vSet);
+        }
+        Lend where = new Lend()
+                .setUserId(account.getId())
+                .setStatus(form.getStatus());
         List<Lend> lends = lendDao.gets(where, paging.getPage(), paging.getLimits());
         return lends.stream()
                 .filter(e -> e != null)
@@ -137,11 +150,11 @@ public class LendService {
         if (!lend.getUserId().equals(account.getId())) {
             throw new AccessForbiddenException("access denied.");
         }
-        Lend where = new Lend();
-        where.setId(lend.getId());
-        where.setStatus(Lend.Status.APPLYING);
-        Lend set = new Lend();
-        set.setStatus(Lend.Status.CANCELED);
+        Lend where = new Lend()
+                .setId(lend.getId())
+                .setStatus(Lend.Status.APPLYING);
+        Lend set = new Lend()
+                .setStatus(Lend.Status.CANCELED);
         if (0 == lendDao.update(where, set)) {
             throw new PersistenceException("lend update failed.");
         }
@@ -163,12 +176,17 @@ public class LendService {
         if (!Lend.Status.ACTIVE.equals(lend.getStatus())) {
             throw new BusinessException(ErrorCode.BOOK_TRACE_HAS_BEEN_LOCKED);
         }
-        Lend where = new Lend();
-        where.setId(lend.getId());
-        where.setStatus(Lend.Status.ACTIVE);
-        where.setAppointedTime(lend.getAppointedTime());
-        Lend set = new Lend();
-        set.setAppointedTime(TimeUtils.afterNow(30L, ChronoUnit.DAYS));
+        if (lend.getRenew() != 0) {
+            throw new BusinessException(ErrorCode.LEND_RENEW_ONLY_ONCE_ALLOWED);
+        }
+        Lend where = new Lend()
+                .setId(lend.getId())
+                .setStatus(Lend.Status.ACTIVE)
+                .setRenew(lend.getRenew())
+                .setAppointedTime(lend.getAppointedTime());
+        Lend set = new Lend()
+                .setRenew(lend.getRenew() + 1)
+                .setAppointedTime(TimeUtils.afterNow(30L, ChronoUnit.DAYS));
         if (0 == lendDao.update(where, set)) {
             throw new PersistenceException("lend update failed.");
         }

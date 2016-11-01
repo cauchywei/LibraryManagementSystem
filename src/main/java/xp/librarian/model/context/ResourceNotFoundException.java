@@ -20,7 +20,7 @@ public class ResourceNotFoundException extends RuntimeException {
     }
 
     @Override
-    public synchronized Throwable fillInStackTrace() {
+    public Throwable fillInStackTrace() {
         return null;
     }
 }

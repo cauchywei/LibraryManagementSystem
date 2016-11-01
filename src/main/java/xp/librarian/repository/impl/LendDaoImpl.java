@@ -29,8 +29,10 @@ public class LendDaoImpl implements LendDao {
     }
 
     public Lend get(@NonNull Integer lendId) {
-        Lend where = new Lend();
-        where.setId(lendId);
+        return get(new Lend().setId(lendId));
+    }
+
+    public Lend get(@NonNull Lend where) {
         return gets(where, 1, 1).stream()
                 .findFirst().orElse(null);
     }

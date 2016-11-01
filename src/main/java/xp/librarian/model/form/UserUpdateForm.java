@@ -2,8 +2,6 @@ package xp.librarian.model.form;
 
 import java.io.*;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Email;
