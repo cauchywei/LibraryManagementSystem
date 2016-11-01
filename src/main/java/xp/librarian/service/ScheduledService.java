@@ -143,11 +143,12 @@ public class ScheduledService {
             }
 
             Lend lend = new Lend();
-            lend.setAppointedTime(TimeUtils.afterNow(30L, ChronoUnit.DAYS));
+            lend.setTraceId(reservation.getTraceId());
             lend.setUserId(reservation.getUserId());
             lend.setStatus(Lend.Status.APPLYING);
-            lend.setExpiredTime(TimeUtils.afterNow(24L, ChronoUnit.HOURS));
             lend.setApplyingTime(TimeUtils.now());
+            lend.setAppointedTime(TimeUtils.afterNow(30L, ChronoUnit.DAYS));
+            lend.setExpiredTime(TimeUtils.afterNow(24L, ChronoUnit.HOURS));
             if (0 == lendDao.add(lend)) {
                 throw new PersistenceException("lend insert failed.");
             }

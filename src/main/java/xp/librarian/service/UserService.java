@@ -37,6 +37,10 @@ public class UserService {
     }
 
     public UserProfileVM register(@Valid UserRegisterForm form) {
+        User where = new User().setUsername(form.getUsername());
+        if (userDao.get(where, true) != null) {
+            throw new BusinessException(ErrorCode.USER_EXISTS);
+        }
         User user = form.toDTO();
         user.setAvatarUrl(UploadUtils.upload(form.getAvatar()));
         user.setStatus(User.Status.NORMAL);

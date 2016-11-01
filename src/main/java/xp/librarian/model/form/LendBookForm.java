@@ -4,7 +4,10 @@ import java.io.*;
 import java.time.*;
 import java.time.temporal.*;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,14 +22,14 @@ public class LendBookForm implements Serializable {
     private static final long serialVersionUID = -2544070182439216592L;
 
     @ApiModelProperty(hidden = true)
-    @NotNull
+    @NotBlank
     private String isbn;
 
     @ApiModelProperty(hidden = true)
     @NotNull
     private Integer traceId;
 
-    @NotNull
+    @Future
     private Long appointedTime;
 
     public Lend toDTO() {

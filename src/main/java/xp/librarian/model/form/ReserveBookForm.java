@@ -4,6 +4,8 @@ import java.io.*;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import xp.librarian.model.dto.Reservation;
@@ -17,7 +19,7 @@ public class ReserveBookForm implements Serializable {
     private static final long serialVersionUID = 8475848013383572700L;
 
     @ApiModelProperty(hidden = true)
-    @NotNull
+    @NotBlank
     private String isbn;
 
     @ApiModelProperty(hidden = true)
@@ -27,13 +29,6 @@ public class ReserveBookForm implements Serializable {
     public Reservation toDTO() {
         return new Reservation()
                 .setTraceId(traceId);
-    }
-
-    public static ReserveBookForm build(String isbn, Integer traceId) {
-        ReserveBookForm form = new ReserveBookForm();
-        form.isbn = isbn;
-        form.traceId = traceId;
-        return form;
     }
 
 }

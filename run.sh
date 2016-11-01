@@ -14,7 +14,7 @@ function dump() {
 }
 
 function stop() {
-    echo -n "stopping.. ${MAIN_CLASS} "
+    echo "stopping.. ${MAIN_CLASS} "
 
     get_pids
     for PID in ${PIDS};do
