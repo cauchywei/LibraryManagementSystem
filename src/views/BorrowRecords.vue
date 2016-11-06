@@ -1,35 +1,32 @@
 <template>
   <div class="record-page">
     <!--<button id="btn-refresh" class="btn btn-default btn-block" @click="refresh()"> Refresh </button>-->
-    <section class="main" v-if="borrowRecords && borrowRecords.length" v-cloak>
-      <h2 v-if="reservations && reservations.length">My Reservations ({{reservations.length}})</h2>
-      <ul class="record-list">
-        <li v-for="borrowRecord in reservations" class="trace-item">
+    <section class="main" v-cloak>
+      <h2>My Reservations ({{reservations.length}})</h2>
+      <ul class="record-list" v-if="reservations && reservations.length">
+        <li v-for="reservation in reservations" class="trace-item">
           <div>
             <h4>
-              《{{borrowRecord.trace.book.name}}》
-              <small>ISBN: {{borrowRecord.trace.isbn}}</small>
+              《{{reservation.trace.book.name}}》
+              <small>ISBN: {{reservation.trace.isbn}}</small>
             </h4>
           </div>
           <div>
-            <span class="trace-item-info">id: {{borrowRecord.id}}</span>
-            <span class="trace-item-info">     location: {{borrowRecord.location}}</span>
-            <span class="trace-item-info">     status: {{borrowRecord.status}}</span>
-            <span class="trace-item-info">
-              Applying Time: {{new Date(borrowRecord.applyingTime)}}</span>
+            <span class="trace-item-info">location: {{reservation.trace.location}}</span>
+            <span class="trace-item-info">applied at: {{new Date(reservation.applyingTime)}}</span>
+            <span class="trace-item-info">status: {{reservation.status}}</span>
             <!--<div class="space"></div>-->
-            <span >
-              <button class="operation delete" v-if="borrowRecord.status === 'WAITING'"
-                      @click="cancelReserve(borrowRecord)">CANCEL</button>
-              <!--<button class="operation borrow" v-if="trace.status === 'LOCKED'" @click="borrowTrace(trace)">borrow-->
-              <!--</button>-->
+            <span>
+              <button class="operation delete" v-if="reservation.status === 'WAITING'"
+                      @click="cancelReserve(reservation)">CANCEL</button>
             </span>
           </div>
         </li>
       </ul>
+      <p v-if="reservations && !reservations.length">You have no reservation.</p>
 
-      <h2 v-if="borrowRecords && borrowRecords.length">My Borrow Record ({{borrowRecords.length}})</h2>
-      <ul class="record-list">
+      <h2>My Borrow Record ({{borrowRecords.length}})</h2>
+      <ul class="record-list" v-if="borrowRecords && borrowRecords.length">
         <li v-for="borrowRecord in borrowRecords" class="trace-item">
           <div>
             <h4>
@@ -38,28 +35,27 @@
             </h4>
           </div>
           <div>
-            <span class="trace-item-info">id: {{borrowRecord.id}}</span>
-            <span class="trace-item-info" v-if="borrowRecord.status === 'ACTIVE'">
-              appointed time: {{new Date(borrowRecord.appointedTime)}}
+            <span class="trace-item-info">
+              id: {{borrowRecord.id}}
             </span>
-            <span class="trace-item-info">     status: {{borrowRecord.status}}</span>
+            <span class="trace-item-info" v-if="borrowRecord.status === 'ACTIVE'">
+              appointed until: {{new Date(borrowRecord.appointedTime)}}
+            </span>
+            <span class="trace-item-info">
+              status: {{borrowRecord.status}}
+            </span>
             <span class="trace-item-info" v-if="borrowRecord.status === 'APPLYING'">
-              Applying Time: {{new Date(borrowRecord.applyingTime)}}</span>
-            <!--<div class="space"></div>-->
-            <span >
+              applying at: {{new Date(borrowRecord.applyingTime)}}</span>
+            <span>
               <button class="operation" v-if="borrowRecord.status === 'ACTIVE' && borrowRecord.renew === 0"
                       @click="renew(borrowRecord)">RENEW</button>
-                <button class="operation delete" v-if="borrowRecord.status === 'APPLYING'"
-                        @click="cancelApplying(borrowRecord)">CANCEL</button>
-              <!--<button class="operation borrow" v-if="trace.status === 'LOCKED'" @click="borrowTrace(trace)">borrow-->
-              <!--</button>-->
+              <button class="operation delete" v-if="borrowRecord.status === 'APPLYING'"
+                      @click="cancelApplying(borrowRecord)">CANCEL</button>
             </span>
           </div>
         </li>
       </ul>
-    </section>
-    <section class="main" v-if="borrowRecords && !borrowRecords.length">
-      You have no records.
+      <p v-if="borrowRecords && !borrowRecords.length">You have no borrow records.</p>
     </section>
   </div>
 </template>
@@ -70,46 +66,39 @@
   export default {
     data() {
       return {
-        borrowRecords: [],
-        reservations: []
+        borrowRecords: [], reservations: []
       }
-    },
-    watch: {},
-    methods: {
-      cancelApplying: function (lend) {
+    }, watch: {}, methods: {
+      cancelApplying: function(lend) {
         service.cancelApplying(lend).then((response) => {
           lend.status = 'CANCELED'
-        }).catch(function (error) {
+        }).catch(function(error) {
           console.error(error);
         });
-      },
-      renew: function (lend) {
+      }, renew: function(lend) {
         service.renewBook(lend).then((response) => {
           lend.renew = response.data.entity.renew;
           lend.appointedTime = response.data.entity.appointedTime;
-      }).catch(function (error) {
+        }).catch(function(error) {
           console.error(error);
         });
-      },
-      cancelReserve: function (lend) {
+      }, cancelReserve: function(lend) {
         service.cancelReserve(lend).then((response) => {
           lend.status = 'CANCELED'
-      }).catch(function (error) {
+        }).catch(function(error) {
           console.error(error);
         });
-      },
-      refresh: function () {
+      }, refresh: function() {
         let self = this;
-        service.getBorrowRecords().then(function (response) {
+        service.getBorrowRecords().then(function(response) {
           console.log(response.data.entities);
           self.borrowRecords = response.data.entities;
           self.$store.dispatch('ON_LIST_BORROW_RECORDS', self.borrowRecords);
-        }).catch(function (error) {
+        }).catch(function(error) {
           console.error(error);
         });
-      },
-      revert: function (record) {
-        service.returnBook(record.book.isbn).then(function (response) {
+      }, revert: function(record) {
+        service.returnBook(record.book.isbn).then(function(response) {
           const success = response.data.success;
           if (success) {
             record.status = 'RETURNED';
@@ -117,23 +106,22 @@
           } else {
             alert('还书失败！');
           }
-        }).catch(function (error) {
+        }).catch(function(error) {
           alert('还书失败！');
           console.error(error);
         });
       }
-    },
-    created: function () {
+    }, created: function() {
       service.getBorrowRecords().then((response) => {
         this.borrowRecords = response.data.entities;
-      this.$store.dispatch('ON_LIST_BORROW_RECORDS', self.borrowRecords);
-    }).catch(function (error) {
+        this.$store.dispatch('ON_LIST_BORROW_RECORDS', self.borrowRecords);
+      }).catch(function(error) {
         console.error(error);
       });
 
       service.getReservation().then((response) => {
         this.reservations = response.data.entities;
-    }).catch(function (error) {
+      }).catch(function(error) {
         console.error(error);
       });
     }
@@ -174,7 +162,7 @@
   }
 
   .record-page {
-    background: #fff;
+    background: #ffffff;
     margin: 0;
     position: relative;
     /*box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),*/
@@ -223,7 +211,7 @@
     line-height: 1.4em;
     color: inherit;
     padding: 6px;
-    border: 1px solid #999;
+    border: 1px solid #999999;
     box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;

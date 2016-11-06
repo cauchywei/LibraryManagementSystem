@@ -32,6 +32,8 @@ module.exports = {
     'indent': 1,
     // allow quotes
     'quotes': 1,
+    // allow same line properties
+    'object-property-newline': 1,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
