@@ -110,7 +110,7 @@
           return;
         }
         const params = {
-          'ISBN': value,
+          'isbn': value,
           'name': value
         };
         service.searchBook(params).then(function (response) {

@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
   <div id="manage-book-panel">
     <div id="add-book-panel">
       <div class="operation-title">Add a book</div>
@@ -29,7 +29,7 @@
             <h4 id="title">《{{book.name}}》
               <small>ISBN: {{book.isbn}}</small>
             </h4>
-            <h4 >
+            <h4>
               <small>{{book.desc}}</small>
             </h4>
 
@@ -46,6 +46,17 @@
                 <span class="trace-item-info">id: {{trace.id}}</span>
                 <span class="trace-item-info">     status: {{trace.status}}</span>
                 <span class="trace-item-info">     location: {{trace.location}}</span>
+
+                <table>
+                  <tr>
+                    <td>
+                      <img
+                        v-bind:src="'http://barcode.tec-it.com/barcode.ashx?data='+trace.isbn+trace.id+'&code=Code128&dpi=96'"
+                        alt='Barcode Generator TEC-IT'/>
+                    </td>
+                  </tr>
+                </table>
+
                 <div class="space"></div>
                 <div class="trace-item-operation">
                   <button class="operation delete" v-if="trace.status !== 'DELETED'" @click="deleteTrace(trace)">delete
@@ -59,7 +70,7 @@
               </div>
             </ul>
             <div v-else>
-                Loading...
+              Loading...
             </div>
           </div>
 
@@ -76,10 +87,7 @@
     data () {
       return {
         newBook: {
-          name: '',
-          isbn: '',
-          total: null,
-          margin: null
+          name: '', isbn: '', total: null, margin: null
         },
         loadingTrace: false,
         newTrace: {},
@@ -88,39 +96,36 @@
         currentSelectBook: null,
         currentTrace: []
       }
-    },
-    methods: {
+    }, methods: {
       addNewBook () {
         let self = this
-        service.addBookByAdmin(this.newBook).then(function (response) {
+        service.addBookByAdmin(this.newBook).then(function(response) {
           if (response.data.success) {
             self.$store.dispatch('ADD_NEW_BOOK', self.newBook)
-//            if (self.newBook.name.indexOf(self.searchInput) !== -1) {
-//              self.$store.state.books.unshift(self.newBook)
-//            }
+            //            if (self.newBook.name.indexOf(self.searchInput) !== -1) {
+            //              self.$store.state.books.unshift(self.newBook)
+            //            }
             self.newBook = {}
           } else {
             alert('add fail!')
           }
-        }).catch(function (e) {
+        }).catch(function(e) {
           alert('add fail!')
         })
         return false
-      },
-      deleteBook (book) {
+      }, deleteBook (book) {
         let self = this
-        service.deleteBookByAdmin(book.isbn).then(function (response) {
+        service.deleteBookByAdmin(book.isbn).then(function(response) {
           if (response.data.success) {
             self.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN')
           } else {
             alert('delete book fail!')
           }
-        }).catch(function (e) {
+        }).catch(function(e) {
           alert(e)
           alert('delete book fail!')
         })
-      },
-      selectBook (book) {
+      }, selectBook (book) {
         if (this.loadingTrace) {
           return
         }
@@ -143,8 +148,7 @@
             alert('fetch failed!' + error)
           })
         }
-      },
-      addTrace () {
+      }, addTrace () {
         if (this.loadingTrace) {
           return
         }
@@ -160,44 +164,39 @@
           this.newTrace = {}
           alert('add trace failed!' + error)
         })
-      },
-      deleteTrace (trace) {
-        service.deleteBookTraceByAdmin(trace).then(function (response) {
+      }, deleteTrace (trace) {
+        service.deleteBookTraceByAdmin(trace).then(function(response) {
           if (response.data.success) {
             trace.status = "DELETED"
           } else {
             alert('delete failed!')
           }
-        }).catch(function (error) {
+        }).catch(function(error) {
           alert('delete failed!' + error)
         })
-      },
-      borrowTrace (trace) {
-        service.borrowBookTraceByAdmin(trace).then(function (response) {
+      }, borrowTrace (trace) {
+        service.borrowBookTraceByAdmin(trace).then(function(response) {
           if (response.data.success) {
             trace.status = "BORROWED"
           } else {
             alert('borrow failed!')
           }
-        }).catch(function (error) {
+        }).catch(function(error) {
           alert('borrow failed!' + error)
         })
       }
-    },
-    watch: {
-      searchInput: function (newInput) {
+    }, watch: {
+      searchInput: function(newInput) {
         this.currentSelectBook = null
-        this.filterBooks = this.$store.state.books.filter(function (book) {
+        this.filterBooks = this.$store.state.books.filter(function(book) {
           return book.name && book.name.toLowerCase().indexOf(newInput.toLowerCase().trim()) !== -1
         })
       }
-    },
-    computed: {
-      allBooks: function () {
+    }, computed: {
+      allBooks: function() {
         return this.$store.state.books
       }
-    },
-    beforeMount () {
+    }, beforeMount () {
       this.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN').then(() => {
         if (!this.searchInput) {
           this.filterBooks = this.$store.state.books
@@ -322,7 +321,7 @@
     line-height: 1.4em;
     color: inherit;
     padding: 6px;
-    border: 1px solid #999;
+    border: 1px solid #999999;
     box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;

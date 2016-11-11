@@ -25,7 +25,7 @@
       </ul>
       <p v-if="reservations && !reservations.length">You have no reservation.</p>
 
-      <h2>My Borrow Record ({{borrowRecords.length}})</h2>
+      <h2>My Borrow Records ({{borrowRecords.length}})</h2>
       <ul class="record-list" v-if="borrowRecords && borrowRecords.length">
         <li v-for="borrowRecord in borrowRecords" class="trace-item">
           <div>
