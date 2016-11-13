@@ -23,17 +23,23 @@ module.exports = {
     // allow func()
     'space-before-function-paren': 0,
     // allow blank line before }
-    'padded-blocks': 1,
+    'padded-blocks': 0,
     // allow semicolon
     'semi': 0,
     // allow unused defined var
-    'no-unused-vars': 1,
+    'no-unused-vars': 0,
     // allow indent
-    'indent': 1,
+    'indent': 0,
     // allow quotes
-    'quotes': 1,
+    'quotes': 0,
     // allow same line properties
-    'object-property-newline': 1,
+    'object-property-newline': 0,
+
+    'operator-linebreak': 0,
+
+    'keyword-spacing': 0,
+
+    'no-trailing-spaces': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }

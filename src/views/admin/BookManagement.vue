@@ -1,361 +1,276 @@
 <template xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
-  <div id="manage-book-panel">
-    <div id="add-book-panel">
-      <div class="operation-title">Add a book</div>
-      <form v-on:submit.prevent="addNewBook">
-        <input placeholder="book name" v-model="newBook.name" type="text">
-        <input placeholder="ISBN" v-model="newBook.isbn" type="text">
-        <input placeholder="desc" v-model="newBook.desc" type="text">
-        <button type="submit" class="action-button">Add</button>
-      </form>
-      <div v-if="!!currentSelectBook">
-        <div class="operation-title">Add a trace for 《{{currentSelectBook.name}}》</div>
-        <form v-on:submit.prevent="addTrace">
-          <input placeholder="location" v-model="newTrace.location" type="text">
-          <button type="submit" class="action-button">Add</button>
+  <div class="container">
+    <div class="col-sm-4">
+      <h3>Add Book</h3>
+      <div class="">
+        <form v-on:submit.prevent="fetchDouban(doubanISBN)">
+          <input placeholder="ISBN" v-model="doubanISBN" type="text" class="form-control" required>
+          <button type="submit" class="btn btn-primary btn-block">fetch from Douban API</button>
+        </form>
+        <br/>
+        <form v-on:submit.prevent>
+          <label for="new-isbn">ISBN</label>
+          <input v-model="newBook.isbn" type="text" id="new-isbn" class="form-control" required>
+          <label for="new-name">name</label>
+          <input v-model="newBook.name" type="text" id="new-name" class="form-control" required>
+          <label for="new-publisher">publisher</label>
+          <input v-model="newBook.publisher" type="text" id="new-publisher" class="form-control">
+          <label for="new-authors">authors (each start with #)</label>
+          <input v-model="newBook.authors" type="text" id="new-authors" class="form-control">
+          <label for="new-imageUrl">image URL</label>
+          <input v-model="newBook.imageUrl" type="text" id="new-imageUrl" class="form-control">
+          <label for="new-image">image (if no URL above)</label>
+          <input v-on:change="setNewBookImage" type="file" id="new-image" class="form-control">
+          <label for="new-desc">description</label>
+          <textarea v-model="newBook.desc" id="new-desc" class="form-control" rows="5"></textarea>
+          <br/>
+          <button @click="addBook(newBook)" class="btn btn-success btn-block">add book</button>
         </form>
       </div>
     </div>
-    <div id="book-list">
-      <input class="input-search" autofocus autocomplete="off" placeholder="Search books here"
+    <div class="col-sm-8">
+      <input class="input-search" autofocus autocomplete="off" placeholder="Search by ISBN here"
              v-model="searchInput"/>
-      <ul>
-        <li v-for="book in filterBooks"
-            :key="book.isbn">
-          <div class="book-item" @click="selectBook(book)"
-               v-bind:class="{ 'selected-item': currentSelectBook === book, book: true}"
-          >
+      <table class="table table-bordered table-condensed table-hover">
+        <thead>
+        <tr>
+          <th>ISBN</th>
+          <th>name</th>
+          <th>publisher</th>
+          <th>operation</th>
+        </tr>
+        </thead>
+        <tbody v-if="filteredBooks && filteredBooks.length">
+        <tr v-for="book in filteredBooks">
+          <td>{{ book.isbn }}</td>
+          <td>{{ book.name }}</td>
+          <td>{{ book.publisher }}</td>
+          <td>
+            <button class="btn btn-default btn-block btn-xs" @click="showBookDetail(book)">detail</button>
+          </td>
+        </tr>
+        </tbody>
+        <tbody v-else>
+        <tr>
+          <td colspan="4" style="text-align: center">empty.</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
 
-            <h4 id="title">《{{book.name}}》
-              <small>ISBN: {{book.isbn}}</small>
-            </h4>
-            <h4>
-              <small>{{book.desc}}</small>
-            </h4>
-
-            <div id="bottom">
-              <h6 id="isbn"></h6>
-              <a v-if="currentSelectBook === book" style="{color: #ffffff;}">hide</a>
-              <a v-else>show detail</a>
-
-            </div>
+    <div class="modal fade" id="modal-book-detail">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content" v-if="book">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            <h4 class="modal-title">Detail</h4>
           </div>
-          <div v-if="currentSelectBook == book">
-            <ul v-if="!loadingTrace" id="trace-list">
-              <li v-for="trace in currentTrace" class="trace-item">
-                <span class="trace-item-info">id: {{trace.id}}</span>
-                <span class="trace-item-info">     status: {{trace.status}}</span>
-                <span class="trace-item-info">     location: {{trace.location}}</span>
-
-                <table>
-                  <tr>
-                    <td>
-                      <img
-                        v-bind:src="'http://barcode.tec-it.com/barcode.ashx?data='+trace.isbn+trace.id+'&code=Code128&dpi=96'"
-                        alt='Barcode Generator TEC-IT'/>
-                    </td>
-                  </tr>
-                </table>
-
-                <div class="space"></div>
-                <div class="trace-item-operation">
-                  <button class="operation delete" v-if="trace.status !== 'DELETED'" @click="deleteTrace(trace)">delete
-                  </button>
-                  <!--<button class="operation borrow" v-if="trace.status === 'LOCKED'" @click="borrowTrace(trace)">borrow-->
-                  <!--</button>-->
-                </div>
-              </li>
-              <div v-if=" currentTrace && currentTrace.length=== 0">
-                No traces.
+          <div class="modal-body">
+            <div class="media">
+              <div class="media-left" v-if="book.imageUrl">
+                <img class="img-book" v-bind:src="book.imageUrl"/>
               </div>
-            </ul>
-            <div v-else>
-              Loading...
+              <div class="media-body">
+                <table class="table table-bordered table-condensed table-hover">
+                  <tbody>
+                  <tr v-if="book.isbn">
+                    <td>ISBN</td>
+                    <td>{{ book.isbn }}</td>
+                  </tr>
+                  <tr v-if="book.name">
+                    <td>name</td>
+                    <td>{{ book.name }}</td>
+                  </tr>
+                  <tr v-if="book.publisher">
+                    <td>Publisher</td>
+                    <td>{{ book.publisher }}</td>
+                  </tr>
+                  <tr v-if="book.authors && book.authors.length">
+                    <td>Authors</td>
+                    <td>{{ book.authors.join(', ') }}</td>
+                  </tr>
+                  <tr v-if="book.desc">
+                    <td>Description</td>
+                    <td>{{ book.desc }}</td>
+                  </tr>
+                  <tr>
+                    <td>created at</td>
+                    <td>{{ new Date(book.createTime).toLocaleDateString() }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-
-        </li>
-      </ul>
+          <div class="modal-body">
+            <form v-on:submit.prevent="addTrace(newTrace)">
+              <label for="new-trace-location">location</label>
+              <input v-model="newTrace.location" type="text" class="form-control" id="new-trace-location" required/>
+              <button type="submit" class="btn btn-primary btn-block">add book trace</button>
+            </form>
+            <br/>
+            <table class="table table-bordered table-condensed table-hover">
+              <thead>
+              <tr>
+                <th>trace</th>
+                <th>barcode</th>
+                <th>status</th>
+                <th>created at</th>
+                <th>operation</th>
+              </tr>
+              </thead>
+              <tbody v-if="filteredTraces && filteredTraces.length">
+              <tr v-for="trace in filteredTraces">
+                <td>No.{{ trace.id }} on "{{ trace.location }}"</td>
+                <td>
+                  <img v-bind:src="'http://barcode.tec-it.com/barcode.ashx?data='+trace.isbn+':'+trace.id+'&code=Code128&dpi=96'"/>
+                </td>
+                <td>{{ trace.status }}</td>
+                <td>{{ new Date(trace.createTime).toLocaleDateString() }}</td>
+                <td>
+                  <button @click="deleteTrace(trace)">delete</button>
+                </td>
+              </tr>
+              </tbody>
+              <tbody v-else>
+              <tr>
+                <td colspan="3" style="text-align: center">empty.</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import * as service from '../../service'
+  import * as service from '../../service';
+
+  let inArray = (arr, element) => {
+    if (arr instanceof Array) {
+      for (let i in arr) {
+        let e = arr[i];
+        if (e === element) {
+          return true;
+        }
+      }
+      return false;
+    }
+    return undefined;
+  };
+
+  let $ = window.$;
 
   export default {
     data () {
       return {
-        newBook: {
-          name: '', isbn: '', total: null, margin: null
-        },
-        loadingTrace: false,
-        newTrace: {},
-        filterBooks: [],
+        doubanISBN: '',
+        newBook: {},
+        filteredBooks: [],
         searchInput: '',
-        currentSelectBook: null,
-        currentTrace: []
+        book: null,
+        newTrace: {},
+        DUMP: null
       }
-    }, methods: {
-      addNewBook () {
-        let self = this
-        service.addBookByAdmin(this.newBook).then(function(response) {
-          if (response.data.success) {
-            self.$store.dispatch('ADD_NEW_BOOK', self.newBook)
-            //            if (self.newBook.name.indexOf(self.searchInput) !== -1) {
-            //              self.$store.state.books.unshift(self.newBook)
-            //            }
-            self.newBook = {}
-          } else {
-            alert('add fail!')
-          }
-        }).catch(function(e) {
-          alert('add fail!')
-        })
-        return false
-      }, deleteBook (book) {
-        let self = this
-        service.deleteBookByAdmin(book.isbn).then(function(response) {
-          if (response.data.success) {
-            self.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN')
-          } else {
-            alert('delete book fail!')
-          }
-        }).catch(function(e) {
-          alert(e)
-          alert('delete book fail!')
-        })
-      }, selectBook (book) {
-        if (this.loadingTrace) {
-          return
-        }
-
-        if (this.currentSelectBook === book) {
-          this.currentTrace = null
-          this.currentSelectBook = null
+    },
+    beforeMount() {
+      let self = this;
+      this.$store.dispatch('ADMIN_FETCH_BOOKS').then(() => {
+        self.filteredBooks = self.$store.state.admin_books.filter(e => self.isBookVisible(e));
+      });
+    },
+    watch: {
+      searchInput(value) {
+        let self = this;
+        this.filteredBooks = this.$store.state.admin_books.filter(e => self.isBookVisible(e));
+      }
+    },
+    computed: {
+      filteredTraces() {
+        if (this.book.traces) {
+          let self = this;
+          return this.book.traces.filter(e => self.isTraceVisible(e));
         } else {
-          this.currentSelectBook = book
-          this.loadingTrace = true
-          service.getBookTraceByAdmin(book.isbn).then(response => {
-            this.loadingTrace = false
-            if (response.data.success) {
-              this.currentTrace = response.data.entities
-            } else {
-              alert('fetch failed!')
-            }
-          }).catch(error => {
-            this.loadingTrace = false
-            alert('fetch failed!' + error)
-          })
+          return [];
         }
-      }, addTrace () {
-        if (this.loadingTrace) {
-          return
+      }
+    },
+    methods: {
+      fetchDouban(isbn) {
+        service.fetchDouban(isbn).then(response => {
+          let data = response.data;
+          if (data.isbn13 === isbn) {
+            let book = {
+              isbn: data.isbn13,
+              name: data.title,
+              publisher: data.publisher,
+              authors: data.author.length ? '#' + data.author.join('#') : '',
+              imageUrl: data.image,
+              desc: data.summary
+            };
+            this.newBook = book;
+          }
+        });
+      },
+      setNewBookImage(e) {
+        var target = e.target;
+        var files = target.files;
+        if (!files || files.length === 0) {
+          this.newBook.image = null;
+        } else {
+          this.newBook.image = files[0];
         }
-
-        service.addBookTraceByAdmin(this.currentSelectBook, this.newTrace).then((response) => {
-          this.newTrace = {}
-          if (!response.data.success) {
-            alert('add trace failed!')
-          } else {
-            this.currentTrace.push(response.data.entity)
-          }
-        }).catch((error) => {
-          this.newTrace = {}
-          alert('add trace failed!' + error)
-        })
-      }, deleteTrace (trace) {
-        service.deleteBookTraceByAdmin(trace).then(function(response) {
-          if (response.data.success) {
-            trace.status = "DELETED"
-          } else {
-            alert('delete failed!')
-          }
-        }).catch(function(error) {
-          alert('delete failed!' + error)
-        })
-      }, borrowTrace (trace) {
-        service.borrowBookTraceByAdmin(trace).then(function(response) {
-          if (response.data.success) {
-            trace.status = "BORROWED"
-          } else {
-            alert('borrow failed!')
-          }
-        }).catch(function(error) {
-          alert('borrow failed!' + error)
-        })
+      },
+      addBook(book) {
+        this.$store.dispatch('ADMIN_ADD_BOOK', book);
+        return false;
+      },
+      isBookVisible(e) {
+        let pattern = this.searchInput.toLowerCase().trim();
+        return e && inArray(['NORMAL'], e.status) && (!pattern.length || e.isbn.toLowerCase().indexOf(pattern) !== -1);
+      },
+      showBookDetail(book) {
+        this.book = book;
+        this.newTrace.isbn = book.isbn;
+        this.$store.dispatch('ADMIN_FETCH_BOOK_TRACES', book).then(() => {
+        });
+        $('#modal-book-detail').modal('show');
+      },
+      hideBookDetail() {
+        $('#modal-book-detail').modal('hide');
+      },
+      deleteBook(book) {
+        this.$store.dispatch('ADMIN_DEL_BOOK', book);
+      },
+      addTrace(trace) {
+        this.$store.dispatch('ADMIN_ADD_BOOK_TRACE', trace);
+        return false;
+      },
+      isTraceVisible(e) {
+        return e && inArray(['NORMAL', 'LOCKED', 'BORROWED'], e.status);
+      },
+      deleteTrace(trace) {
+        this.$store.dispatch('ADMIN_DEL_BOOK_TRACE', trace);
       }
-    }, watch: {
-      searchInput: function(newInput) {
-        this.currentSelectBook = null
-        this.filterBooks = this.$store.state.books.filter(function(book) {
-          return book.name && book.name.toLowerCase().indexOf(newInput.toLowerCase().trim()) !== -1
-        })
-      }
-    }, computed: {
-      allBooks: function() {
-        return this.$store.state.books
-      }
-    }, beforeMount () {
-      this.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN').then(() => {
-        if (!this.searchInput) {
-          this.filterBooks = this.$store.state.books
-        }
-      })
     }
   };
 </script>
 
 <style scoped>
 
-  ul {
-    list-style: none;
-  }
-
-  #manage-book-panel {
-    display: flex;
-    flex-direction: row;
-    align-self: stretch;
-    height: 100%;
-    padding: 20px;
-  }
-
-  #add-book-panel {
-    height: 100%;
-    padding: 16px;
-    padding-left: 50px;
-    flex-grow: 1;
-  }
-
-  #book-list {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    align-self: stretch;
-    flex-grow: 14;
-  }
-
-  #trace-list {
-    width: 100%;
-  }
-
-  .operation {
-    align-self: flex-end;
-    margin: 4px;
-  }
-
-  .delete {
-    color: #af5b5e;
-  }
-
-  .book {
-    box-shadow: #2c3e50;
-    display: flex;
-    flex-direction: column;
-    margin: 20px;
-    height: auto;
-    min-width: 300px;
-    width: 100%;
-    padding: 20px;
-    align-items: flex-start;
-    box-shadow: inset 0 -2px 2px rgba(0, 0, 0, 0.03);
-  }
-
-  .trace-item {
-    display: flex;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    width: 100%;
-  }
-
-  .trace-item-info {
-    min-width: 80px;
-    text-align: start;
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-
-  .book-item {
-    display: flex;
-    flex-direction: column;
-    margin: 20px;
-    height: auto;
-    min-width: 300px;
-    width: 100%;
-    align-items: flex-start;
-  }
-
-  .book #title {
-    align-self: flex-start;
-  }
-
-  #header {
-    display: flex;
-    align-items: flex-end;
-  }
-
-  #bottom {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    align-self: stretch;
-    justify-content: space-between;
-  }
-
-  #delete {
-    height: 20px;
-    align-self: flex-end;
-    color: #af5b5e;
-    margin-left: 100px;
-  }
-
-  .input-search,
-  .edit {
-    position: relative;
-    margin: 0;
-    width: 100%;
-    font-size: 24px;
-    font-family: inherit;
-    font-weight: inherit;
-    line-height: 1.4em;
-    color: inherit;
-    padding: 6px;
-    border: 1px solid #999999;
-    box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  form label {
+    margin-top: 5px;
   }
 
   .input-search {
-    padding: 16px 16px 16px 60px;
+    padding: 8px 30px 10px 0px;
+    font-size: 16px;
     border: none;
     background: rgba(0, 0, 0, 0.003);
-    box-shadow: inset 0 -2px 1px rgba(0, 0, 0, 0.03);
-  }
-
-  #add-book-panel form {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .trace-item-operation {
+    outline: none;
     width: 100%;
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .selected-item {
-    border: dashed #42b983;
-  }
-
-  .selected-item-info {
-    color: #ffffff;
-  }
-
-  .operation-title {
-    margin-top: 50px;
   }
 
 </style>

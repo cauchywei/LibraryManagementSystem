@@ -1,13 +1,14 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-import LoginView from '../views/Login.vue'
-import HomeView from '../views/Home.vue'
-import RegisterView from '../views/Register.vue'
-import UserView from '../views/User.vue'
-import BorrowRecordsView from '../views/BorrowRecords.vue'
-import BookManagementView from '../views/admin/BookManagement.vue'
-import LoanManagementView from '../views/admin/LoanManagement.vue'
+import HomeView from '../views/Home';
+import LoginView from '../views/Login';
+import RegisterView from '../views/Register';
+import UserView from '../views/User';
+import BorrowRecordsView from '../views/Borrows';
+import BookManagementView from '../views/admin/BookManagement';
+import BorrowManagementView from '../views/admin/BorrowManagement';
+import UserManagementView from '../views/admin/UserManagement';
 
 Vue.use(Router);
 
@@ -16,12 +17,13 @@ var router = new Router({
   scrollBehavior: () => ({y: 0}),
   routes: [
     { path: '/index', component: HomeView },
-    { path: '/login', component: LoginView },
-    { path: '/register', component: RegisterView },
-    { path: '/my', component: UserView },
-    { path: '/my/borrow_records', component: BorrowRecordsView },
-    { path: '/book_management', component: BookManagementView },
-    { path: '/loan_management', component: LoanManagementView },
+    { path: '/user/login', component: LoginView },
+    { path: '/user/register', component: RegisterView },
+    { path: '/user', component: UserView },
+    { path: '/user/borrows', component: BorrowRecordsView },
+    { path: '/admin/books', component: BookManagementView },
+    { path: '/admin/borrows', component: BorrowManagementView },
+    { path: '/admin/users', component: UserManagementView },
     { path: '*', redirect: '/index' }
   ]
 });

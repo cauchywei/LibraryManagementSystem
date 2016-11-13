@@ -4,37 +4,35 @@
 
       <router-link id="header-title" to="/">Purjoy Library Management System</router-link>
 
-      <div class="user-operation-panel" v-if="login">
-        <span>Welcome <router-link id="username" to="/my">{{account.name}} </router-link></span>
+      <div v-if="isLogin" class="user-operation-panel" >
+        <span>Welcome, <router-link id="username" to="/user">{{account.name}}</router-link></span>
 
         <div v-if="isAdmin" class="action-bar">
           <h5 class="admin"> ( admin ) </h5>
 
           <span class="button-divider">|</span>
-          <router-link to="/loan_management" class="header-button">Manage loans</router-link>
+          <router-link to="/admin/books" class="header-button">Manage Books</router-link>
 
           <span class="button-divider">|</span>
-          <router-link to="/book_management" class="header-button">Manage Books</router-link>
+          <router-link to="/admin/borrows" class="header-button">Manage Borrows</router-link>
 
           <span class="button-divider">|</span>
-          <router-link to="/user_management" class="header-button">Manage Users</router-link>
+          <router-link to="/admin/users" class="header-button">Manage Users</router-link>
         </div>
-        <div class="action-bar" v-else>
-          <div class="button-divider">|</div>
-          <router-link to="/my/borrow_records" class="header-button">My Borrow Record</router-link>
-        </div>
+
         <span class="action-bar" v-else>
           <span class="button-divider">|</span>
-          <router-link to="/my/borrow_records" class="header-button">My Borrow Records</router-link>
+          <router-link to="/user/borrows" class="header-button">My Borrows</router-link>
         </span>
 
         <div class="button-divider">|</div>
-        <a class="header-button" @click="logout">Logout</a>
+        <a href="#" class="header-button" @click="logout">Logout</a>
       </div>
-      <div class="user-operation-panel" v-if="!login">
-        <router-link to="/login" class="header-button">Login</router-link>
+
+      <div class="user-operation-panel" v-else>
+        <router-link to="/user/login" class="header-button">Login</router-link>
         <div class="button-divider">|</div>
-        <router-link to="/register" class="header-button">Register</router-link>
+        <router-link to="/user/register" class="header-button">Register</router-link>
       </div>
 
     </div>
@@ -42,44 +40,49 @@
     <transition name="fade" mode="out-in">
       <router-view class="view"></router-view>
     </transition>
+
+    <div class="container clearfix">
+      <hr/>
+      <footer class="text-muted">
+        SPM 2016.
+      </footer>
+      <br/>
+    </div>
   </div>
 </template>
 
 <script>
-  import Hello from './components/Hello'
+  import Home from './views/Home';
 
   export default {
     components: {
-      Hello
+      Home
     },
     data() {
       return {
-//        login: this.$store.state.isLogin,
-//        user: this.$store.state.user
       }
     },
     methods: {
       logout() {
-        this.$store.dispatch('LOGOUT')
-        this.$router.push('/index')
+        this.$store.dispatch('LOGOUT');
+        this.$router.push('/index');
       }
     },
     computed: {
-      login() {
+      isLogin() {
         return this.$store.getters.isLogin;
       },
       account() {
-        return this.$store.state.account;
+        return this.$store.getters.getAccount;
       },
       isAdmin() {
-        return this.$store.state.account.roles.indexOf('ADMIN') !== -1
+        return this.$store.getters.isAdmin;
       }
     }
-  }
+  };
 </script>
 
 <style>
-
 
   html {
     height: 100%;
@@ -94,8 +97,8 @@
 
   #app {
     color: #2c3e50;
-    font-family: Source Sans Pro, Helvetica, sans-serif;
-    text-align: center;
+    /*font-family: Source Sans Pro, Helvetica, sans-serif;*/
+    /*text-align: center;*/
     width: 100%;
   }
 
@@ -109,11 +112,6 @@
     font-family: Source Sans Pro, Helvetica, sans-serif;
     font-size: 1.4em;
     font-style: normal;
-  }
-
-  .header-button {
-    font-size: 0.9em;
-    color: #42b983;
   }
 
   #header {
@@ -142,33 +140,9 @@
   }
 
   .button-divider {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
     color: #cccccc;
-  }
-
-  .action-button {
-    padding: 8px 16px 8px 16px;
-    background: #42b983;
-    color: #ffffff;
-    border-width: 0;
-    border-radius: 4px;
-  }
-
-  input {
-    border: 1px solid #eeeeee;
-    padding: 8px;
-    margin: 8px 16px 8px 16px;
-  }
-
-  textarea {
-    border: 1px solid #eeeeee;
-    padding: 8px;
-    margin: 8px 16px 8px 16px;
-  }
-
-  #username {
-    text-decoration: underline;
   }
 
   #user-operation-panel #admin {
@@ -176,5 +150,15 @@
     padding-right: 4px;
   }
 
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+  }
+  .fade-enter, .fade-leave-active {
+    opacity: 0
+  }
+
+  * {
+    border-radius: 0 !important;
+  }
 
 </style>

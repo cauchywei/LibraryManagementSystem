@@ -1,22 +1,38 @@
-<template>
+<template xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
   <div id="register-panel">
     <h1>Register</h1>
-    <form v-on:submit.prevent="register" id="register-form">
-      <div style="{ display: flex; flex-direction: row}">
-        <input v-model="account.username" placeholder="username" type="text"/>
-        <input v-model="account.password" placeholder="password" type="password"/>
+    <form v-on:submit.prevent="register" id="register-form" class="form-horizontal">
+      <div class="form-group">
+        <label for="username">username</label>
+        <input v-model="account.username" id="username" class="form-control" placeholder="input your student ID" type="text"/>
+
+        <label for="password">password</label>
+        <input v-model="account.password" id="password" class="form-control" placeholder="password" type="password"/>
+
+        <label for="name">name <small class="text-muted">optional</small></label>
+        <input v-model.trim="account.name" id="name" class="form-control" placeholder="your name" type="text"/>
+
+        <label for="age">age <small class="text-muted">optional</small></label>
+        <input v-model.number="account.age" id="age" class="form-control" placeholder="your age" type="number"/>
+
+        <label for="avatar">avatar <small class="text-muted">optional</small></label>
+        <input v-on:change="setAvatar" id="avatar" class="form-control" placeholder="your avatar" type="file"/>
+
+        <label for="major">major <small class="text-muted">optional</small></label>
+        <input v-model.trim="account.major" id="major" class="form-control" placeholder="your major" type="text"/>
+
+        <label for="phone">phone <small class="text-muted">optional</small></label>
+        <input v-model.tel="account.phone" id="phone" class="form-control" placeholder="your phone number" type="tel"/>
+
+        <label for="email">email <small class="text-muted">optional</small></label>
+        <input v-model.email="account.email" id="email" class="form-control" placeholder="your email to receive notices" type="email"/>
+
+        <label for="remarks">remarks <small class="text-muted">optional</small></label>
+        <textarea v-model.trim="account.remarks" id="remarks" class="form-control" rows="3" placeholder="anything you want!"></textarea>
+
+        <button type="submit" class="btn btn-success btn-block">register</button>
       </div>
 
-      <div style="{ display: flex; flex-direction: row}">
-        <input v-model="account.name" placeholder="name" type="text"/>
-        <input v-model.number="account.age" placeholder="age" type="number"/>
-      </div>
-
-      <input v-model="account.major" class="full-input" placeholder="major" type="text"/>
-      <input v-model="account.phone" class="full-input" placeholder="phone" type="tel"/>
-      <input v-model="account.email" class="full-input" placeholder="email" type="email"/>
-      <textarea v-model="account.remarks" class="full-input" placeholder="self description"></textarea>
-      <button type="submit"  class="action-button">register</button>
     </form>
   </div>
 </template>
@@ -24,35 +40,49 @@
 <script>
   import * as service from '../service'
   export default {
-    el: '#register-panel',
     data () {
       return {
         account: {
           username: '',
           password: ''
         },
-        data: {name: 'test'}
+        data: {name: ''}
       }
     },
     methods: {
-      register () {
-        if (!this.account.username || !this.account.password || !this.account.age || !this.account.name || !this.account.major || !this.account.phone || !this.account.email) {
-          alert('please fill all info!')
-          return false
+      setAvatar(e) {
+        var target = e.target;
+        var files = target.files;
+        if (!files || files.length === 0) {
+          this.account.avatar = null;
+        } else {
+          this.account.avatar = files[0];
+        }
+      },
+      register() {
+        if (!this.account.username
+            || !this.account.password
+            || !this.account.age
+            || !this.account.name
+            || !this.account.major
+            || !this.account.phone
+            || !this.account.email) {
+          alert('please fill all fields!');
+          return false;
         }
 
-        let self = this
+        let self = this;
         service.register(this.account).then(function (response) {
           if (response.data.success) {
-            alert('register success!')
-            self.$router.push('/login')
+            alert('register success!');
+            self.$router.push('/login');
           } else {
-            alert('register fail!')
+            alert('register fail!');
           }
         }).catch(function (error) {
-          alert(error)
-        })
-        return false
+          alert(error);
+        });
+        return false;
       }
     },
     watch: {}
@@ -60,26 +90,30 @@
 </script>
 
 <style scoped>
+
   #register-panel {
-    height: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
   }
 
   #register-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin-top: 30px;
+    width: 400px;
   }
 
-  .full-input {
+  #register-form input,
+  #register-form textarea,
+  #register-form div {
     align-self: stretch;
   }
 
-  #register-form .action-button {
-    margin-top: 20px;
+  form * {
+    margin-bottom: 5px;
+  }
+
+  form .btn {
+    margin-top: 10px;
   }
 
 </style>

@@ -1,8 +1,8 @@
-import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 
-var instance = axios.create()
-const mock = new MockAdapter(instance)
+var instance = axios.create();
+const mock = new MockAdapter(instance);
 
 mock.onPost('/users/login').reply(200, {
   success: true,
@@ -18,7 +18,7 @@ mock.onPost('/users/login').reply(200, {
     email: 'cauchywei@gmail.com',
     remarks: 'hi'
   }
-})
+});
 
 mock.onGet('/users/self/').reply(200, {
   role: 'READER',
@@ -31,6 +31,6 @@ mock.onGet('/users/self/').reply(200, {
   phone: '23333',
   email: 'cauchywei@gmail.com',
   remarks: 'hi'
-})
+});
 
-export default instance
+export default instance;

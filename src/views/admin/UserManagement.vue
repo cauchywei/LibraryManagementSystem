@@ -1,34 +1,64 @@
-<template>
-  <div id="loan-book-panel">
-      <input class="input-search" autofocus autocomplete="off" placeholder="Search books or users here"
-             v-model="searchInput" @keyup.enter="search"/>
-      <ul>
-        <li v-for="lend in filterLends"
-            :key="lend.id">
-          <div class="book-item" @click="selectBook(book)"
-          >
-
-            <h4 id="title">《{{lend.trace.book.name}}》
-              <small>ISBN: {{lend.trace.isbn}} &nbsp id: {{lend.trace.id}}</small>
-            </h4>
-	    
-
-            <div id="bottom">
-              <h6 id="isbn" class="info-item">User: {{lend.user.name}}({{lend.user.username}})</h6>
-              <h6 class="info-item">Apply Time: {{new Date(lend.applyingTime)}} &nbsp Appointed Time:{{new Date(lend.appointedTime)}}</h6>
-              <span class="info-item"> Status: {{lend.status}}</span>
-
-              <div class="operation">
-                <button v-if="lend.status === 'APPLYING'" @click="acceptLendApplying(lend)">accept</button>
-                <button v-if="lend.status === 'APPLYING'" @click="rejectLendApplying(lend)">reject</button>
-                <button v-if="lend.status === 'ACTIVE' || lend.status === 'LATE'" @click="confirmReturn(lend)">return</button>
-              </div>
-            </div>
-          </div>
-
-        </li>
-      </ul>
+<template xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+  <div class="container">
+    <div class="col-sm-12">
+      <input class="input-search" autofocus autocomplete="off" placeholder="Search by username here"
+             v-model="searchInput"/>
+      <table class="table table-bordered table-condensed table-hover">
+        <thead>
+        <tr>
+          <th>No.</th>
+          <th>username</th>
+          <th>status</th>
+          <th>info</th>
+          <th>operation</th>
+        </tr>
+        </thead>
+        <tbody v-if="filteredBorrows && filteredBorrows.length">
+        <tr v-for="borrow in filteredBorrows">
+          <td>
+            <ul>
+              <li>
+                {{ borrow.trace.book.name }}, {{ borrow.trace.book.publisher }}
+                <br/>
+                by {{ borrow.trace.book.authors.join(', ') }}
+              </li>
+              <li>No.{{ borrow.trace.id }} on {{ borrow.trace.location }}</li>
+            </ul>
+          </td>
+          <td>
+            {{ borrow.user.username }}
+          </td>
+          <td>
+            {{ borrow.status }}
+          </td>
+          <td>
+            <ul>
+              <li v-if="borrow.applyingTime">{{ datetime('applied at', borrow.applyingTime) }}</li>
+              <li v-if="borrow.expiredTime">{{ datetime('expire at', borrow.expiredTime) }}</li>
+              <li v-if="borrow.activeTime">{{ datetime('active at', borrow.activeTime) }}</li>
+              <li v-if="borrow.appointedTime">{{ datetime('appointed until', borrow.appointedTime) }}</li>
+            </ul>
+          </td>
+          <td>
+            <template v-if="borrow.status === 'APPLYING'">
+              <button class="btn btn-success btn-block btn-xs" @click="acceptApplication(borrow)">accept</button>
+              <button class="btn btn-danger btn-block btn-xs" @click="rejectApplication(borrow)">reject</button>
+            </template>
+            <template v-if="borrow.status === 'ACTIVE'">
+              <button class="btn btn-success btn-block btn-xs" @click="confirmReturned(borrow)">confirm returned</button>
+              <!--<button class="btn btn-danger btn-block btn-xs" @click="confirmDisabled(borrow)">confirm disabled</button>-->
+            </template>
+          </td>
+        </tr>
+        </tbody>
+        <tbody v-else>
+        <tr>
+          <td colspan="5" style="text-align: center">empty.</td>
+        </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
 </template>
 
 <script>
@@ -38,57 +68,45 @@
     data () {
       return {
         newBook: {
-          name: '',
-          isbn: '',
-          total: null,
-          margin: null
+          name: '', isbn: '', total: null, margin: null
         },
         loadingTrace: false,
         newTrace: {},
-        allLends: [],
+        filterBooks: [],
         searchInput: '',
         currentSelectBook: null,
         currentTrace: []
       }
-    },
-    methods: {
-      acceptLendApplying (lend) {
-        service.acceptLendByAdmin(lend).then(response => {
+    }, methods: {
+      addNewBook () {
+        let self = this;
+        service.addBookByAdmin(this.newBook).then(function(response) {
           if (response.data.success) {
-            lend.status = "ACTIVE"
+            self.$store.dispatch('ADD_NEW_BOOK', self.newBook)
+            //            if (self.newBook.name.indexOf(self.searchInput) !== -1) {
+            //              self.$store.state.books.unshift(self.newBook)
+            //            }
+            self.newBook = {}
           } else {
-            alert('accept fail!')
+            alert('add fail!')
           }
-        }).catch(function (e) {
-          alert('accept fail!')
-        })
+        }).catch(function(e) {
+          alert('add fail!')
+        });
         return false
-      },
-      rejectLendApplying (lend) {
-        service.rejectLendByAdmin(lend).then(response => {
+      }, deleteBook (book) {
+        let self = this
+        service.deleteBookByAdmin(book.isbn).then(function(response) {
           if (response.data.success) {
-          lend.status = "REJECTED"
-        } else {
-          alert('reject fail!')
-        }
-      }).catch(function (e) {
-          alert('reject fail!')
+            self.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN')
+          } else {
+            alert('delete book fail!')
+          }
+        }).catch(function(e) {
+          alert(e)
+          alert('delete book fail!')
         })
-        return false
-      },
-      confirmReturn (lend) {
-        service.confirmReturnLendByAdmin(lend).then(response => {
-          if (response.data.success) {
-          lend.status = "RETURNED"
-        } else {
-          alert('return fail!')
-        }
-      }).catch(function (e) {
-          alert('return fail!')
-        })
-        return false
-      },
-      selectBook (book) {
+      }, selectBook (book) {
         if (this.loadingTrace) {
           return
         }
@@ -111,66 +129,59 @@
             alert('fetch failed!' + error)
           })
         }
-      },
-      addTrace () {
+      }, addTrace () {
         if (this.loadingTrace) {
           return
         }
+
         service.addBookTraceByAdmin(this.currentSelectBook, this.newTrace).then((response) => {
           this.newTrace = {}
           if (!response.data.success) {
             alert('add trace failed!')
           } else {
-            self.currentTrace.add(response.data.entity)
+            this.currentTrace.push(response.data.entity)
           }
-        }).catch(function (error) {
+        }).catch((error) => {
           this.newTrace = {}
           alert('add trace failed!' + error)
         })
-      },
-      deleteTrace (trace) {
-        service.deleteBookTraceByAdmin(trace).then(function (response) {
+      }, deleteTrace (trace) {
+        service.deleteBookTraceByAdmin(trace).then(function(response) {
           if (response.data.success) {
             trace.status = "DELETED"
           } else {
             alert('delete failed!')
           }
-        }).catch(function (error) {
+        }).catch(function(error) {
           alert('delete failed!' + error)
         })
-      },
-      borrowTrace (trace) {
-        service.borrowBookTraceByAdmin(trace).then(function (response) {
+      }, borrowTrace (trace) {
+        service.borrowBookTraceByAdmin(trace).then(function(response) {
           if (response.data.success) {
             trace.status = "BORROWED"
           } else {
             alert('borrow failed!')
           }
-        }).catch(function (error) {
+        }).catch(function(error) {
           alert('borrow failed!' + error)
         })
       }
-    },
-    watch: {
-      searchInput: function (newInput) {
-//        this.currentSelectBook = null
-//        this.filterBooks = this.$store.state.books.filter(function (book) {
-//          return book.name.toLowerCase().indexOf(newInput.toLowerCase().trim()) !== -1
-//        })
-//        alert(JSON.stringify(this.filterBooks))
+    }, watch: {
+      searchInput: function(newInput) {
+        this.currentSelectBook = null;
+        this.filterBooks = this.$store.state.books.filter(function(book) {
+          return book.name && book.name.toLowerCase().indexOf(newInput.toLowerCase().trim()) !== -1
+        })
       }
-    },
-    computed: {
-      filterLends: function () {
-        return this.allLends.filter(lend => (lend.trace.book.name.toLowerCase().indexOf(this.searchInput.toLowerCase().trim()) !== -1 ||
-          lend.user.name.toLowerCase().indexOf(this.searchInput.toLowerCase().trim()) !== -1 ||
-          lend.user.username.toLowerCase().indexOf(this.searchInput.toLowerCase().trim()) !== -1))
+    }, computed: {
+      allBooks: function() {
+        return this.$store.state.books
       }
     },
     beforeMount () {
-      service.getLendsByAdmin().then(response => {
-        if (response.data.success) {
-          this.allLends = response.data.entities
+      this.$store.dispatch('FETCH_ALL_BOOKS_BY_ADMIN').then(() => {
+        if (!this.searchInput) {
+          this.filterBooks = this.$store.state.books
         }
       })
     }
@@ -271,6 +282,7 @@
     flex-direction: row;
     align-items: center;
     align-self: stretch;
+    justify-content: space-between;
   }
 
   #delete {
@@ -291,7 +303,7 @@
     line-height: 1.4em;
     color: inherit;
     padding: 6px;
-    border: 1px solid #999;
+    border: 1px solid #999999;
     box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
@@ -326,11 +338,6 @@
 
   .operation-title {
     margin-top: 50px;
-  }
-
-  .info-item {
-    margin-left: 10px;
-    margin-right: 10px;
   }
 
 </style>
